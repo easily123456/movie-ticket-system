@@ -1,0 +1,80 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  tomcat:
+    max-swallow-size: -1  #不限制上传请求体大小
+
+spring:
+  application:
+    name: movie-ticket-backend
+
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/movie_ticket_system?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari: #管理数据库连接
+      maximum-pool-size: 20 # 连接池最大连接数
+      minimum-idle: 5 # 保持最小空闲连接数
+      idle-timeout: 300000  #设置连接的最大空闲时间，超时后会被回收
+      max-lifetime: 1200000  #设置连接的最大存活时间，超时后会被强制回收
+      connection-timeout: 30000 #设置获取连接的超时时间
+
+  # JPA配置
+  jpa: #数据库表映射的Java对象
+    hibernate: #jpa的实现
+      ddl-auto: update #根据实体类自动更新表结构
+    show-sql: true #输出 Hibernate 生成的 SQL 语句
+    properties:
+      hibernate:
+        format_sql: true #格式化输出的 SQL 语句
+        dialect: org.hibernate.dialect.MySQL8Dialect  #指定 Hibernate 使用的数据库方言
+        jdbc:
+          time_zone: Asia/Shanghai #设置 Hibernate 使用的 JDBC 连接时区
+        connection:
+          provider_disables_autocommit: true  #禁用 Hibernate 自动提交模式
+
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 10MB #单个文件的最大大小
+      max-request-size: 10MB #整个 HTTP 请求的最大大小
+
+  # Jackson配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss #2023-10-01 15:30:00
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false #控制日期是否以时间戳（毫秒数）形式输出 2023-10-01 15:30:00
+
+# 日志配置
+logging:
+  level:
+    com.movieticket: DEBUG #com.movieticket 包及其子包下的日志级别设为 DEBUG
+    org.hibernate.SQL: DEBUG #输出所有执行的 SQL 查询
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE #输出 SQL 语句中的参数绑定值
+  file:
+    name: logs/movie-ticket.log #文件输出地址
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    #2023-10-01 15:30:00 [http-nio-8080-exec-1] DEBUG c.m.service.TicketService - Fetching ticket data...
+
+# JWT配置
+jwt:
+  secret: movie-ticket-system-secret-key-2024-spring-boot-3-jwt-token #生成和验证 JWT 签名的密钥
+  expiration: 86400000  # 24小时
+  header: Authorization #指定客户端发送 Token 的 HTTP 请求头名称
+
+# 文件上传路径配置
+file:
+  upload-dir: ./uploads/ #上传文件在服务器上的本地存储目录
+  access-path: /uploads/** #客户端访问上传文件的 URL 模式
+
+# 自定义配置
+app:
+  cors:
+    allowed-origins: "http://localhost:3000,http://localhost:8080" #允许跨域访问后端 API 的前端地址列表
+  order:
+    timeout-minutes: 15 #定义订单未支付的有效期
