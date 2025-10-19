@@ -17,6 +17,8 @@ public interface HallRepository extends JpaRepository<Hall, Long> {
 
     List<Hall> findByStatusTrue();
 
+    boolean existsByName(String name);
+
     Page<Hall> findByStatus(Boolean status, Pageable pageable);
 
     @Query("SELECT h FROM Hall h WHERE h.name LIKE %:keyword%")

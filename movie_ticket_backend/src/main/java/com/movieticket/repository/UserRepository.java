@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     //基于 Spring Data JPA 的 Repository 接口，用于对 User 实体进行数据库操作
     //JpaRepository<User, Long>其中User指向的是实体类，Long是实体类中的主键类型
-
+    //JPA自动实现下列接口
     Optional<User> findByUsername(String username);
     //返回值为Optional<User>而非User的原因是更好的处理null值
 

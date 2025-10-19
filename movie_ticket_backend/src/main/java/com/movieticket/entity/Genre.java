@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Collection;
+
 @Entity
 @Table(name = "genres")
 @Data
@@ -27,4 +29,5 @@ public class Genre extends BaseEntity {
 
     @Column(name = "sort_order")
     private Integer sortOrder = 0;
+
 }
