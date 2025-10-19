@@ -6,10 +6,13 @@ server:
     max-swallow-size: -1  #不限制上传请求体大小
 
 spring:
+#  profiles:
+#    active: test
+
   application:
     name: movie-ticket-backend
 
-  # 数据源配置
+#   数据源配置
   datasource:
     url: jdbc:mysql://localhost:3306/movie_ticket_system?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: root
@@ -35,7 +38,6 @@ spring:
           time_zone: Asia/Shanghai #设置 Hibernate 使用的 JDBC 连接时区
         connection:
           provider_disables_autocommit: true  #禁用 Hibernate 自动提交模式
-
   # 文件上传配置
   servlet:
     multipart:
