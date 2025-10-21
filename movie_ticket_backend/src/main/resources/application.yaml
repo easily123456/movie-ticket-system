@@ -1,7 +1,7 @@
 server:
   port: 8080
-  servlet:
-    context-path: /api
+#  servlet:
+#    context-path: /api
   tomcat:
     max-swallow-size: -1  #不限制上传请求体大小
 

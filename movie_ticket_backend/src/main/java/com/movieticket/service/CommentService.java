@@ -18,4 +18,5 @@ public interface CommentService {
     void likeComment(Long commentId);
     Double getAverageRatingByMovie(Long movieId);
     long getCommentCountByMovie(Long movieId);
+//    boolean existsByMovie(Long movieId);
 }

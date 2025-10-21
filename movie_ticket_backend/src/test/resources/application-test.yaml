@@ -19,3 +19,13 @@ spring:
   h2:
     console:
       enabled: true
+
+app:
+  cors:
+    allowed-origins: "http://localhost:3000,http://localhost:8080" #允许跨域访问后端 API 的前端地址列表
+  order:
+    timeout-minutes: 15 #定义订单未支付的有效期
+
+file:
+  upload-dir: ./uploads/ #上传文件在服务器上的本地存储目录
+  access-path: /uploads/** #客户端访问上传文件的 URL 模式

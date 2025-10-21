@@ -36,6 +36,8 @@ public class Order extends BaseEntity {
     @NotBlank(message = "座位不能为空")
     @Column(name = "seat_numbers", nullable = false, length = 500)
     private String seatNumbers; // JSON数组存储座位号
+    //由于订单的座位信息存储在数据库中，因此无法直接在实体类中定义一个 List<String> 类型的属性来存储座位号，而需要使用一个字符串来存储
+    //JSON方便存储和转换
 
     @NotNull(message = "座位数量不能为空")
     @Column(name = "seat_count", nullable = false)

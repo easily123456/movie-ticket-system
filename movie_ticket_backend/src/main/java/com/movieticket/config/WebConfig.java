@@ -12,6 +12,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${app.cors.allowed-origins}") //读取yaml中的app.cors.allowed-origins
     private String allowedOrigins;//app.cors.allowed-origins的值注入到allowedOrigins中
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) { // CORS（跨域资源共享）配置
         // 允许跨域访问的接口
@@ -27,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:./uploads/");
+                .addResourceLocations("file:" + uploadDir);
         //用户访问 /uploads/** 映射到 ./uploads/ 目录下的文件
     }
 }
