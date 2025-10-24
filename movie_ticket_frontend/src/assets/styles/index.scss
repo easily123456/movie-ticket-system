@@ -1,0 +1,216 @@
+// 重置样式和基础样式
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-family: $font-family;
+  background-color: $bg-color;
+  color: $text-primary;
+  font-size: $font-size-base;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+#app {
+  isolation: isolate;
+  min-height: 100vh;
+}
+
+// 通用工具类
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: 0 $spacing-sm;
+  }
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 $spacing-md;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: 0 $spacing-sm;
+  }
+}
+
+// 文本工具类
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+// 布局工具类
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-around {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+// 间距工具类
+.mt-1 {
+  margin-top: $spacing-xs;
+}
+.mt-2 {
+  margin-top: $spacing-sm;
+}
+.mt-3 {
+  margin-top: $spacing-md;
+}
+.mt-4 {
+  margin-top: $spacing-lg;
+}
+.mt-5 {
+  margin-top: $spacing-xl;
+}
+
+.mb-1 {
+  margin-bottom: $spacing-xs;
+}
+.mb-2 {
+  margin-bottom: $spacing-sm;
+}
+.mb-3 {
+  margin-bottom: $spacing-md;
+}
+.mb-4 {
+  margin-bottom: $spacing-lg;
+}
+.mb-5 {
+  margin-bottom: $spacing-xl;
+}
+
+.p-1 {
+  padding: $spacing-xs;
+}
+.p-2 {
+  padding: $spacing-sm;
+}
+.p-3 {
+  padding: $spacing-md;
+}
+.p-4 {
+  padding: $spacing-lg;
+}
+.p-5 {
+  padding: $spacing-xl;
+}
+
+// Element Plus 样式定制
+.el-button--primary {
+  background: $primary-color;
+  border-color: $primary-color;
+
+  &:hover {
+    background: $primary-hover;
+    border-color: $primary-hover;
+  }
+
+  &:focus {
+    background: $primary-color;
+    border-color: $primary-color;
+  }
+}
+
+.el-carousel__indicator {
+  padding: $spacing-xs;
+}
+
+// 响应式工具类
+.hidden-xs {
+  @media (max-width: $breakpoint-xs) {
+    display: none !important;
+  }
+}
+
+.hidden-sm {
+  @media (max-width: $breakpoint-sm) {
+    display: none !important;
+  }
+}
+
+.hidden-md {
+  @media (max-width: $breakpoint-md) {
+    display: none !important;
+  }
+}
+
+.visible-xs {
+  @media (min-width: ($breakpoint-xs + 1)) {
+    display: none !important;
+  }
+}
+
+.visible-sm {
+  @media (min-width: ($breakpoint-sm + 1)) {
+    display: none !important;
+  }
+}

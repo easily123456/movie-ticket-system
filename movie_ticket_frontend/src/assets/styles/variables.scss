@@ -1,0 +1,74 @@
+// 颜色系统 - 参考现代电影票务网站风格
+$primary-color: #ff5f16; // 主色调 - 活力橙色
+$primary-hover: #e54c0d; // 主色调悬停
+$secondary-color: #2d3448; // 次要色调 - 深蓝
+$accent-color: #00b0f0; // 强调色 - 科技蓝
+$success-color: #67c23a; // 成功色
+$warning-color: #e6a23c; // 警告色
+$danger-color: #f56c6c; // 危险色
+$info-color: #909399; // 信息色
+
+// 文字颜色
+$text-primary: #303133; // 主要文字
+$text-regular: #606266; // 常规文字
+$text-secondary: #909399; // 次要文字
+$text-placeholder: #c0c4cc; // 占位文字
+
+// 背景颜色
+$bg-color: #f5f7fa; // 背景色
+$bg-white: #ffffff; // 白色背景
+$bg-gray: #f0f2f5; // 灰色背景
+
+// 边框颜色
+$border-base: #dcdfe6; // 基础边框
+$border-light: #e4e7ed; // 浅色边框
+$border-lighter: #ebeef5; // 更浅边框
+$border-extra-light: #f2f6fc; // 最浅边框
+
+// 字体
+$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$font-size-base: 14px;
+$font-size-small: 13px;
+$font-size-large: 16px;
+
+// 阴影
+$shadow-base: 0 2px 4px rgba(0, 0, 0, 0.12);
+$shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+$shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+// 边框半径
+$border-radius-base: 4px;
+$border-radius-small: 2px;
+$border-radius-round: 20px;
+$border-radius-circle: 100%;
+
+// 间距系统
+$spacing-base: 8px;
+$spacing-xs: $spacing-base * 0.5; // 4px
+$spacing-sm: $spacing-base * 1;   // 8px
+$spacing-md: $spacing-base * 2;   // 16px
+$spacing-lg: $spacing-base * 3;   // 24px
+$spacing-xl: $spacing-base * 4;   // 32px
+$spacing-xxl: $spacing-base * 6;  // 48px
+
+// 响应式断点
+$breakpoint-xs: 480px;
+$breakpoint-sm: 768px;
+$breakpoint-md: 992px;
+$breakpoint-lg: 1200px;
+$breakpoint-xl: 1920px;
+
+// 动画
+$transition-base: all 0.3s ease;
+$transition-fast: all 0.1s ease;
+$transition-slow: all 0.5s ease;
+
+// Z-index 层级
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+$z-index-toast: 1080;
