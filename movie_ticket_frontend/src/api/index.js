@@ -3,13 +3,15 @@ import request from '@/utils/request'
 // 认证相关API
 export const authApi = {
   login(data) {
-    return request.post('/auth/login', data)
+    return request.post('/auth/login', data)// 发送POST请求到'/auth/login'端点，data为请求体
   },
   register(data) {
     return request.post('/auth/register', data)
   },
   checkUsername(username) {
     return request.get('/auth/check-username', { params: { username } })
+    // 发送GET请求到'/auth/check-username'端点，携带查询参数username
+    // params选项用于指定查询参数，会被序列化并附加到URL中，如：/auth/check-username?username=someUsername
   },
   checkEmail(email) {
     return request.get('/auth/check-email', { params: { email } })
@@ -18,7 +20,7 @@ export const authApi = {
 
 // 电影相关API
 export const movieApi = {
-  getMovies(params = {}) {
+  getMovies(params = {}) {// 默认参数params为空对象
     return request.get('/movies', { params })
   },
   getHotMovies() {
@@ -32,7 +34,7 @@ export const movieApi = {
   },
   searchMovies(keyword, params = {}) {
     return request.get('/movies/search', {
-      params: { keyword, ...params }
+      params: { keyword, ...params }// 将keyword和其他查询参数合并为一个对象，并作为params选项的值
     })
   },
   getMoviesByGenre(genreId, params = {}) {
@@ -64,8 +66,8 @@ export const userApi = {
 }
 
 export default {
-  auth: authApi,
-  movie: movieApi,
-  session: sessionApi,
-  user: userApi
+  auth: authApi,     // 将认证相关API集合映射为auth属性，可通过api.auth访问认证接口
+  movie: movieApi,   // 将电影相关API集合映射为movie属性，可通过api.movie访问电影接口
+  session: sessionApi, // 将场次相关API集合映射为session属性，可通过api.session访问场次接口
+  user: userApi      // 将用户相关API集合映射为user属性，可通过api.user访问用户接口
 }

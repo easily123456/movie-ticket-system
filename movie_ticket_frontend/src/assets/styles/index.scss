@@ -1,21 +1,21 @@
 // 重置样式和基础样式
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+*, //选择所有HTML元素
+*::before, //用于在元素内容前插入额外内容或装饰
+*::after { //用于在元素内容后插入额外内容或装饰
+  box-sizing: border-box; //改变盒模型计算方式，让元素的宽度和高度包含内边距(padding)和边框(border)
 }
 
 * {
-  margin: 0;
+  margin: 0;// 将所有元素的外边距设置为0，消除浏览器默认样式带来的外边距
 }
 
 body {
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  font-family: $font-family;
-  background-color: $bg-color;
-  color: $text-primary;
-  font-size: $font-size-base;
+  line-height: 1.5;              // 设置行高为字体大小的1.5倍，改善文本可读性
+  -webkit-font-smoothing: antialiased; // 启用字体抗锯齿渲染，使字体在WebKit浏览器中更清晰
+  font-family: $font-family;      // 设置页面默认字体族为项目定义的字体变量
+  background-color: $bg-color;    // 设置页面背景颜色为项目定义的背景色变量
+  color: $text-primary;           // 设置页面默认文字颜色为项目定义的主要文字颜色变量
+  font-size: $font-size-base;     // 设置页面默认字体大小为项目定义的基础字体大小变量
 }
 
 img,
@@ -23,15 +23,15 @@ picture,
 video,
 canvas,
 svg {
-  display: block;
-  max-width: 100%;
+  display: block;     /* 将这些元素设置为块级元素，使其独占一行 */
+  max-width: 100%;    /* 限制元素的最大宽度为父容器的100%，防止溢出 */
 }
 
 input,
 button,
 textarea,
 select {
-  font: inherit;
+  font: inherit;  /* 让这些表单元素继承父元素的字体样式，保持界面字体一致性 */
 }
 
 p,
@@ -41,82 +41,82 @@ h3,
 h4,
 h5,
 h6 {
-  overflow-wrap: break-word;
+  overflow-wrap: break-word; /* 允许长单词或URL在必要时换行，防止内容溢出容器 */
 }
 
-#app {
-  isolation: isolate;
-  min-height: 100vh;
+#app { //通常是整个应用程序的根容器元素
+  isolation: isolate;  /* 创建一个新的层叠上下文，避免子元素与外部元素产生层叠干扰 */
+  min-height: 100vh;   /* 设置最小高度为视口高度的100%，确保应用容器至少占满整个屏幕高度 */
 }
 
 // 通用工具类
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 $spacing-md;
+.container { //应用于需要限制最大宽度并居中的布局场景
+  max-width: 1200px;        /* 限制容器最大宽度为1200像素 */
+  margin: 0 auto;           /* 水平居中显示容器 */
+  padding: 0 $spacing-md;   /* 设置容器左右内边距为中等间距 */
 
-  @media (max-width: $breakpoint-sm) {
-    padding: 0 $spacing-sm;
+  @media (max-width: $breakpoint-sm) {  /* 在小屏幕设备上 */
+    padding: 0 $spacing-sm;             /* 使用较小的左右内边距 */
   }
 }
 
-.container-fluid {
-  width: 100%;
-  padding: 0 $spacing-md;
+.container-fluid { //应用于需要全宽度布局的场景
+  width: 100%;              /* 设置容器宽度为100%，占满父容器宽度 */
+  padding: 0 $spacing-md;   /* 设置容器左右内边距为中等间距 */
 
-  @media (max-width: $breakpoint-sm) {
-    padding: 0 $spacing-sm;
+  @media (max-width: $breakpoint-sm) {  /* 在小屏幕设备上 */
+    padding: 0 $spacing-sm;             /* 使用较小的左右内边距 */
   }
 }
 
-// 文本工具类
-.text-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+// 用于创建文本省略效果
+.text-ellipsis { //
+  overflow: hidden;        /* 隐藏超出容器范围的文本内容 */
+  text-overflow: ellipsis; /* 当文本溢出时显示省略号(...) */
+  white-space: nowrap;     /* 强制文本在一行内显示，不换行 */
 }
 
 .text-center {
-  text-align: center;
+  text-align: center;  /* 应用于需要将文本内容水平居中对齐的场景，如标题、按钮文字等 */
 }
 
 .text-left {
-  text-align: left;
+  text-align: left;    /* 应用于需要将文本内容左对齐的场景，如正文段落、列表内容等 */
 }
 
 .text-right {
-  text-align: right;
+  text-align: right;   /* 应用于需要将文本内容右对齐的场景，如日期、价格、导航菜单等 */
 }
 
 // 布局工具类
 .flex {
-  display: flex;
+  display: flex;  /* 启用弹性盒子布局，使容器内的子元素成为弹性项目 */
 }
 
 .flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex;           /* 启用弹性盒子布局，使容器内的子元素成为弹性项目 */
+  align-items: center;     /* 设置弹性项目在交叉轴上居中对齐 */
+  justify-content: center; /* 设置弹性项目在主轴上居中对齐 */
 }
 
-.flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.flex-between { // 需要创建两端对齐布局的场景
+  display: flex;               /* 启用弹性盒子布局，使容器内的子元素成为弹性项目 */
+  align-items: center;         /* 设置弹性项目在交叉轴上居中对齐 */
+  justify-content: space-between; /* 设置弹性项目在主轴上两端对齐，第一个项目靠起点，最后一个项目靠终点，中间项目平均分布剩余空间 */
 }
 
-.flex-around {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+.flex-around { // 需要创建均匀分布布局的场景
+  display: flex;               /* 启用弹性盒子布局，使容器内的子元素成为弹性项目 */
+  align-items: center;         /* 设置弹性项目在交叉轴上居中对齐 */
+  justify-content: space-around; /* 设置弹性项目在主轴上均匀分布，留出相等的空间 */
 }
 
-.flex-column {
-  flex-direction: column;
+.flex-column { // 需要创建垂直布局的场景
+  flex-direction: column; /* 设置弹性项目沿主轴垂直排列，从上到下 */
 }
 
 // 间距工具类
-.mt-1 {
+.mt-1 {  //设置上边距
   margin-top: $spacing-xs;
 }
 .mt-2 {
@@ -132,7 +132,7 @@ h6 {
   margin-top: $spacing-xl;
 }
 
-.mb-1 {
+.mb-1 { //设置下边距
   margin-bottom: $spacing-xs;
 }
 .mb-2 {
@@ -148,7 +148,7 @@ h6 {
   margin-bottom: $spacing-xl;
 }
 
-.p-1 {
+.p-1 { //设置内边距
   padding: $spacing-xs;
 }
 .p-2 {
@@ -166,28 +166,30 @@ h6 {
 
 // Element Plus 样式定制
 .el-button--primary {
-  background: $primary-color;
-  border-color: $primary-color;
+  background: $primary-color;      /* 设置主要按钮的背景颜色 */
+  border-color: $primary-color;    /* 设置主要按钮的边框颜色 */
 
   &:hover {
-    background: $primary-hover;
-    border-color: $primary-hover;
+    background: $primary-hover;    /* 设置鼠标悬停时按钮的背景颜色 */
+    border-color: $primary-hover;  /* 设置鼠标悬停时按钮的边框颜色 */
   }
 
   &:focus {
-    background: $primary-color;
-    border-color: $primary-color;
+    background: $primary-color;    /* 设置按钮获得焦点时的背景颜色 */
+    border-color: $primary-color;  /* 设置按钮获得焦点时的边框颜色 */
   }
 }
 
-.el-carousel__indicator {
+.el-carousel__indicator { //Element Plus 组件库中轮播图指示器样式的自定义调整
   padding: $spacing-xs;
 }
 
 // 响应式工具类
 .hidden-xs {
-  @media (max-width: $breakpoint-xs) {
-    display: none !important;
+  @media (max-width: $breakpoint-xs) {  /* 当屏幕宽度的最大宽度 小于或等于预定义的xs断点时 */
+    display: none !important;           /* 隐藏该元素，使用!important确保优先级 */
+    //display属性被设置为none，元素将不会在页面上显示，占据的空间也会被移除
+    //!important用于覆盖其他可能影响display属性的样式规则，确保该隐藏效果生效
   }
 }
 
@@ -204,10 +206,14 @@ h6 {
 }
 
 .visible-xs {
-  @media (min-width: ($breakpoint-xs + 1)) {
-    display: none !important;
+  @media (min-width: ($breakpoint-xs + 1)) {  /* 当屏幕最小宽度大于或等于预定义的xs断点时 */
+    display: none !important;                 /* 隐藏该元素，使用!important确保优先级 */
   }
 }
+//+1 是为了避免xs断点与sm断点重叠
+/*hidden-xs 使用 max-width: $breakpoint-xs，而 visible-xs 使用 min-width: ($breakpoint-xs + 1)，
+这样确保在 $breakpoint-xs 这个临界点上只有一个规则生效
+*/
 
 .visible-sm {
   @media (min-width: ($breakpoint-sm + 1)) {

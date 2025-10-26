@@ -27,14 +27,14 @@ $border-extra-light: #f2f6fc; // 最浅边框
 
 // 字体
 $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-$font-size-base: 14px;
-$font-size-small: 13px;
-$font-size-large: 16px;
+$font-size-base: 14px;   // 基础字体大小，用于常规文本内容
+$font-size-small: 13px;  // 小号字体大小，用于辅助性或次要文本内容
+$font-size-large: 16px;  // 大号字体大小，用于标题或需要强调的文本内容
 
 // 阴影
-$shadow-base: 0 2px 4px rgba(0, 0, 0, 0.12);
-$shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-$shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.15);
+$shadow-base: 0 2px 4px rgba(0, 0, 0, 0.12);    // 基础阴影效果，用于常规元素的轻微投影
+$shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.1);  // 轻量阴影效果，用于悬浮元素或卡片
+$shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.15);    // 深色阴影效果，用于模态框或重要元素的明显投影
 
 // 边框半径
 $border-radius-base: 4px;
@@ -43,32 +43,32 @@ $border-radius-round: 20px;
 $border-radius-circle: 100%;
 
 // 间距系统
-$spacing-base: 8px;
-$spacing-xs: $spacing-base * 0.5; // 4px
-$spacing-sm: $spacing-base * 1;   // 8px
-$spacing-md: $spacing-base * 2;   // 16px
-$spacing-lg: $spacing-base * 3;   // 24px
-$spacing-xl: $spacing-base * 4;   // 32px
-$spacing-xxl: $spacing-base * 6;  // 48px
+$spacing-base: 8px;              // 基础间距单位，用于构建统一的间距系统
+$spacing-xs: $spacing-base * 0.5; // 4px  极小间距，用于紧密排列的元素间距离
+$spacing-sm: $spacing-base * 1;   // 8px   小间距，用于相邻组件或文本的小间隔
+$spacing-md: $spacing-base * 2;   // 16px  中等间距，用于模块内部元素的标准距离
+$spacing-lg: $spacing-base * 3;   // 24px  大间距，用于模块间的分隔距离
+$spacing-xl: $spacing-base * 4;   // 32px  超大间距，用于页面主要区块间的距离
+$spacing-xxl: $spacing-base * 6;  // 48px  特大间距，用于页面顶部与主要内容间的距离
 
-// 响应式断点
-$breakpoint-xs: 480px;
-$breakpoint-sm: 768px;
-$breakpoint-md: 992px;
-$breakpoint-lg: 1200px;
-$breakpoint-xl: 1920px;
+// 响应式断点是指在CSS媒体查询中定义的特定屏幕宽度值，当屏幕尺寸达到这些临界点时，页面布局会发生相应的变化，以适应不同的设备屏幕
+$breakpoint-xs: 480px;   // 超小屏幕断点，适用于手机竖屏显示
+$breakpoint-sm: 768px;   // 小屏幕断点，适用于平板设备或手机横屏
+$breakpoint-md: 992px;   // 中等屏幕断点，适用于小尺寸桌面显示器
+$breakpoint-lg: 1200px;  // 大屏幕断点，适用于标准桌面显示器
+$breakpoint-xl: 1920px;  // 超大屏幕断点，适用于大尺寸高清显示器
 
 // 动画
-$transition-base: all 0.3s ease;
-$transition-fast: all 0.1s ease;
-$transition-slow: all 0.5s ease;
+$transition-base: all 0.3s ease;  // 基础 持续时间0.3秒
+$transition-fast: all 0.1s ease;  // 快速 持续时间0.1秒
+$transition-slow: all 0.5s ease;  // 慢速 持续时间0.5秒
 
-// Z-index 层级
-$z-index-dropdown: 1000;
-$z-index-sticky: 1020;
-$z-index-fixed: 1030;
-$z-index-modal-backdrop: 1040;
-$z-index-modal: 1050;
-$z-index-popover: 1060;
-$z-index-tooltip: 1070;
-$z-index-toast: 1080;
+// Z-index 层级是 CSS 中的一个重要概念，用于控制 HTML 元素在网页中的堆叠顺序，定义组件优先级
+$z-index-dropdown: 1000;        // 下拉菜单层级，用于普通下拉列表组件
+$z-index-sticky: 1020;          // 粘性定位元素层级，用于滚动时固定位置的元素
+$z-index-fixed: 1030;           // 固定定位元素层级，用于始终固定在视口某个位置的元素
+$z-index-modal-backdrop: 1040;  // 模态框背景遮罩层级，用于模态框显示时的半透明背景层
+$z-index-modal: 1050;           // 模态框内容层级，用于模态框主体内容，确保在遮罩之上
+$z-index-popover: 1060;         // 弹出框层级，用于气泡卡片或弹出提示框
+$z-index-tooltip: 1070;         // 工具提示层级，用于鼠标悬停时显示的简短提示信息
+$z-index-toast: 1080;           // 吐司提示层级，用于页面角落显示的通知消息

@@ -57,49 +57,49 @@
 // Footer 组件逻辑
 </script>
 <style scoped lang="scss">
-.app-footer {
+.app-footer { /* 底部整体样式 */
   background: $secondary-color;
   color: $text-placeholder;
   margin-top: auto;
 }
 
-.footer-content {
+.footer-content { /* 主内容区域样式 */
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 2fr; /* 两列布局，左侧1份宽度，右侧2份宽度 */
   gap: $spacing-xl;
   padding: $spacing-xl 0;
 
   @media (max-width: $breakpoint-md) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* 单列布局 */
     gap: $spacing-lg;
   }
 }
 
-.footer-section {
-  .footer-title {
+.footer-section { /* 关于我们区域样式 */
+  .footer-title { /* 标题样式 */
     color: $bg-white;
     font-size: 20px;
     font-weight: 700;
     margin-bottom: $spacing-md;
   }
 
-  .footer-desc {
+  .footer-desc { /* 描述文本样式 */
     line-height: 1.6;
     color: rgba($bg-white, 0.7);
   }
 }
 
-.footer-links {
+.footer-links { /* 链接区域样式 */
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr); /* 四列布局 */
   gap: $spacing-lg;
 
-  @media (max-width: $breakpoint-sm) {
-    grid-template-columns: repeat(2, 1fr);
+  @media (max-width: $breakpoint-sm) { /* 当屏幕宽度小于等于小型断点时应用以下样式 */
+    grid-template-columns: repeat(2, 1fr); /* 两列布局 */
   }
 }
 
-.link-group {
+.link-group { /* 每组链接的样式 */
   h4 {
     color: $bg-white;
     font-size: $font-size-base;
@@ -108,10 +108,10 @@
   }
 
   a {
-    display: block;
+    display: block; /* 使链接占据整行 */
     color: rgba($bg-white, 0.7);
     margin-bottom: $spacing-sm;
-    transition: $transition-base;
+    transition: $transition-base; /* 添加过渡效果 */
 
     &:hover {
       color: $primary-color;
@@ -120,13 +120,13 @@
 }
 
 .footer-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; /* 创建一个弹性布局容器 */
+  align-items: center; /* 垂直居中对齐 */
+  justify-content: space-between; /* 底部内容左右对齐 */
   padding: $spacing-lg 0;
   border-top: 1px solid rgba($bg-white, 0.1);
 
-  @media (max-width: $breakpoint-sm) {
+  @media (max-width: $breakpoint-sm) { /* 当屏幕宽度小于等于小型断点时应用以下样式 */
     flex-direction: column;
     gap: $spacing-md;
     text-align: center;
@@ -141,7 +141,7 @@
   display: flex;
   gap: $spacing-lg;
 
-  a {
+  a { /* 底部链接样式 */
     color: rgba($bg-white, 0.7);
     transition: $transition-base;
 

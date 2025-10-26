@@ -3,13 +3,21 @@
     <!-- 轮播图区域 -->
     <section class="banner-section">
       <div class="container">
+        <!--container 类通常由 CSS 框架（如 Bootstrap、Element UI 等）提供的一个类，用于创建响应式固定宽度容器，自动居中并带有左右内边距 -->
         <el-carousel
           height="400px"
           indicator-position="outside"
           :interval="5000"
           arrow="always"
         >
+        <!-- el-carousel 是 Element Plus 的轮播图容器组件 -->
+        <!-- indicator-position 设置指示器位置为外部，指示器会显示在轮播图内容区域的下方外部 -->
+        <!-- :interval 设置轮播间隔时间为 5000 毫秒，若为0则手动触发轮播 -->
+        <!-- arrow 设置箭头始终显示 -->
+
           <el-carousel-item v-for="item in banners" :key="item.id">
+          <!-- el-carousel-item 是 Element Plus 的轮播图子组件，v-for="item in banners" 遍历 banners 数组，key 为当前组件的索引 -->
+          <!--banners数组在 <script setup> 部分通过 ref 进行了定义：-->
             <div class="banner-item">
               <img
                 :src="item.image"
@@ -17,10 +25,12 @@
                 class="banner-image"
                 @error="handleBannerError"
               />
+              <!--@error 监听的是HTML <img> 元素的原生 error 事件,当图片加载失败（例如图片路径错误、网络问题等）时，该事件会被触发-->
               <div class="banner-content">
-                <h2 class="banner-title">{{ item.title }}</h2>
+                <h2 class="banner-title">{{ item.title }}</h2><!--{{  }}为动态内容绑定-->
                 <p class="banner-desc">{{ item.description }}</p>
                 <el-button type="primary" size="large" @click="handleBannerClick(item)">
+                  <!--handleBannerClick(item)为router.push(banner.link)-->
                   立即购票
                 </el-button>
               </div>
@@ -39,7 +49,7 @@
           </h2>
           <router-link to="/movies?type=hot" class="more-link">
             查看更多
-            <el-icon><ArrowRight /></el-icon>
+            <el-icon><ArrowRight /></el-icon><!-- 右箭头图标 -->
           </router-link>
         </div>
 
@@ -50,6 +60,7 @@
             class="movie-card"
             @click="goToMovieDetail(movie.id)"
           >
+            <!--点击电影卡片时跳转到电影详情页面-->
             <div class="movie-poster">
               <img
                 :src="movie.poster"
@@ -59,6 +70,8 @@
               <div class="movie-overlay">
                 <div class="movie-actions">
                   <el-button type="primary" size="small" @click.stop="handleBuyTicket(movie)">
+                  <!--当用户点击"购票"按钮时，如果不使用 .stop 修饰符，点击事件会继续向上传播到父元素 .movie-card
+                  ，从而同时触发 handleBuyTicket(movie) 和 goToMovieDetail(movie.id) 两个方法-->
                     <el-icon><Ticket /></el-icon>
                     购票
                   </el-button>
@@ -72,6 +85,7 @@
             </div>
             <div class="movie-info">
               <h3 class="movie-title text-ellipsis">{{ movie.title }}</h3>
+              <!--text-ellipsis 是 Element Plus 提供的类，用于实现文本省略功能，当文本长度超出容器宽度时，会自动截断并添加省略号。-->
               <p class="movie-rating">
                 <el-rate
                   v-model="movie.rating"
@@ -81,6 +95,14 @@
                   score-template="{value}"
                   size="small"
                 />
+                <!--el-rate 是 Element Plus 的评分组件，通过 v-model 接收这个评分值，并将其渲染为对应的星级显示
+                  v-model="movie.rating"     // 双向绑定评分值
+                  disabled                   // 设置为禁用状态，仅展示评分
+                  show-score                 // 显示具体评分数字
+                  text-color="#ff9900"       // 设置评分文字颜色为橙色
+                  score-template="{value}"   // 评分显示模板
+                  size="small"               // 设置组件大小为小号
+                -->
               </p>
               <p class="movie-genre">{{ movie.genre }}</p>
             </div>
@@ -136,7 +158,7 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router' // 导入 useRouter 用于路由跳转
 import { ElMessage } from 'element-plus'
 import {
   ArrowRight,
@@ -146,17 +168,18 @@ import {
 } from '@element-plus/icons-vue'
 
 defineOptions({ name: 'HomePage' })
+//明确指定组件的名称为 'HomePage'，组件会以 'HomePage' 的名称显示，而不是默认的文件名或匿名组件
 
-const router = useRouter()
+const router = useRouter() // 获取路由实例
 
 // 模拟数据 - 实际开发中从API获取
-const banners = ref([
+const banners = ref([ //ref创建响应式数据
   {
-    id: 1,
-    image: '/images/banner-1.jpg',
-    title: '年度科幻巨制',
-    description: '震撼视效，颠覆想象',
-    link: '/movie/1'
+    id: 1, // 轮播图项的唯一标识符
+    image: '/images/banner-1.jpg', // 轮播图图片的路径，即 public/images/banner-1.jpg
+    title: '年度科幻巨制', // 轮播图的标题
+    description: '震撼视效，颠覆想象', // 轮播图的描述信息
+    link: '/movie/1' // 点击轮播图后跳转的链接地址
   },
   {
     id: 2,
@@ -177,34 +200,34 @@ const banners = ref([
 const hotMovies = ref([
   {
     id: 1,
-    title: '星际穿越：时空之谜',
+    title: '创：战神',
     poster: '/images/poster-1.jpg',
     rating: 4.8,
-    genre: '科幻/冒险',
+    genre: '动作/冒险',
     isHot: true
   },
   {
     id: 2,
-    title: '城市之光',
+    title: '志愿军：浴血和平',
     poster: '/images/poster-2.jpg',
     rating: 4.6,
-    genre: '剧情/爱情',
+    genre: '剧情/战争',
     isHot: true
   },
   {
     id: 3,
-    title: '极限追捕',
+    title: '震耳欲聋',
     poster: '/images/poster-3.jpg',
     rating: 4.5,
-    genre: '动作/犯罪',
+    genre: '剧情/犯罪',
     isHot: true
   },
   {
     id: 4,
-    title: '奇幻森林',
+    title: '浪浪人生',
     poster: '/images/poster-4.jpg',
     rating: 4.7,
-    genre: '动画/冒险',
+    genre: '喜剧/家庭',
     isHot: true
   }
 ])
@@ -212,31 +235,31 @@ const hotMovies = ref([
 const upcomingMovies = ref([
   {
     id: 5,
-    title: '未来战争',
+    title: '暗杠',
     poster: '/images/poster-5.jpg',
-    genre: '科幻/动作',
-    releaseDate: '12月25日'
+    genre: '悬疑/惊悚',
+    releaseDate: '10月28日'
   },
   {
     id: 6,
-    title: '时光旅人',
+    title: '天鹰战士：最后的冲击',
     poster: '/images/poster-6.jpg',
-    genre: '爱情/奇幻',
-    releaseDate: '1月15日'
+    genre: '动画/冒险',
+    releaseDate: '10月31日'
   },
   {
     id: 7,
-    title: '深海探险',
+    title: '书香少年',
     poster: '/images/poster-7.jpg',
-    genre: '冒险/科幻',
-    releaseDate: '2月10日'
+    genre: '成长/亲情',
+    releaseDate: '10月31日'
   },
   {
     id: 8,
-    title: '喜剧之王2',
+    title: '不要错过你',
     poster: '/images/poster-8.jpg',
-    genre: '喜剧/剧情',
-    releaseDate: '1月30日'
+    genre: '爱情/剧情',
+    releaseDate: '11月07日'
   }
 ])
 
@@ -275,7 +298,6 @@ const goToMovieDetail = (movieId) => {
 
 const handleBuyTicket = (movie) => {
   ElMessage.success(`即将跳转到 ${movie.title} 的购票页面`)
-  // 实际开发中跳转到选座购票页面
 }
 
 const handleAddFavorite = (movie) => {
@@ -288,11 +310,11 @@ const handleRemind = (movie) => {
 </script>
 <style scoped lang="scss">
 .home-page {
-  padding-bottom: $spacing-xxl;
+  padding-bottom: $spacing-xxl; // 底部留白
 }
 
 .banner-section {
-  margin-bottom: $spacing-xxl;
+  margin-bottom: $spacing-xxl; // 底部留白
 }
 
 .banner-item {
@@ -331,84 +353,84 @@ const handleRemind = (movie) => {
 }
 
 .movie-section {
-  margin-bottom: $spacing-xxl;
+  margin-bottom: $spacing-xxl; /* 在每个电影板块底部添加超大号间距，确保板块之间有足够的垂直间隔，提升页面的层次感和可读性 */
 }
 
 .section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: $spacing-lg;
+  display: flex; /* 使用flex布局使标题和"查看更多"链接水平排列 */
+  align-items: center; /* 垂直居中对齐标题和链接，确保两者在垂直方向上居中 */
+  justify-content: space-between; /* 在主轴上两端对齐，标题在左侧，"查看更多"链接在右侧 */
+  margin-bottom: $spacing-lg; /* 在底部添加大号间距，与下方的电影网格保持适当距离 */
 }
 
 .section-title {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  font-size: 24px;
-  font-weight: 700;
-  color: $text-primary;
+  display: flex; /* 使用flex布局使标题文字和图标水平排列 */
+  align-items: center; /* 垂直居中对齐标题文字和图标 */
+  gap: $spacing-sm; /* 设置标题文字和图标之间的间距为小号间距 */
+  font-size: 24px; /* 设置标题字体大小为24px，使其醒目易读 */
+  font-weight: 700; /* 设置标题字体粗细为700，增强视觉重要性 */
+  color: $text-primary; /* 使用主要文本颜色，确保标题具有良好的可读性 */
 
   .title-icon {
-    font-size: 28px;
+    font-size: 28px; /* 设置图标字体大小为28px，使其与标题图标保持一致 */
   }
 }
 
 .more-link {
-  display: flex;
-  align-items: center;
-  gap: $spacing-xs;
-  color: $text-secondary;
-  font-weight: 500;
-  transition: $transition-base;
+  display: flex; // 使用flex布局使链接内的图标和文字水平排列
+  align-items: center; // 垂直居中对齐文字和图标
+  gap: $spacing-xs; // 设置文字和图标之间的间距为小号间距
+  color: $text-secondary; // 设置链接文字颜色为次要文本颜色
+  font-weight: 500; // 设置链接文字为中等字体粗细
+  transition: $transition-base; // 添加基础过渡动画效果，使颜色变化更平滑
 
   &:hover {
-    color: $primary-color;
+    color: $primary-color; // 鼠标悬停时将链接文字颜色更改为品牌主色
   }
 }
 
 .movie-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: $spacing-lg;
+  display: grid; // 使用CSS Grid布局来排列电影卡片
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); // 创建自适应列数的网格，每列最小宽度240px，最大占满剩余空间
+  gap: $spacing-lg; // 设置网格项之间的间距为大号间距
 
-  @media (max-width: $breakpoint-sm) {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: $spacing-md;
+  @media (max-width: $breakpoint-sm) { // 当屏幕宽度小于或等于小屏幕断点时应用以下样式
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); // 在小屏幕上使用更小的最小宽度160px
+    gap: $spacing-md; // 在小屏幕上使用中等间距
   }
 }
 
 .movie-card {
-  background: $bg-white;
-  border-radius: $border-radius-base;
-  overflow: hidden;
-  box-shadow: $shadow-base;
-  transition: $transition-base;
-  cursor: pointer;
+  background: $bg-white; // 设置电影卡片背景为白色，提供清晰的内容展示区域
+  border-radius: $border-radius-base; // 添加基础圆角，使卡片边缘更柔和美观
+  overflow: hidden; // 隐藏超出卡片边界的内容，确保圆角效果正常显示
+  box-shadow: $shadow-base; // 添加基础阴影效果，使卡片具有立体感和层次感
+  transition: $transition-base; // 添加基础过渡动画，使hover效果更平滑
+  cursor: pointer; // 设置鼠标悬停时显示手型光标，提示用户该区域可点击
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: $shadow-light;
+    transform: translateY(-4px); // 鼠标悬停时向上轻微移动4px，产生悬浮效果
+    box-shadow: $shadow-light; // 悬停时使用更浅的阴影，增强悬浮感
 
     .movie-overlay {
-      opacity: 1;
+      opacity: 1; // 显示电影海报上的操作按钮覆盖层
     }
 
     .poster-image {
-      transform: scale(1.05);
+      transform: scale(1.05); // 海报图片轻微放大1.05倍，产生聚焦效果
     }
   }
 
   &.coming-soon {
     .movie-poster::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: 1;
+      content: ''; // 创建伪元素内容为空
+      position: absolute; // 设置绝对定位覆盖整个海报区域
+      top: 0; // 顶部对齐
+      left: 0; // 左侧对齐
+      right: 0; // 右侧对齐
+      bottom: 0; // 底部对齐
+      background: rgba(0, 0, 0, 0.3); // 添加半透明黑色遮罩，使"即将上映"信息更突出
+      z-index: 1; // 设置层级在海报图片之上
     }
   }
 }
@@ -441,21 +463,21 @@ const handleRemind = (movie) => {
   }
 
   .movie-actions {
-    display: flex;
-    gap: $spacing-sm;
-    flex-direction: column;
+    display: flex; /* 使用flex布局来排列按钮，使购票和收藏按钮垂直排列 */
+    gap: $spacing-sm; /* 设置按钮之间的间距为小号间距，提供合适的视觉间隔 */
+    flex-direction: column; /* 设置主轴方向为垂直方向，使按钮从上到下排列 */
   }
 
   .hot-badge {
-    position: absolute;
-    top: $spacing-sm;
-    left: $spacing-sm;
-    background: $danger-color;
-    color: $bg-white;
-    padding: $spacing-xs $spacing-sm;
-    border-radius: $border-radius-small;
-    font-size: $font-size-small;
-    font-weight: 600;
+    position: absolute; /* 使用绝对定位，使热映标签相对于其最近的定位祖先元素(movie-poster)进行定位 */
+    top: $spacing-sm; /* 距离顶部间距为小号间距，确保标签不会紧贴边缘 */
+    left: $spacing-sm; /* 距离左侧间距为小号间距，确保标签不会紧贴边缘 */
+    background: $danger-color; /* 使用危险色(通常是红色)作为背景色，突出显示热门标识 */
+    color: $bg-white; /* 文字颜色设为白色，与红色背景形成对比，提高可读性 */
+    padding: $spacing-xs $spacing-sm; /* 内边距设置为水平小号间距、垂直超小间距，给文字提供合适的空间 */
+    border-radius: $border-radius-small; /* 添加小圆角，使标签边缘更加圆润美观 */
+    font-size: $font-size-small; /* 使用小号字体大小，避免标签过大影响海报展示 */
+    font-weight: 600; /* 字体粗细设为600，使文字更加醒目易读 */
   }
 
   .release-date {
@@ -471,23 +493,23 @@ const handleRemind = (movie) => {
 }
 
 .movie-info {
-  padding: $spacing-md;
+  padding: $spacing-md; /* 为电影信息区域添加中等间距的内边距，使内容与卡片边缘保持适当距离 */
 
   .movie-title {
-    font-size: $font-size-large;
-    font-weight: 600;
-    margin-bottom: $spacing-xs;
-    color: $text-primary;
+    font-size: $font-size-large; /* 使用大号字体显示电影标题，使其更加醒目易于识别 */
+    font-weight: 600; /* 设置字体粗细为600，增强标题的视觉重要性 */
+    margin-bottom: $spacing-xs; /* 在标题下方添加小号间距，与评分信息保持适当距离 */
+    color: $text-primary; /* 使用主要文本颜色，确保标题具有良好的可读性 */
   }
 
   .movie-rating {
-    margin-bottom: $spacing-xs;
+    margin-bottom: $spacing-xs; /* 在评分组件下方添加小号间距，与类型信息保持适当距离 */
   }
 
   .movie-genre {
-    color: $text-secondary;
-    font-size: $font-size-small;
-    margin: 0;
+    color: $text-secondary; /* 使用次要文本颜色显示电影类型，使其不那么突出但仍然清晰可见 */
+    font-size: $font-size-small; /* 使用小号字体显示电影类型，避免与标题竞争视觉注意力 */
+    margin: 0; /* 移除默认外边距，确保类型信息紧贴在评分下方 */
   }
 }
 
