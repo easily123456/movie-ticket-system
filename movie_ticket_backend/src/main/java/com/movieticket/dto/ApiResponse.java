@@ -4,6 +4,7 @@ package com.movieticket.dto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 public class ApiResponse<T> {
@@ -43,4 +44,12 @@ public class ApiResponse<T> {
         response.setCode(code);
         return response;
     }
+
+    public static <T> ApiResponse<T> error(String code, String message,T errors) {
+        ApiResponse<T> response = new ApiResponse<>(false, message, null);
+        response.setCode(code);
+        response.setData(errors);
+        return response;
+    }
+
 }

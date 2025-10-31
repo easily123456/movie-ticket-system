@@ -16,4 +16,7 @@ public interface GenreService {
     Page<Genre> searchGenres(String keyword, Pageable pageable);
     Genre changeGenreStatus(Long id, Boolean status);
     boolean existsByName(String name);
+    Page<Genre> getGenresByStatus(Boolean status, Pageable pageable);
+    void batchDeleteGenres(List<Long> genreIds);
+    void batchChangeGenreStatus(List<Long> genreIds, Boolean status);
 }

@@ -91,7 +91,7 @@
                   v-model="movie.rating"
                   disabled
                   show-score
-                  text-color="#ff9900"
+                  text-color="#e6a23c"
                   score-template="{value}"
                   size="small"
                 />

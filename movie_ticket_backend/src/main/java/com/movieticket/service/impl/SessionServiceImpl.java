@@ -1,22 +1,33 @@
 package com.movieticket.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.movieticket.dto.response.session.SessionDetailResponse;
+import com.movieticket.entity.Order;
 import com.movieticket.entity.Session;
 import com.movieticket.entity.Movie;
 import com.movieticket.entity.Hall;
+import com.movieticket.repository.OrderRepository;
 import com.movieticket.repository.SessionRepository;
 import com.movieticket.service.SessionService;
 import com.movieticket.service.MovieService;
 import com.movieticket.service.HallService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -25,6 +36,8 @@ public class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
     private final MovieService movieService;
     private final HallService hallService;
+    private final OrderRepository orderRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Session createSession(Session session) {
@@ -151,5 +164,191 @@ public class SessionServiceImpl implements SessionService {
     @Transactional(readOnly = true)
     public long getUpcomingSessionCount() {
         return sessionRepository.countUpcomingSessions(LocalDateTime.now());
+    }
+
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Session> searchSessionsByMovie(String movieKeyword, Pageable pageable) {
+        return sessionRepository.findByMovieTitleContainingIgnoreCase(movieKeyword, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Session> getSessionsByHall(Long hallId, Pageable pageable) {
+        return sessionRepository.findByHallId(hallId, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Session> getSessionsByDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+        return sessionRepository.findByStartTimeBetween(startDateTime, endDateTime, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Session> getSessionsByStatus(Boolean status, Pageable pageable) {
+        return sessionRepository.findByStatus(status, pageable);
+    }
+
+
+    @Override
+    public void batchDeleteSessions(List<Long> sessionIds) {
+        for (Long id : sessionIds) {
+            deleteSession(id);
+        }
+    }
+
+    @Override
+    public void batchChangeSessionStatus(List<Long> sessionIds, boolean status) {
+        List<Session> sessions = sessionRepository.findAllById(sessionIds);
+        for (Session session : sessions) {
+            // 检查是否可以取消
+            if (!status && session.getBookedSeats() > 0) {
+                continue; // 跳过有订单的场次
+            }
+            session.setStatus(status);
+            session.setUpdateTime(LocalDateTime.now());
+        }
+        sessionRepository.saveAll(sessions);
+    }
+
+
+
+
+
+    // 获取场次详情（包含座位信息）
+    @Transactional(readOnly = true)
+    @Override
+    public SessionDetailResponse getSessionDetail(Long sessionId) {
+        Optional<Session> sessionOpt = sessionRepository.findById(sessionId);
+        if (sessionOpt.isEmpty()) {
+            throw new RuntimeException("场次不存在");
+        }
+
+        Session session = sessionOpt.get();
+        SessionDetailResponse response = new SessionDetailResponse();
+
+        // 基础信息
+        response.setId(session.getId());
+        response.setMovieId(session.getMovie().getId());
+        response.setMovieTitle(session.getMovie().getTitle());
+        response.setMoviePoster(session.getMovie().getPosterUrl());
+        response.setMovieDuration(session.getMovie().getDuration());
+        response.setHallId(session.getHall().getId());
+        response.setHallName(session.getHall().getName());
+        response.setHallCapacity(session.getHall().getCapacity());
+        response.setStartTime(session.getStartTime());
+        response.setEndTime(session.getEndTime());
+        response.setPrice(session.getPrice());
+        response.setAvailableSeats(session.getAvailableSeats());
+        response.setBookedSeats(session.getBookedSeats());
+        response.setStatus(session.getStatus());
+
+        // 座位布局
+        try {
+            Map<String, Object> seatLayout = objectMapper.readValue(
+                    session.getHall().getSeatLayout(),
+                    Map.class
+            );
+            response.setSeatLayout(seatLayout);
+        } catch (Exception e) {
+            log.error("解析座位布局失败", e);
+            response.setSeatLayout(new HashMap<>());
+        }
+
+        // 获取已预订座位
+        List<String> bookedSeats = getBookedSeatsForSession(sessionId);
+        response.setBookedSeatNumbers(bookedSeats);
+
+        // 获取锁定座位（15分钟内未支付的订单）
+        List<String> lockedSeats = getLockedSeatsForSession(sessionId);
+        response.setLockedSeatNumbers(lockedSeats);
+
+        return response;
+    }
+
+    // 获取场次已预订座位
+    @Transactional(readOnly = true)
+    @Override
+    public List<String> getBookedSeatsForSession(Long sessionId) {
+        List<Order> orders = orderRepository.findBySessionIdAndStatus(sessionId, Order.OrderStatus.PAID);
+        return orders.stream()
+                .flatMap(order -> {
+                    try {
+                        List<String> seats = objectMapper.readValue(
+                                order.getSeatNumbers(),
+                                new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {}
+                        );
+                        return seats.stream();
+                    } catch (Exception e) {
+                        log.error("解析座位号失败: {}", order.getSeatNumbers(), e);
+                        return Stream.empty();
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    // 获取锁定座位（待支付订单）
+    @Transactional(readOnly = true)
+    @Override
+    public List<String> getLockedSeatsForSession(Long sessionId) {
+        LocalDateTime fifteenMinutesAgo = LocalDateTime.now().minusMinutes(15);
+        List<Order> orders = orderRepository.findBySessionIdAndStatusAndCreateTimeAfter(
+                sessionId, Order.OrderStatus.PENDING, fifteenMinutesAgo);
+
+        return orders.stream()
+                .flatMap(order -> {
+                    try {
+                        List<String> seats = objectMapper.readValue(
+                                order.getSeatNumbers(),
+                                new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {}
+                        );
+                        return seats.stream();
+                    } catch (Exception e) {
+                        log.error("解析座位号失败: {}", order.getSeatNumbers(), e);
+                        return Stream.empty();
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    // 检查座位是否可用
+    @Transactional(readOnly = true)
+    @Override
+    public boolean checkSeatAvailability(Long sessionId, List<String> seatNumbers) {
+        SessionDetailResponse sessionDetail = getSessionDetail(sessionId);
+
+        // 检查座位是否已被预订
+        for (String seat : seatNumbers) {
+            if (sessionDetail.getBookedSeatNumbers().contains(seat)) {
+                return false;
+            }
+            if (sessionDetail.getLockedSeatNumbers().contains(seat)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // 更新场次座位信息
+    @Override
+    public void updateSessionSeats(Long sessionId, int seatCount, boolean isBooking) {
+        Optional<Session> sessionOpt = sessionRepository.findById(sessionId);
+        if (sessionOpt.isPresent()) {
+            Session session = sessionOpt.get();
+            if (isBooking) {
+                session.setBookedSeats(session.getBookedSeats() + seatCount);
+                session.setAvailableSeats(session.getAvailableSeats() - seatCount);
+            } else {
+                session.setBookedSeats(session.getBookedSeats() - seatCount);
+                session.setAvailableSeats(session.getAvailableSeats() + seatCount);
+            }
+            sessionRepository.save(session);
+        }
     }
 }

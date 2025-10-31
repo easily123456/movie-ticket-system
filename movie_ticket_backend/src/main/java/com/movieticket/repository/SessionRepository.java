@@ -20,9 +20,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
     List<Session> findByStartTimeBetweenAndStatusTrue(LocalDateTime start, LocalDateTime end);
 
-    @Query("SELECT s FROM Session s WHERE s.movie.id = :movieId AND s.status = true AND s.startTime >= :startTime ORDER BY s.startTime")
-    List<Session> findUpcomingSessionsByMovie(@Param("movieId") Long movieId, @Param("startTime") LocalDateTime startTime);
-
     @Query("SELECT s FROM Session s WHERE s.hall.id = :hallId AND s.status = true AND " +
             "((s.startTime BETWEEN :startTime AND :endTime) OR (s.endTime BETWEEN :startTime AND :endTime))")
     List<Session> findConflictingSessions(@Param("hallId") Long hallId,
@@ -36,4 +33,45 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
     @Query("SELECT COUNT(s) FROM Session s WHERE s.status = true AND s.startTime >= :startTime")
     long countUpcomingSessions(@Param("startTime") LocalDateTime startTime);
+    
+    @Query("SELECT COUNT(s) FROM Session s WHERE s.movie.id = :movieId")
+    long countByMovieId(@Param("movieId") Long movieId);
+
+
+
+    Page<Session> findByMovieTitleContainingIgnoreCase(String movieTitle, Pageable pageable);
+
+    Page<Session> findByHallId(Long hallId, Pageable pageable);
+
+    Page<Session> findByStartTimeBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+
+    @Query("SELECT s FROM Session s WHERE " +
+            "s.hall.id = :hallId AND " +
+            "s.status = true AND " +
+            "((s.startTime BETWEEN :startTime AND :endTime) OR " +
+            "(s.endTime BETWEEN :startTime AND :endTime) OR " +
+            "(s.startTime <= :startTime AND s.endTime >= :endTime)) AND " +
+            "(:excludeId IS NULL OR s.id != :excludeId)")
+    List<Session> findConflictingSessions(
+            @Param("hallId") Long hallId,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime,
+            @Param("excludeId") Long excludeId);
+
+
+
+    // 获取电影的未来场次
+    @Query("SELECT s FROM Session s WHERE s.movie.id = :movieId AND s.startTime > :now AND s.status = true ORDER BY s.startTime ASC")
+    List<Session> findUpcomingSessionsByMovie(@Param("movieId") Long movieId, @Param("now") LocalDateTime now);
+
+    // 获取日期范围内的场次
+    @Query("SELECT s FROM Session s WHERE DATE(s.startTime) = DATE(:date) AND s.status = true ORDER BY s.startTime ASC")
+    List<Session> findSessionsByDate(@Param("date") LocalDateTime date);
+
+    // 获取热门场次（预订量高的）
+    @Query("SELECT s FROM Session s WHERE s.startTime > :now AND s.status = true ORDER BY s.bookedSeats DESC")
+    Page<Session> findPopularSessions(@Param("now") LocalDateTime now, Pageable pageable);
+
+    Long countByStartTimeAfterAndStatus(LocalDateTime now, boolean b);
 }

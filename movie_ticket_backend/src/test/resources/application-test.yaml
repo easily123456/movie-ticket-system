@@ -29,3 +29,9 @@ app:
 file:
   upload-dir: ./uploads/ #上传文件在服务器上的本地存储目录
   access-path: /uploads/** #客户端访问上传文件的 URL 模式
+
+# JWT配置
+jwt:
+  secret: movie-ticket-system-secret-key-2024-spring-boot-3-jwt-token-for-authentication #生成和验证 JWT 签名的密钥
+  expiration: 86400000  # 24小时
+  header: Authorization #指定客户端发送 Token 的 HTTP 请求头名称

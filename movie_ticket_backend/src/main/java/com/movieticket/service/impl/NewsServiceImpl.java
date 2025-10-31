@@ -114,4 +114,107 @@ public class NewsServiceImpl implements NewsService {
     public long getActiveNewsCount() {
         return newsRepository.countActiveNews();
     }
+
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<News> searchNewsByTitle(String title, Pageable pageable) {
+        return newsRepository.findByTitleContainingIgnoreCase(title, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<News> searchNewsByAuthor(String author, Pageable pageable) {
+        return newsRepository.findByAuthorContainingIgnoreCase(author, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<News> getNewsByStatus(Integer status, Pageable pageable) {
+        return newsRepository.findByStatus(status == 1 ? true : false, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<News> getNewsByTopStatus(Integer isTop, Pageable pageable) {
+        return newsRepository.findByIsTop(isTop == 1 ? true : false, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<News> getNewsByDateRange(LocalDateTime start, LocalDateTime end, Pageable pageable) {
+        return newsRepository.findByCreateTimeBetween(start, end, pageable);
+    }
+
+    @Override
+    public News setNewsTop(Long id, Boolean isTop) {
+        Optional<News> newsOpt = newsRepository.findById(id);
+        if (newsOpt.isEmpty()) {
+            throw new RuntimeException("资讯不存在");
+        }
+
+        News news = newsOpt.get();
+        news.setIsTop(isTop ? true : false);
+        news.setUpdateTime(LocalDateTime.now());
+
+        return newsRepository.save(news);
+    }
+
+    @Override
+    public void batchDeleteNews(List<Long> newsIds) {
+        newsRepository.deleteAllById(newsIds);
+    }
+
+    @Override
+    public void batchPublishNews(List<Long> newsIds) {
+        List<News> newsList = newsRepository.findAllById(newsIds);
+        for (News news : newsList) {
+            news.setStatus(true);
+            if (news.getPublishTime() == null) {
+                news.setPublishTime(LocalDateTime.now());
+            }
+            news.setUpdateTime(LocalDateTime.now());
+        }
+        newsRepository.saveAll(newsList);
+    }
+
+    @Override
+    public void batchSetNewsTop(List<Long> newsIds, Boolean isTop) {
+        List<News> newsList = newsRepository.findAllById(newsIds);
+        for (News news : newsList) {
+            news.setIsTop(isTop ? true : false);
+            news.setUpdateTime(LocalDateTime.now());
+        }
+        newsRepository.saveAll(newsList);
+    }
+
+    @Override
+    public News publishNews(Long id) {
+        Optional<News> newsOpt = newsRepository.findById(id);
+        if (newsOpt.isEmpty()) {
+            throw new RuntimeException("资讯不存在");
+        }
+
+        News news = newsOpt.get();
+        news.setStatus(true);
+        news.setPublishTime(LocalDateTime.now());
+        news.setUpdateTime(LocalDateTime.now());
+
+        return newsRepository.save(news);
+    }
+
+    @Override
+    public News unpublishNews(Long id) {
+        Optional<News> newsOpt = newsRepository.findById(id);
+        if (newsOpt.isEmpty()) {
+            throw new RuntimeException("资讯不存在");
+        }
+
+        News news = newsOpt.get();
+        news.setStatus(false);
+        news.setUpdateTime(LocalDateTime.now());
+
+        return newsRepository.save(news);
+    }
 }

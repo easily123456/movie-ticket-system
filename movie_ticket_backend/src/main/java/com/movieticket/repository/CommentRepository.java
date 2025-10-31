@@ -32,4 +32,13 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     long countByMovie(@Param("movieId") Long movieId);
 
     Page<Comment> findByStatus(Boolean status, Pageable pageable);
+    
+    // 用户评论统计相关方法
+    long countByUser(User user);
+    
+    @Query("SELECT AVG(c.rating) FROM Comment c WHERE c.user = :user AND c.status = true")
+    Double findAverageRatingByUser(@Param("user") User user);
+    
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.movie.id = :movieId AND c.status = true")
+    long countByMovieId(@Param("movieId") Long movieId);
 }

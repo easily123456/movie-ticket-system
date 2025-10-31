@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,4 +26,13 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
     Page<Genre> searchGenres(String keyword, Pageable pageable);
 
     long countByStatus(Boolean status);
+
+    // 管理端查询方法
+    Page<Genre> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
+
+    @Query("SELECT COUNT(m) FROM Movie m WHERE m.genre.id = :genreId")
+    long countMoviesByGenreId(@Param("genreId") Long genreId);
+
+
 }

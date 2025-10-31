@@ -72,55 +72,33 @@
         <!-- 用户操作 -->
         <div class="user-actions">
           <template v-if="authStore.isAuthenticated"> <!-- 如果用户已登录，显示用户操作项 -->
-            <el-dropdown trigger="click" @command="handleUserCommand">
-              <!-- el-dropdown为Element Plus的下拉菜单组件，trigger="click"表示点击触发下拉菜单，
-                   @command="handleUserCommand"监听菜单项选择事件，触发handleUserCommand方法 -->
-              <div class="user-info">
-                <el-avatar
-                  :size="36"
-                  :src="authStore.userInfo?.avatar"
-                  class="user-avatar"
-                >
-                <!-- <el-avatar Element Plus提供的头像展示组件
-                  :size="36" 设置头像尺寸为36px，Vue开发中推荐对所有非字符串属性使用:绑定
-                  :src="authStore.userInfo?.avatar" 绑定头像图片的URL，使用可选链操作符防止未定义错误，
-                    如果 userInfo 不存在，则整个表达式返回 undefined 而不抛出异常
-                  class="user-avatar" CSS类名，用于设置头像的样式
-                > -->
-                  {{ authStore.userInfo?.username?.charAt(0) }}
-                  <!-- 显示用户名的首字母作为头像的替代文本，优先显示图片，如果没有图片，则显示用户名的首字母 -->
-                </el-avatar>
-                <span class="username hidden-xs">{{ authStore.userInfo?.username }}</span>
-                <!-- 应用两个类username和hidden-xs，分别用于设置用户名样式，隐藏xs屏幕下的用户名 -->
-                <!-- 通过插值表达式 {{ authStore.userInfo?.username }} 动态显示用户名 -->
-                <el-icon><ArrowDown /></el-icon><!-- 下拉箭头图标(↓) -->
-              </div>
-              <template #dropdown><!-- 当用户点击 el-dropdown 触发区域时，#dropdown 插槽中的内容会作为下拉菜单显示出来 -->
-                <el-dropdown-menu><!-- el-dropdown-menu 为 Element Plus 提供的下拉菜单容器组件 -->
-                  <el-dropdown-item command="profile"> <!-- el-dropdown-item 为 Element Plus 提供的下拉菜单项组件，
-                    command="profile" 设置菜单项的命令标识符为"profile"，用于区分不同的菜单项 -->
-                    <el-icon><User /></el-icon><!-- 用户图标(👤) -->
+            <!-- 在用户登录部分添加 -->
+            <el-dropdown @command="handleUserCommand">
+              <span class="user-menu">
+                <el-avatar :size="32" :src="authStore.user?.avatar" />
+                <span class="username">{{ authStore.user?.username }}</span>
+                <el-icon><arrow-down /></el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="profile">
+                    <el-icon><User /></el-icon>
                     个人中心
                   </el-dropdown-item>
                   <el-dropdown-item command="orders">
-                    <el-icon><Document /></el-icon><!-- 文档图标(📄) -->
+                    <el-icon><Ticket /></el-icon>
                     我的订单
                   </el-dropdown-item>
-                  <el-dropdown-item command="favorites" divided>
-                    <el-icon><Star /></el-icon><!-- 星形图标(⭐) -->
+                  <el-dropdown-item command="comments">
+                    <el-icon><ChatDotRound /></el-icon>
+                    我的评论
+                  </el-dropdown-item>
+                  <el-dropdown-item command="favorites">
+                    <el-icon><Star /></el-icon>
                     我的收藏
                   </el-dropdown-item>
-                  <el-dropdown-item
-                    v-if="authStore.isAdmin"
-                    command="admin"
-                    divided
-                  >
-                  <!-- divided 属性表示添加一条分隔线，分隔线将菜单项与下一个菜单项隔开 -->
-                    <el-icon><Monitor /></el-icon> <!-- 监视器图标(🖥️) -->
-                    管理后台
-                  </el-dropdown-item>
-                  <el-dropdown-item command="logout" divided>
-                    <el-icon><SwitchButton /></el-icon> <!-- 退出图标(⏻) -->
+                  <el-dropdown-item divided command="logout">
+                    <el-icon><SwitchButton /></el-icon>
                     退出登录
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -149,13 +127,16 @@ import { useRouter } from 'vue-router'
 import {
   Search,
   User,
-  Document,
+  // Document,
   Star,
-  Monitor,
+  // Monitor,
   SwitchButton,
-  ArrowDown
+  ArrowDown,
+  Ticket,
+  ChatDotRound
 } from '@element-plus/icons-vue' // 引入Element Plus图标组件
 import { useAuthStore } from '@/stores/auth'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 const router = useRouter() // 获取路由实例，用于编程式导航
 const authStore = useAuthStore() // 获取认证状态的store实例
@@ -193,28 +174,63 @@ const hideSuggestions = () => { // 延迟200ms后隐藏搜索建议，防止点�
   }, 200)
 }
 
-const handleUserCommand = (command) => {
+const handleUserCommand = async (command) => {
   switch (command) {
     case 'profile':
-      router.push('/profile')
+      router.push('/user')
       break
     case 'orders':
-      router.push('/orders')
+      router.push('/user/orders')
+      break
+    case 'comments':
+      router.push('/user/comments')
       break
     case 'favorites':
-      router.push('/favorites')
+      router.push('/user/favorites')
       break
     case 'admin':
       window.open('/admin', '_blank')// window.open是浏览器的内置方法，用于在新标签页打开管理后台
       break
     case 'logout':
-      authStore.logout()
-      router.push('/')
+      try {
+        await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        await authStore.logout()
+        router.push('/')
+        ElMessage.success('退出成功')
+      } catch (error) {
+        // 用户取消操作或出现其他错误
+        if (error !== 'cancel') {
+          ElMessage.error('退出登录失败')
+        }
+      }
       break
   }
 }
 </script>
 <style scoped lang="scss">//scoped表示当前样式只对当前组件生效，不与全局样式冲突，lang="scss"表示使用SCSS预处理器编写样式
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: $bg-color;
+  }
+
+  .username {
+    font-size: 14px;
+    color: $text-primary;
+  }
+}
+
 .app-header {
   background: $bg-white; /* 应用白色背景色，确保头部与页面背景一致 */
   box-shadow: $shadow-base; /* 添加基础阴影效果，使头部在页面滚动时有立体感 */
@@ -314,29 +330,6 @@ const handleUserCommand = (command) => {
 
 .user-actions {
   flex-shrink: 0;  /* 防止用户信息在flex容器中被压缩，确保用户信息始终完整显示 */
-}
-
-.user-info { /* 用户信息 */
-  display: flex; /* 使用flex布局，使用户信息水平排列并便于对齐 */
-  align-items: center; /* 垂直居中对齐用户信息 */
-  gap: $spacing-sm; /* 设置用户信息各元素之间的间距 */
-  padding: $spacing-xs $spacing-sm; /* 设置用户信息内边距 */
-  border-radius: $border-radius-base; /* 设置用户信息边框圆角 */
-  cursor: pointer; /* 设置鼠标悬停时的光标样式为指针，表示该区域可点击 */
-  transition: $transition-base; /* 设置过渡效果 */
-
-  &:hover {
-    background: $bg-gray; /* 设置鼠标悬停时的背景色 */
-  }
-
-  .user-avatar {
-    background: $primary-color; /* 设置头像背景色为主题色 */
-  }
-
-  .username {
-    font-weight: 500; /* 设置用户名字体粗细 */
-    color: $text-primary; /* 设置用户名颜色 */
-  }
 }
 
 .auth-buttons {

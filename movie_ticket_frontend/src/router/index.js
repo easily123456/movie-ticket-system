@@ -1,99 +1,254 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     component: () => import('@/views/front/Home.vue'),
-    meta: {
-      title: '星光影城 - 在线电影票务平台',
-      keepAlive: true,//用于启用 Vue 的 <keep-alive> 组件缓存机制
-    },
-  },
-  {
-    path: '/movies',
-    name: 'MovieList',
-    component: () => import('@/views/front/movies/MovieList.vue'),
-    meta: {
-      title: '电影列表 - 星光影城',
-      keepAlive: true,
-    },
-  },
-  {
-    path: '/movie/:id',
-    name: 'MovieDetail',
-    component: () => import('@/views/front/movies/MovieDetail.vue'),
-    meta: {
-      title: '电影详情 - 星光影城',
-    },
+    meta: { title: '首页' }
   },
   {
     path: '/login',
-    name: 'Login',
+    name: 'login',
     component: () => import('@/views/front/auth/Login.vue'),
     meta: {
-      title: '用户登录 - 星光影城',
-      requiresGuest: true,
-    },
+      title: '登录',
+      guestOnly: true // 仅游客可访问
+    }
   },
   {
     path: '/register',
-    name: 'Register',
+    name: 'register',
     component: () => import('@/views/front/auth/Register.vue'),
     meta: {
-      title: '用户注册 - 星光影城',
-      requiresGuest: true,
-    },
+      title: '注册',
+      guestOnly: true
+    }
+  },
+  {
+    path: '/movies',
+    name: 'movies',
+    component: () => import('@/views/front/movies/MovieList.vue'),
+    meta: { title: '电影列表' }
+  },
+  {
+    path: '/movies/:id',
+    name: 'movie-detail',
+    component: () => import('@/views/front/movies/MovieDetail.vue'),
+    meta: { title: '电影详情' }
+  },
+  {
+    path: '/movie/:id/sessions',
+    name: 'MovieSessions',
+    component: () => import('@/views/front/movies/MovieSessions.vue')
   },
   {
     path: '/search',
     name: 'MovieSearch',
-    component: () => import('@/views/front/movies/MovieSearch.vue'),
-    meta: {
-      title: '电影搜索 - 星光影城',
-    },
+    component: () => import('@/views/front/movies/MovieSearch.vue')
   },
   {
-    path: '/:pathMatch(.*)*', // 匹配所有未定义的路由路径，使用 pathMatch 捕获任意路径
-    name: 'NotFound', // 路由名称为 NotFound
-    component: () => import('@/views/front/NotFound.vue'), // 动态导入 404 页面组件
+    path: '/booking/:sessionId',
+    name: 'booking',
+    component: () => import('@/views/front/orders/SelectSeats.vue'),
     meta: {
-      // 路由元信息配置
-      title: '页面未找到 - 星光影城', // 设置页面标题
-    },
+      title: '选座购票',
+      requiresAuth: true // 需要登录
+    }
   },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('@/views/front/user/Profile.vue'),
+    meta: {
+      title: '个人中心',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/orders',
+    name: 'orders',
+    component: () => import('@/views/front/orders/OrderList.vue'),
+    meta: {
+      title: '我的订单',
+      requiresAuth: true
+    }
+  },
+  // {
+  //   path: '/movie/:id/sessions',
+  //   name: 'MovieSessions',
+  //   component: () => import('@/views/front/MovieSessions.vue')
+  // },
+  {
+    path: '/session/:sessionId/select-seats',
+    name: 'SelectSeats',
+    component: () => import('@/views/front/SelectSeats.vue')
+  },
+  {
+    path: '/order/create',
+    name: 'CreateOrder',
+    component: () => import('@/views/front/CreateOrder.vue')
+  },
+  {
+    path: '/order/:orderId',
+    name: 'OrderDetail',
+    component: () => import('@/views/front/OrderDetail.vue')
+  },
+  
+  // 用户相关路由
+  {
+    path: '/user',
+    name: 'UserCenter',
+    component: () => import('@/views/front/UserCenter.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/user/comments',
+    name: 'UserComments',
+    component: () => import('@/views/front/user/Comments.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/user/favorites',
+    name: 'UserFavorites',
+    component: () => import('@/views/front/user/Favorites.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/user/orders',
+    name: 'OrderList',
+    component: () => import('@/views/front/OrderList.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/user/profile',
+    name: 'UserProfile',
+    component: () => import('@/views/front/user/Profile.vue'),
+    meta: { requiresAuth: true }
+  },
+
+  // 管理员路由
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('@/layouts/AdminLayout.vue'),
+    redirect: '/admin/dashboard',
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true // 需要管理员权限
+    },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'admin-dashboard',
+        component: () => import('@/views/admin/AdminDashboard.vue'),
+        meta: { title: '仪表盘' }
+      },
+      {
+        path: 'users',
+        name: 'user-management',
+        component: () => import('@/views/admin/UserManagement.vue'),
+        meta: { title: '用户管理' }
+      },
+      {
+        path: 'movies',
+        name: 'movie-management',
+        component: () => import('@/views/admin/MovieManagement.vue'),
+        meta: { title: '电影管理' }
+      },
+      {
+        path: 'sessions',
+        name: 'session-management',
+        component: () => import('@/views/admin/SessionManagement.vue'),
+        meta: { title: '场次管理' }
+      },
+      {
+        path: 'orders',
+        name: 'order-management',
+        component: () => import('@/views/admin/OrderManagement.vue'),
+        meta: { title: '订单管理' }
+      },
+      {
+        path: 'news',
+        name: 'news-management',
+        component: () => import('@/views/admin/NewsManagement.vue'),
+        meta: { title: '资讯管理' }
+      }
+    ]
+  },
+  // 404 页面
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('@/views/front/NotFound.vue'),
+    meta: { title: '页面未找到' }
+  }
 ]
 
 const router = createRouter({
-  // 创建一个新的Vue Router实例
-  history: createWebHistory(), // 配置路由历史模式为HTML5 History模式，使用真实的URL路径
-  routes, // 注入之前定义的路由配置数组routes
+  history: createWebHistory(),
+  routes,
   scrollBehavior(to, from, savedPosition) {
-    // 定义路由切换时的滚动行为处理函数
-    //to - 要进入的目标路由对象
-    //from - 当前正在离开的路由对象
-    //savedPosition - 如果存在，则表示用户在当前页面滚动了
+    // 优先：如果有 savedPosition（浏览器前进/后退），返回它以恢复之前的滚动位置
     if (savedPosition) {
       return savedPosition
-    } else {
-      return { top: 0, behavior: 'smooth' }
-      //top: 0 - 滚动到页面顶部
-      //behavior: 'smooth' - 使用平滑滚动效果
     }
-  },
+
+    // 如果路由包含 hash（锚点），尝试滚动到该元素（若存在）。
+    // 返回对象也可以包含 behavior: 'smooth' 以启用平滑滚动。
+    if (to.hash) {
+      return {
+        el: to.hash,
+        top: 0,
+        behavior: 'smooth'
+      }
+    }
+
+    // 默认行为：滚动到页面顶部（平滑）
+    return { left: 0, top: 0, behavior: 'smooth' }
+  }
 })
 
-// 路由守卫主要作用是在每次路由切换时自动更新页面标题
-router.beforeEach((to, from, next) => {
-  // 注册全局前置路由守卫，在每次路由跳转前执行
+// 路由守卫
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
+
+  // 初始化认证状态
+  if (!authStore.isAuthenticated) {
+    authStore.initAuth()
+  }
+
   // 设置页面标题
   if (to.meta.title) {
-    // 检查目标路由的元信息中是否包含标题配置
-    document.title = to.meta.title // 如果有标题配置，则设置浏览器标签页标题为该路由的标题
+    document.title = `${to.meta.title} - 电影票务系统`
   }
-  next() // 调用next函数，放行路由跳转，允许导航继续进行
+
+  // 检查是否需要认证
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next('/login')
+    return
+  }
+
+  // 检查是否仅游客可访问（已登录用户不能访问）
+  if (to.meta.guestOnly && authStore.isAuthenticated) {
+    // 已登录用户尝试访问登录/注册页，重定向到首页
+    next('/')
+    return
+  }
+
+  // 检查管理员权限
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    next('/')
+    return
+  }
+
+  next()
+})
+
+// 路由错误处理
+router.onError((error) => {
+  console.error('路由错误:', error)
 })
 
 export default router
-// 导出路由实例，供其他模块使用
-// 允许其他文件通过 import router from './router/index.ts' 的方式导入这个路由器实例

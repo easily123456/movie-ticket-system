@@ -183,29 +183,11 @@ public class OrderController {
 
     private OrderResponse convertToOrderResponse(Order order) {
         try {
-            OrderResponse response = new OrderResponse();
-            response.setId(order.getId());
-            response.setOrderNo(order.getOrderNo());
-            response.setUserId(order.getUser().getId());
-            response.setUsername(order.getUser().getUsername());
-            response.setSessionId(order.getSession().getId());
-            response.setMovieTitle(order.getSession().getMovie().getTitle());
-            response.setSessionTime(order.getSession().getStartTime());
-            response.setHallName(order.getSession().getHall().getName());
+            OrderResponse response = new OrderResponse(order);
 
             List<String> seatNumbers = objectMapper.readValue(order.getSeatNumbers(), new TypeReference<List<String>>() {});
-            // objectMapper.readValue()将 JSON 字符串反序列化为 Java 对象
-            // new TypeReference<List<String>>() {}为形参，表示返回的 List<String> 对象
-            // objectMapper.readValue()方法会根据 TypeReference 对象的泛型参数来确定返回的 Java 对象的类型
-            // 直接使用List<String>会出现类型擦除现象也留下List
-            response.setSeatNumbers(seatNumbers);
-
-            response.setSeatCount(order.getSeatCount());
-            response.setTotalPrice(order.getTotalPrice());
-            response.setStatus(order.getStatus());
-            response.setPayTime(order.getPayTime());
-            response.setCancelTime(order.getCancelTime());
-            response.setCreateTime(order.getCreateTime());
+            String seatNumbersString = String.join(",", seatNumbers);
+            response.setSeatNumbers(seatNumbersString);
 
             return response;
         } catch (Exception e) {

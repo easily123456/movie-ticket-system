@@ -54,18 +54,23 @@ spring:
 # 日志配置
 logging:
   level:
+    org.springframework.security: DEBUG  # 新增 Security 日志
     com.movieticket: DEBUG #com.movieticket 包及其子包下的日志级别设为 DEBUG
-    org.hibernate.SQL: DEBUG #输出所有执行的 SQL 查询
+#    org.hibernate.SQL: DEBUG #输出所有执行的 SQL 查询
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE #输出 SQL 语句中的参数绑定值
   file:
     name: logs/movie-ticket.log #文件输出地址
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
     #2023-10-01 15:30:00 [http-nio-8080-exec-1] DEBUG c.m.service.TicketService - Fetching ticket data...
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
 
 # JWT配置
 jwt:
-  secret: movie-ticket-system-secret-key-2024-spring-boot-3-jwt-token #生成和验证 JWT 签名的密钥
+  secret: movie-ticket-system-secret-key-2024-spring-boot-3-jwt-token-for-authentication #生成和验证 JWT 签名的密钥
   expiration: 86400000  # 24小时
   header: Authorization #指定客户端发送 Token 的 HTTP 请求头名称
 
@@ -80,3 +85,17 @@ app:
     allowed-origins: "http://localhost:3000,http://localhost:8080" #允许跨域访问后端 API 的前端地址列表
   order:
     timeout-minutes: 15 #定义订单未支付的有效期
+    allowed-image-types: "image/jpeg,image/png,image/gif"
+
+# Swagger配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+# 切面配置
+aop:
+  auto: true

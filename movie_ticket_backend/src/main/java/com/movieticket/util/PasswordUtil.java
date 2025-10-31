@@ -1,7 +1,9 @@
 package com.movieticket.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PasswordUtil {
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();//创建密码加密工具
@@ -15,4 +17,8 @@ public class PasswordUtil {
         return encoder.matches(rawPassword, encodedPassword);
     }
     //验证原始密码是否与加密后的密码匹配
+
+    public static boolean isEncoded(String password) {
+        return password.startsWith("$2a$") || password.startsWith("$2b$") || password.startsWith("$2y$");
+    }
 }

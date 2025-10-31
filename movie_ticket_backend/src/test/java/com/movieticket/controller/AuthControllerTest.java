@@ -1,7 +1,6 @@
 package com.movieticket.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.movieticket.dto.request.auth.LoginRequest;
 import com.movieticket.dto.request.auth.RegisterRequest;
 import com.movieticket.entity.User;
 import com.movieticket.service.UserService;

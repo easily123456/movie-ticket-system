@@ -1,11 +1,11 @@
 package com.movieticket.controller;
 
 import com.movieticket.dto.ApiResponse;
-import com.movieticket.dto.request.auth.LoginRequest;
+import com.movieticket.dto.request.auth.AuthRequest;
 import com.movieticket.dto.request.auth.RegisterRequest;
-import com.movieticket.dto.response.auth.LoginResponse;
+import com.movieticket.dto.response.auth.AuthResponse;
 import com.movieticket.entity.User;
-import com.movieticket.service.UserService;
+import com.movieticket.service.AuthService;
 import com.movieticket.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +16,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor//为类中所有 final 字段 或 @NonNull 标记的字段 生成一个包含这些字段的构造函数
+@RequiredArgsConstructor
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService authService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<User>> register(@Valid @RequestBody RegisterRequest request) {
-        //ResponseEntity为Spring 提供的封装 HTTP 响应的类，可以自定义状态码、响应头、响应体
-        //@Valid如果 RegisterRequest 中的字段验证失败，Spring 会自动返回 400 Bad Request
-        //@RequestBody将请求体中的 JSON 数据映射为 RegisterRequest 对象
+    public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
         try {
             User user = new User();
             user.setUsername(request.getUsername());
@@ -34,23 +31,32 @@ public class AuthController {
             user.setEmail(request.getEmail());
             user.setPhone(request.getPhone());
 
-            User registeredUser = userService.register(user);
-            return ResponseEntity.ok(ApiResponse.success("注册成功", registeredUser));
-            //返回注册成功的用户信息
+            User registeredUser = authService.register(user);
+            String token = jwtUtil.generateToken(
+                    registeredUser.getUsername(),
+                    registeredUser.getId(),
+                    registeredUser.getRole().name()
+            );
+
+            AuthResponse response = new AuthResponse(registeredUser, token);
+            return ResponseEntity.ok(ApiResponse.success("注册成功", response));
         } catch (RuntimeException e) {
-            //RuntimeException 是一个广义的异常类，通常用于表示程序运行时的非预期错误
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
-            //返回400Bad Request，定义响应体为错误信息
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
-        Optional<User> userOpt = userService.login(request.getUsername(), request.getPassword());
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody AuthRequest request) {
+        Optional<User> userOpt = authService.login(request.getUsername(), request.getPassword());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            String token = jwtUtil.generateToken(user.getUsername(), user.getId());
-            LoginResponse response = new LoginResponse(user, token);
+            String token = jwtUtil.generateToken(
+                    user.getUsername(),
+                    user.getId(),
+                    user.getRole().name()
+            );
+
+            AuthResponse response = new AuthResponse(user, token);
             return ResponseEntity.ok(ApiResponse.success("登录成功", response));
         } else {
             return ResponseEntity.badRequest().body(ApiResponse.error("用户名或密码错误"));
@@ -58,15 +64,46 @@ public class AuthController {
     }
 
     @GetMapping("/check-username")
-    public ResponseEntity<ApiResponse<Boolean>> checkUsername(@RequestParam String username) { //查询用户是否存在
-        //@RequestParam将请求参数映射为方法参数
-        boolean exists = userService.getUserByUsername(username).isPresent();
+    public ResponseEntity<ApiResponse<Boolean>> checkUsername(@RequestParam String username) {
+        boolean exists = authService.checkUsernameExists(username);
         return ResponseEntity.ok(ApiResponse.success(exists));
     }
 
     @GetMapping("/check-email")
     public ResponseEntity<ApiResponse<Boolean>> checkEmail(@RequestParam String email) {
-        boolean exists = userService.getUserByUsername(email).isPresent();
+        boolean exists = authService.checkEmailExists(email);
         return ResponseEntity.ok(ApiResponse.success(exists));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@RequestHeader("Authorization") String token) {
+        try {
+            String authToken = token.substring(7); // 去掉 "Bearer " 前缀
+
+            if (!jwtUtil.validateToken(authToken)) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("Token无效"));
+            }
+
+            String username = jwtUtil.getUsernameFromToken(authToken);
+            Long userId = jwtUtil.getUserIdFromToken(authToken);
+            String role = jwtUtil.getRoleFromToken(authToken);
+
+            // 生成新token
+            String newToken = jwtUtil.generateToken(username, userId, role);
+
+            // 获取用户信息
+            Optional<User> userOpt = authService.checkUsernameExists(username) ?
+                    Optional.of(new User()) : Optional.empty(); // 这里应该从数据库获取用户信息
+
+            if (userOpt.isPresent()) {
+                User user = userOpt.get();
+                AuthResponse response = new AuthResponse(user, newToken);
+                return ResponseEntity.ok(ApiResponse.success("Token刷新成功", response));
+            } else {
+                return ResponseEntity.badRequest().body(ApiResponse.error("用户不存在"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Token刷新失败"));
+        }
     }
 }

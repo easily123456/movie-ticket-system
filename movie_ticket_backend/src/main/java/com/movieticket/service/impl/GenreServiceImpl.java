@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,5 +95,29 @@ public class GenreServiceImpl implements GenreService {
     @Transactional(readOnly = true)
     public boolean existsByName(String name) {
         return genreRepository.existsByName(name);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Genre> getGenresByStatus(Boolean status, Pageable pageable) {
+        return genreRepository.findByStatus(status, pageable);
+    }
+
+    @Override
+    public void batchDeleteGenres(List<Long> genreIds) {
+        for (Long id : genreIds) {
+            deleteGenre(id);
+        }
+    }
+
+    @Override
+    public void batchChangeGenreStatus(List<Long> genreIds, Boolean status) {
+        List<Genre> genres = genreRepository.findAllById(genreIds);
+        for (Genre genre : genres) {
+            genre.setStatus(status);
+            genre.setUpdateTime(LocalDateTime.now());
+        }
+        genreRepository.saveAll(genres);
     }
 }

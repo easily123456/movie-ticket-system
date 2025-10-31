@@ -4,7 +4,7 @@ import com.movieticket.entity.User;
 import lombok.Data;
 
 @Data
-public class LoginResponse {
+public class AuthResponse {
     private Long id;
     private String username;
     private String email;
@@ -12,8 +12,9 @@ public class LoginResponse {
     private String avatar;
     private User.Role role;
     private String token;
+    private String tokenType= "Bearer";
 
-    public LoginResponse(User user, String token) {
+    public AuthResponse(User user, String token) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();

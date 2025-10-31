@@ -9,6 +9,7 @@ import com.movieticket.service.UserService;
 import com.movieticket.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,24 +26,24 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final UserService userService;
     private final MovieService movieService;
 
-    @Override
-    public Favorite addFavorite(Favorite favorite) {
-        // 验证用户和电影存在
-        User user = userService.getUserById(favorite.getUser().getId())
-                .orElseThrow(() -> new RuntimeException("用户不存在"));
-        Movie movie = movieService.getMovieById(favorite.getMovie().getId())
-                .orElseThrow(() -> new RuntimeException("电影不存在"));
-
-        // 检查是否已经收藏
-        if (favoriteRepository.existsByUserAndMovie(user, movie)) {
-            throw new RuntimeException("您已经收藏过这部电影");
-        }
-
-        favorite.setUser(user);
-        favorite.setMovie(movie);
-
-        return favoriteRepository.save(favorite);
-    }
+//    @Override
+//    public Favorite addFavorite(Favorite favorite) {
+//        // 验证用户和电影存在
+//        User user = userService.getUserById(favorite.getUser().getId())
+//                .orElseThrow(() -> new RuntimeException("用户不存在"));
+//        Movie movie = movieService.getMovieById(favorite.getMovie().getId())
+//                .orElseThrow(() -> new RuntimeException("电影不存在"));
+//
+//        // 检查是否已经收藏
+//        if (favoriteRepository.existsByUserAndMovie(user, movie)) {
+//            throw new RuntimeException("您已经收藏过这部电影");
+//        }
+//
+//        favorite.setUser(user);
+//        favorite.setMovie(movie);
+//
+//        return favoriteRepository.save(favorite);
+//    }
 
     @Override
     public void removeFavorite(Long id) {
@@ -110,5 +111,60 @@ public class FavoriteServiceImpl implements FavoriteService {
         User user = userService.getUserById(userId)
                 .orElseThrow(() -> new RuntimeException("用户不存在"));
         return favoriteRepository.countByUser(user);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 添加收藏
+    @Override
+    public Favorite addFavorite(Favorite favorite) {
+        // 检查是否已收藏
+        Optional<Favorite> existingFavorite = favoriteRepository.findByUserIdAndMovieId(
+                favorite.getUser().getId(), favorite.getMovie().getId());
+
+        if (existingFavorite.isPresent()) {
+            throw new RuntimeException("已经收藏过这部电影");
+        }
+
+        return favoriteRepository.save(favorite);
+    }
+
+
+
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Long> getFavoriteMovieIdsByUser(Long userId) {
+        return favoriteRepository.findMovieIdsByUserId(userId);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Object[]> getHotFavoriteMovies(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return favoriteRepository.findHotFavoriteMovies(pageable);
     }
 }

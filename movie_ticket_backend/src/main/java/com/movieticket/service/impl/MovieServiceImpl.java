@@ -1,176 +1,196 @@
 package com.movieticket.service.impl;
 
+import com.movieticket.dto.request.movie.MovieQueryRequest;
+import com.movieticket.dto.response.movie.MovieResponse;
 import com.movieticket.entity.Movie;
-import com.movieticket.entity.Genre;
 import com.movieticket.repository.MovieRepository;
-import com.movieticket.repository.CommentRepository;
-import com.movieticket.service.GenreService;
-import com.movieticket.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.criteria.Predicate;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class MovieServiceImpl implements MovieService {
+public class MovieServiceImpl {
 
     private final MovieRepository movieRepository;
-    private final CommentRepository commentRepository;
-    private final GenreService genreService;
 
-    @Override
-    public Movie createMovie(Movie movie) {
-        // 验证类型存在
-        Genre genre = genreService.getGenreById(movie.getGenre().getId())
-                .orElseThrow(() -> new RuntimeException("电影类型不存在"));
-        movie.setGenre(genre);
-        movie.setStatus(true);
-        return movieRepository.save(movie);
+    // 获取电影列表（带筛选和分页）
+    public Page<MovieResponse> getMovies(MovieQueryRequest request) {
+        Specification<Movie> spec = buildSpecification(request);
+        Pageable pageable = buildPageable(request);
+        
+        Page<Movie> movies = movieRepository.findAll(spec, pageable);
+        return movies.map(this::convertToResponse);
     }
 
-    @Override
-    public Movie updateMovie(Movie movie) {
-        Movie existingMovie = movieRepository.findById(movie.getId())
-                .orElseThrow(() -> new RuntimeException("电影不存在"));
+    // 构建查询条件
+    private Specification<Movie> buildSpecification(MovieQueryRequest request) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
-        // 验证类型存在
-        Genre genre = genreService.getGenreById(movie.getGenre().getId())
-                .orElseThrow(() -> new RuntimeException("电影类型不存在"));
+            // 状态筛选（默认只查询上架电影）
+            if (request.getStatus() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
+            }
 
-        existingMovie.setTitle(movie.getTitle());
-        existingMovie.setOriginalTitle(movie.getOriginalTitle());
-        existingMovie.setGenre(genre);
-        existingMovie.setDuration(movie.getDuration());
-        existingMovie.setDirector(movie.getDirector());
-        existingMovie.setActors(movie.getActors());
-        existingMovie.setReleaseDate(movie.getReleaseDate());
-        existingMovie.setCountry(movie.getCountry());
-        existingMovie.setLanguage(movie.getLanguage());
-        existingMovie.setDescription(movie.getDescription());
-        existingMovie.setPosterUrl(movie.getPosterUrl());
-        existingMovie.setTrailerUrl(movie.getTrailerUrl());
-        existingMovie.setPrice(movie.getPrice());
+            // 关键词搜索（标题、导演、演员）
+            if (request.getKeyword() != null && !request.getKeyword().trim().isEmpty()) {
+                String keyword = "%" + request.getKeyword().trim() + "%";
+                Predicate titlePredicate = criteriaBuilder.like(root.get("title"), keyword);
+                Predicate directorPredicate = criteriaBuilder.like(root.get("director"), keyword);
+                Predicate actorsPredicate = criteriaBuilder.like(root.get("actors"), keyword);
+                predicates.add(criteriaBuilder.or(titlePredicate, directorPredicate, actorsPredicate));
+            }
 
-        return movieRepository.save(existingMovie);
+            // 类型筛选
+            if (request.getGenreId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("genre").get("id"), request.getGenreId()));
+            }
+
+            // 热门电影筛选
+            if (request.getIsHot() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("isHot"), request.getIsHot()));
+            }
+
+            // 上映日期范围筛选
+            if (request.getReleaseDateStart() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("releaseDate"), request.getReleaseDateStart()));
+            }
+            if (request.getReleaseDateEnd() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("releaseDate"), request.getReleaseDateEnd()));
+            }
+
+            // 评分范围筛选
+            if (request.getMinRating() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("rating"), BigDecimal.valueOf(request.getMinRating())));
+            }
+            if (request.getMaxRating() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("rating"), BigDecimal.valueOf(request.getMaxRating())));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
     }
 
-    @Override
-    public void deleteMovie(Long id) {
-        Movie movie = movieRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("电影不存在"));
-        movieRepository.delete(movie);
+    // 构建分页和排序
+    private Pageable buildPageable(MovieQueryRequest request) {
+        Sort sort = Sort.by(Sort.Direction.fromString(request.getSortOrder()), request.getSortBy());
+        return PageRequest.of(request.getPage(), request.getSize(), sort);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Movie> getMovieById(Long id) {
-        return movieRepository.findById(id);
+    // 获取热门电影
+    public List<MovieResponse> getHotMovies(int limit) {
+        List<Movie> movies = movieRepository.findByIsHotAndStatusOrderByRatingDesc(true, true, PageRequest.of(0, limit));
+        return movies.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Movie> getAllMovies(Pageable pageable) {
-        return movieRepository.findAll(pageable);
+    // 获取最新上映电影
+    public List<MovieResponse> getNewMovies(int limit) {
+        LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+        List<Movie> movies = movieRepository.findByReleaseDateAfterAndStatusOrderByReleaseDateDesc(oneMonthAgo, true, PageRequest.of(0, limit));
+        return movies.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Movie> getActiveMovies(Pageable pageable) {
-        return movieRepository.findByStatusTrue(pageable);
+    // 获取高分电影
+    public List<MovieResponse> getTopRatedMovies(int limit) {
+        List<Movie> movies = movieRepository.findByStatusAndRatingGreaterThanEqualOrderByRatingDesc(true, new BigDecimal("8.0"), PageRequest.of(0, limit));
+        return movies.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Movie> getMoviesByGenre(Long genreId, Pageable pageable) {
-        Genre genre = genreService.getGenreById(genreId)
-                .orElseThrow(() -> new RuntimeException("电影类型不存在"));
-        return movieRepository.findByGenreAndStatusTrue(genre, pageable);
+    // 搜索电影
+    public Page<MovieResponse> searchMovies(String keyword, Pageable pageable) {
+        Page<Movie> movies = movieRepository.searchMovies(keyword, pageable);
+        return movies.map(this::convertToResponse);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Movie> getHotMovies() {
-        return movieRepository.findByIsHotTrueAndStatusTrue();
+    // 根据类型获取电影
+    public Page<MovieResponse> getMoviesByGenre(Long genreId, Pageable pageable) {
+        Page<Movie> movies = movieRepository.findByGenreIdAndStatus(genreId, true, pageable);
+        return movies.map(this::convertToResponse);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Movie> getUpcomingMovies() {
-        return movieRepository.findByReleaseDateAfterAndStatusTrue(LocalDate.now());
+    // 获取电影详情
+    public Optional<MovieResponse> getMovieDetail(Long id) {
+        return movieRepository.findById(id)
+                .map(this::convertToResponse);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Movie> searchMovies(String keyword, Pageable pageable) {
-        return movieRepository.searchMovies(keyword, pageable);
+    // 转换实体为响应DTO
+    private MovieResponse convertToResponse(Movie movie) {
+        MovieResponse response = new MovieResponse();
+        response.setId(movie.getId());
+        response.setTitle(movie.getTitle());
+        response.setOriginalTitle(movie.getOriginalTitle());
+        response.setGenreName(movie.getGenre().getName());
+        response.setGenreId(movie.getGenre().getId());
+        response.setDuration(movie.getDuration());
+        response.setDirector(movie.getDirector());
+        response.setActors(movie.getActors());
+        response.setReleaseDate(movie.getReleaseDate());
+        response.setCountry(movie.getCountry());
+        response.setLanguage(movie.getLanguage());
+        response.setDescription(movie.getDescription());
+        response.setPosterUrl(movie.getPosterUrl());
+        response.setTrailerUrl(movie.getTrailerUrl());
+        response.setRating(movie.getRating());
+        response.setVoteCount(movie.getVoteCount());
+        response.setPrice(movie.getPrice());
+        response.setIsHot(movie.getIsHot());
+        response.setStatus(movie.getStatus());
+        response.setCreateTime(movie.getCreateTime().toLocalDate());
+        response.setUpdateTime(movie.getUpdateTime().toLocalDate());
+
+        // 计算前端显示字段
+        response.setFormattedDuration(formatDuration(movie.getDuration()));
+        response.setFormattedRating(formatRating(movie.getRating()));
+        response.setIsNew(isNewMovie(movie.getReleaseDate()));
+
+        return response;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Movie> searchMoviesByGenre(String keyword, Long genreId, Pageable pageable) {
-        return movieRepository.searchMoviesByGenre(keyword, genreId, pageable);
-    }
-
-    @Override
-    public Movie changeMovieStatus(Long id, Boolean status) {
-        Movie movie = movieRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("电影不存在"));
-        movie.setStatus(status);
-        return movieRepository.save(movie);
-    }
-
-    @Override
-    public Movie toggleHotMovie(Long id, Boolean isHot) {
-        Movie movie = movieRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("电影不存在"));
-        movie.setIsHot(isHot);
-        return movieRepository.save(movie);
-    }
-
-    @Override
-    public void updateMovieRating(Long movieId) {
-
-        Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new RuntimeException("电影不存在"));
-
-        // 获取指定电影的平均评分
-        Double averageRating = commentRepository.getAverageRatingByMovie(movieId);
-        // 获取指定电影的评论总数
-        long voteCount = commentRepository.countByMovie(movieId);
-
-
-
-        if (averageRating != null) {
-            movie.setRating(BigDecimal.valueOf(averageRating).setScale(1, RoundingMode.HALF_UP));
-            // 如果平均评分不为空，则设置电影评分为平均评分并保留一位小数，采用四舍五入模式
+    // 格式化时长
+    private String formatDuration(Integer duration) {
+        if (duration == null) return "未知";
+        int hours = duration / 60;
+        int minutes = duration % 60;
+        if (hours > 0) {
+            return hours + "小时" + minutes + "分钟";
         } else {
-            movie.setRating(BigDecimal.ZERO);// 否则将电影评分设置为零
+            return minutes + "分钟";
         }
-
-
-        movie.setVoteCount((int) voteCount);
-
-        movieRepository.save(movie);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public long getTotalMovieCount() {
-        return movieRepository.count();
+    // 格式化评分
+    private String formatRating(BigDecimal rating) {
+        if (rating == null || rating.compareTo(BigDecimal.ZERO) == 0) {
+            return "暂无评分";
+        }
+        return rating + "分";
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public long getActiveMovieCount() {
-        return movieRepository.countActiveMovies();
+    // 判断是否是新电影（一个月内上映）
+    private Boolean isNewMovie(LocalDate releaseDate) {
+        if (releaseDate == null) return false;
+        LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+        return !releaseDate.isBefore(oneMonthAgo);
     }
 }
