@@ -73,6 +73,7 @@ export const movieApi = {
 
 // 场次相关API
 export const sessionApi = {
+  // 获取指定电影场次
   getSessionsByMovie(movieId) {
     return request.get(`/api/sessions/movie/${movieId}`)
   },
@@ -87,9 +88,9 @@ export const sessionApi = {
   },
 
   // 获取电影场次
-  getMovieSessions(movieId) {
-    return request.get(`/api/movie_sessions/movie/${movieId}`)
-  },
+  // getMovieSessions(movieId) {
+  //   return request.get(`/api/movie_sessions/movie/${movieId}`)
+  // },
 
   // 获取日期场次
   getSessionsByDate(date) {
@@ -99,16 +100,18 @@ export const sessionApi = {
 
 //订单相关API
 export const orderApi = {
+  // 创建订单
   createOrder(data) {
     return request.post('/api/orders', data)
   },
+  //获取订单统计
   getOrderStats() {
     return request.get('/api/orders/stats')
   },
     // 创建选座订单
-  createSeatOrder(data) {
-    return request.post('/api/orders/seat', data)
-  },
+  // createSeatOrder(data) {
+  //   return request.post('/api/orders/seat', data)
+  // },
 
   // 支付订单
   payOrder(orderId) {
@@ -126,34 +129,39 @@ export const orderApi = {
   },
 
   // 获取用户订单
-  getUserOrders(params) {
-    return request.get('/api/orders/user', { params })
+  getUserOrders(params={}) {
+    return request.get('/api/user/orders', { params })
   }
 }
 
 // 评论相关API
 export const commentApi = {
+  // 更新评论
   updateComment(id, data) {
-    return request.put(`/api/comments/${id}`, data)
+    return request.put(`/api/comments/${id}/update`, data)
   },
-    // 获取评论列表
-  getComments(params) {
-    return request.get('/api/comments', { params })
+    // 获取详细评论
+  getCommentDetail(id) {
+    return request.get(`/api/comments/${id}`)
   },
+  // getComments(params) {
+  //   return request.get('/api/comments', { params })
+  // },
 
   // 创建评论
   createComment(data) {
-    return request.post('/api/comments', data)
+    return request.post('/api/comments/create', data)
   },
 
   // 获取电影评论
-  getMovieComments(movieId, params) {
+  getMovieComments(movieId, params= {}) {
     return request.get(`/api/comments/movie/${movieId}`, { params })
   },
 
   // 获取用户评论
-  getUserComments(params) {
-    return request.get('/api/comments/user', { params })
+  getUserComments(params= {}) {
+    // return request.get('/api/comments/user', { params })
+    return request.get('/api/user/comments', { params })
   },
 
   // 获取评论统计

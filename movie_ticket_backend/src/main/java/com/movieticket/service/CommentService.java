@@ -1,5 +1,6 @@
 package com.movieticket.service;
 
+import com.movieticket.dto.response.comment.CommentStatsResponse;
 import com.movieticket.entity.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,5 +19,9 @@ public interface CommentService {
     void likeComment(Long commentId);
     Double getAverageRatingByMovie(Long movieId);
     long getCommentCountByMovie(Long movieId);
-//    boolean existsByMovie(Long movieId);
+    // 评论统计相关方法
+    CommentStatsResponse getCommentStatsByMovie(Long movieId);
+    
+    // 获取最新评论
+    List<Comment> getLatestCommentsByMovie(Long movieId, int limit);
 }

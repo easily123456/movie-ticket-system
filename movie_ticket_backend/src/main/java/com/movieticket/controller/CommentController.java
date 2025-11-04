@@ -2,7 +2,9 @@ package com.movieticket.controller;
 
 import com.movieticket.dto.ApiResponse;
 import com.movieticket.dto.request.comment.CommentCreateRequest;
+import com.movieticket.dto.request.comment.CommentUpdateRequest;
 import com.movieticket.dto.response.comment.CommentResponse;
+import com.movieticket.dto.response.comment.CommentStatsResponse;
 import com.movieticket.entity.Comment;
 import com.movieticket.entity.Movie;
 import com.movieticket.entity.User;
@@ -32,7 +34,7 @@ public class CommentController {
     private final MovieService movieService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse<CommentResponse>> createComment(
             @RequestHeader("Authorization") String token,
             @Valid @RequestBody CommentCreateRequest request) {
@@ -67,6 +69,58 @@ public class CommentController {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error("评论失败"));
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<CommentResponse>> getCommentDetail(@PathVariable Long id) {
+        try {
+            Optional<Comment> commentOpt = commentService.getCommentById(id);
+            if (commentOpt.isPresent()) {
+                Comment comment = commentOpt.get();
+                CommentResponse response = convertToCommentResponse(comment);
+                return ResponseEntity.ok(ApiResponse.success(response));
+            } else {
+                return ResponseEntity.badRequest().body(ApiResponse.error("评论不存在"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("获取评论详情失败"));
+        }
+    }
+
+    @PutMapping("/{id}/update")
+    public ResponseEntity<ApiResponse<CommentResponse>> updateComment(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long id,
+            @Valid @RequestBody CommentUpdateRequest request) {
+        try {
+            String authToken = token.substring(7);
+            Long userId = jwtUtil.getUserIdFromToken(authToken);
+
+            Optional<Comment> commentOpt = commentService.getCommentById(id);
+            if (commentOpt.isPresent()) {
+                Comment comment = commentOpt.get();
+                // 检查评论是否属于当前用户
+                if (!comment.getUser().getId().equals(userId)) {
+                    return ResponseEntity.badRequest().body(ApiResponse.error("无权修改此评论"));
+                }
+
+                comment.setContent(request.getContent());
+                comment.setRating(request.getRating());
+
+                Comment updatedComment = commentService.updateComment(comment);
+                CommentResponse response = convertToCommentResponse(updatedComment);
+
+                return ResponseEntity.ok(ApiResponse.success("更新成功", response));
+            } else {
+                return ResponseEntity.badRequest().body(ApiResponse.error("评论不存在"));
+            }
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Token无效"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("更新失败"));
         }
     }
 
@@ -129,7 +183,9 @@ public class CommentController {
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<ApiResponse<Void>> likeComment(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> likeComment(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable Long id) {
         try {
             commentService.likeComment(id);
             return ResponseEntity.ok(ApiResponse.success("点赞成功", null));
@@ -137,6 +193,83 @@ public class CommentController {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error("点赞失败"));
+        }
+    }
+    
+    // 取消点赞评论
+    @PostMapping("/{id}/unlike")
+    public ResponseEntity<ApiResponse<Void>> unlikeComment(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @PathVariable Long id) {
+        try {
+            // 简化处理，直接减少点赞数
+            Optional<Comment> commentOpt = commentService.getCommentById(id);
+            if (commentOpt.isPresent()) {
+                Comment comment = commentOpt.get();
+                if (comment.getLikeCount() > 0) {
+                    comment.setLikeCount(comment.getLikeCount() - 1);
+                    commentService.updateComment(comment); // 通过service更新评论
+                }
+                return ResponseEntity.ok(ApiResponse.success("取消点赞成功", null));
+            } else {
+                return ResponseEntity.badRequest().body(ApiResponse.error("评论不存在"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("取消点赞失败"));
+        }
+    }
+
+    // 获取评论统计
+    @GetMapping("/movie/{movieId}/stats")
+    public ResponseEntity<ApiResponse<CommentStatsResponse>> getCommentStats(@PathVariable Long movieId) {
+        try {
+            CommentStatsResponse stats = commentService.getCommentStatsByMovie(movieId);
+            return ResponseEntity.ok(ApiResponse.success(stats));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("获取评论统计失败"));
+        }
+    }
+
+    // 获取热门评论
+    @GetMapping("/movie/{movieId}/hot")
+    public ResponseEntity<ApiResponse<List<CommentResponse>>> getHotComments(
+            @PathVariable Long movieId,
+            @RequestParam(defaultValue = "5") int limit) {
+        try {
+            // 检查电影是否存在
+            Optional<Movie> movieOpt = movieService.getMovieById(movieId);
+            if (movieOpt.isEmpty()) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("电影不存在"));
+            }
+
+            List<Comment> comments = commentService.getTopCommentsByMovie(movieId, limit);
+            List<CommentResponse> response = comments.stream()
+                    .map(this::convertToCommentResponse)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(response));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("获取热门评论失败"));
+        }
+    }
+
+    // 获取最新评论
+    @GetMapping("/movie/{movieId}/latest")
+    public ResponseEntity<ApiResponse<List<CommentResponse>>> getLatestComments(
+            @PathVariable Long movieId,
+            @RequestParam(defaultValue = "5") int limit) {
+        try {
+            // 检查电影是否存在
+            Optional<Movie> movieOpt = movieService.getMovieById(movieId);
+            if (movieOpt.isEmpty()) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("电影不存在"));
+            }
+            List<Comment> comments = commentService.getLatestCommentsByMovie(movieId, limit);
+            List<CommentResponse> response = comments.stream()
+                    .map(this::convertToCommentResponse)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(response));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("获取最新评论失败"));
         }
     }
 

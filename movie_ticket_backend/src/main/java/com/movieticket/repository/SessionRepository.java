@@ -65,7 +65,7 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     @Query("SELECT s FROM Session s WHERE s.movie.id = :movieId AND s.startTime > :now AND s.status = true ORDER BY s.startTime ASC")
     List<Session> findUpcomingSessionsByMovie(@Param("movieId") Long movieId, @Param("now") LocalDateTime now);
 
-    // 获取日期范围内的场次
+    // 获取指定日期的场次
     @Query("SELECT s FROM Session s WHERE DATE(s.startTime) = DATE(:date) AND s.status = true ORDER BY s.startTime ASC")
     List<Session> findSessionsByDate(@Param("date") LocalDateTime date);
 

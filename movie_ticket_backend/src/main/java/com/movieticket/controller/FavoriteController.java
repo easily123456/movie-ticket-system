@@ -74,6 +74,18 @@ public class FavoriteController {
             String authToken = token.substring(7);
             Long userId = jwtUtil.getUserIdFromToken(authToken);
             
+            // 检查电影是否存在
+            Optional<Movie> movieOpt = movieService.getMovieById(movieId);
+            if (movieOpt.isEmpty()) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("电影不存在"));
+            }
+            
+            // 检查电影是否已被收藏
+            boolean isFavorited = favoriteService.isMovieFavoritedByUser(userId, movieId);
+            if (!isFavorited) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("电影未收藏"));
+            }
+            
             favoriteService.removeFavoriteByUserAndMovie(userId, movieId);
             return ResponseEntity.ok(ApiResponse.success("取消收藏成功", null));
         } catch (Exception e) {
@@ -110,6 +122,12 @@ public class FavoriteController {
             String authToken = token.substring(7);
             Long userId = jwtUtil.getUserIdFromToken(authToken);
             
+            // 检查电影是否存在
+            Optional<Movie> movieOpt = movieService.getMovieById(movieId);
+            if (movieOpt.isEmpty()) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("电影不存在"));
+            }
+            
             boolean isFavorited = favoriteService.isMovieFavoritedByUser(userId, movieId);
             return ResponseEntity.ok(ApiResponse.success(isFavorited));
         } catch (Exception e) {
@@ -121,6 +139,12 @@ public class FavoriteController {
     @GetMapping("/count/movie/{movieId}")
     public ResponseEntity<ApiResponse<Long>> getFavoriteCount(@PathVariable Long movieId) {
         try {
+            // 检查电影是否存在
+            Optional<Movie> movieOpt = movieService.getMovieById(movieId);
+            if (movieOpt.isEmpty()) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("电影不存在"));
+            }
+
             Long count = favoriteService.getFavoriteCountByMovie(movieId);
             return ResponseEntity.ok(ApiResponse.success(count));
         } catch (Exception e) {

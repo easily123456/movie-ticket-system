@@ -24,7 +24,7 @@ public class SessionController {
 
     @GetMapping("/movie/{movieId}")
     public ResponseEntity<ApiResponse<List<SessionResponse>>> getSessionsByMovie(@PathVariable Long movieId) {
-        List<Session> sessions = sessionService.getUpcomingSessionsByMovie(movieId);
+        List<Session> sessions = sessionService.getSessionsByMovie(movieId);
         List<SessionResponse> response = sessions.stream()
                 .map(this::convertToSessionResponse)
                 .collect(Collectors.toList());
@@ -36,7 +36,12 @@ public class SessionController {
     public ResponseEntity<ApiResponse<List<SessionResponse>>> getSessionsByDate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)表示转换为yyyy-MM-dd，注入到参数date中
-        return ResponseEntity.ok(ApiResponse.success(List.of()));
+        List<Session> sessions = sessionService.getSessionsByDate(date);
+        List<SessionResponse> response = sessions.stream()
+                .map(this::convertToSessionResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping("/{id}")
@@ -95,14 +100,14 @@ public class SessionController {
     }
 
     // 获取电影场次
-    @GetMapping("/movie_sessions/{movieId}")
-    public ResponseEntity<ApiResponse<List<SessionDetailResponse>>> getMovieSessions(@PathVariable Long movieId) {
-        try {
-            // 这里需要实现获取电影场次的逻辑
-            // 暂时返回空列表
-            return ResponseEntity.ok(ApiResponse.success(List.of()));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error("获取电影场次失败"));
-        }
-    }
+//    @GetMapping("/movie_sessions/{movieId}")
+//    public ResponseEntity<ApiResponse<List<SessionDetailResponse>>> getMovieSessions(@PathVariable Long movieId) {
+//        try {
+//            // 这里需要实现获取电影场次的逻辑
+//            // 暂时返回空列表
+//            return ResponseEntity.ok(ApiResponse.success(List.of()));
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(ApiResponse.error("获取电影场次失败"));
+//        }
+//    }
 }

@@ -1,6 +1,7 @@
 package com.movieticket.controller;
 
 import com.movieticket.dto.ApiResponse;
+import com.movieticket.dto.UserStatsResponse;
 import com.movieticket.dto.request.order.OrderCreateRequest;
 import com.movieticket.dto.response.order.OrderResponse;
 import com.movieticket.entity.Order;
@@ -36,6 +37,8 @@ public class OrderController {
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
 
+
+
     @PostMapping
     public ResponseEntity<ApiResponse<OrderResponse>> createOrder(
             @RequestHeader("Authorization") String token,
@@ -52,6 +55,12 @@ public class OrderController {
             }
             if (sessionOpt.isEmpty()) {
                 return ResponseEntity.badRequest().body(ApiResponse.error("场次不存在"));
+            }
+
+            // 检查座位是否可用
+            boolean seatsAvailable = sessionService.checkSeatAvailability(request.getSessionId(), request.getSeatNumbers());
+            if (!seatsAvailable) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("座位已被预订或不可用"));
             }
 
             User user = userOpt.get();
@@ -79,6 +88,21 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/stats")
+    public ResponseEntity<ApiResponse<UserStatsResponse>> getOrderStats(
+            @RequestHeader("Authorization") String token) {
+        try {
+            String authToken = token.substring(7);
+            Long userId = jwtUtil.getUserIdFromToken(authToken);
+
+            // 获取用户订单统计
+            UserStatsResponse stats = userService.getUserStats(userId);
+
+            return ResponseEntity.ok(ApiResponse.success(stats));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("获取订单统计失败"));
+        }
+    }
     @GetMapping("/user")
     public ResponseEntity<ApiResponse<Page<OrderResponse>>> getUserOrders(
             @RequestHeader("Authorization") String token,
@@ -140,6 +164,8 @@ public class OrderController {
                 if (!order.getUser().getId().equals(userId)) {
                     return ResponseEntity.badRequest().body(ApiResponse.error("无权操作此订单"));
                 }
+                
+
 
                 orderService.payOrder(id);
                 return ResponseEntity.ok(ApiResponse.success("支付成功", null));
@@ -168,7 +194,10 @@ public class OrderController {
                 if (!order.getUser().getId().equals(userId)) {
                     return ResponseEntity.badRequest().body(ApiResponse.error("无权操作此订单"));
                 }
-
+                // 检查订单是否已经支付
+                if (order.getStatus() == Order.OrderStatus.CANCELLED) {
+                    return ResponseEntity.badRequest().body(ApiResponse.error("订单已取消"));
+                }
                 orderService.cancelOrder(id);
                 return ResponseEntity.ok(ApiResponse.success("取消成功", null));
             } else {

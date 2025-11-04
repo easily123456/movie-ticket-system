@@ -1,5 +1,6 @@
 package com.movieticket.service.impl;
 
+import com.movieticket.dto.response.comment.CommentStatsResponse;
 import com.movieticket.entity.Comment;
 import com.movieticket.entity.Movie;
 import com.movieticket.entity.User;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -137,5 +139,34 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public long getCommentCountByMovie(Long movieId) {
         return commentRepository.countByMovie(movieId);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public CommentStatsResponse getCommentStatsByMovie(Long movieId) {
+        CommentStatsResponse stats = new CommentStatsResponse();
+        stats.setMovieId(movieId);
+        stats.setTotalComments(commentRepository.countByMovie(movieId));
+        Double averageRating = commentRepository.getAverageRatingByMovie(movieId);
+        stats.setAverageRating(averageRating != null ? BigDecimal.valueOf(averageRating) : null);
+        
+        // 实现星级统计功能 (按评分范围统计)
+        stats.setFiveStarCount(commentRepository.countByMovieIdAndFiveStar(movieId));
+        stats.setFourStarCount(commentRepository.countByMovieIdAndFourStar(movieId));
+        stats.setThreeStarCount(commentRepository.countByMovieIdAndThreeStar(movieId));
+        stats.setTwoStarCount(commentRepository.countByMovieIdAndTwoStar(movieId));
+        stats.setOneStarCount(commentRepository.countByMovieIdAndOneStar(movieId));
+        
+        return stats;
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Comment> getLatestCommentsByMovie(Long movieId, int limit) {
+        Movie movie = movieService.getMovieById(movieId)
+                .orElseThrow(() -> new RuntimeException("电影不存在"));
+        Pageable pageable = PageRequest.of(0, limit);
+        Page<Comment> page = commentRepository.findByMovieAndStatusTrueOrderByCreateTimeDesc(movie, pageable);
+        return page.getContent();
     }
 }

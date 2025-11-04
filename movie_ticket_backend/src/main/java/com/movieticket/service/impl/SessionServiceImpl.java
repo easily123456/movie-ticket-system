@@ -351,4 +351,11 @@ public class SessionServiceImpl implements SessionService {
             sessionRepository.save(session);
         }
     }
+    
+    // 根据日期获取场次
+    @Transactional(readOnly = true)
+    @Override
+    public List<Session> getSessionsByDate(LocalDate date) {
+        return sessionRepository.findSessionsByDate(date.atStartOfDay());
+    }
 }

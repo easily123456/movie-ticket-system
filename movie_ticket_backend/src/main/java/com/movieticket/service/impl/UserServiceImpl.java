@@ -182,6 +182,10 @@ public class UserServiceImpl implements UserService {
         
         UserStatsResponse stats = new UserStatsResponse();
         
+        // 设置用户基本信息
+        stats.setUserId(user.getId());
+        stats.setUserName(user.getUsername());
+        
         // 订单统计
         stats.setTotalOrders(orderRepository.countByUser(user));
         stats.setPendingOrders(orderRepository.countByUserAndStatus(user, com.movieticket.entity.Order.OrderStatus.PENDING));

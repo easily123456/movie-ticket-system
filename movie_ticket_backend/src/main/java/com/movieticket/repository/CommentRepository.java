@@ -41,4 +41,20 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     
     @Query("SELECT COUNT(c) FROM Comment c WHERE c.movie.id = :movieId AND c.status = true")
     long countByMovieId(@Param("movieId") Long movieId);
+    
+    // 统计各星级评论数量 (按评分范围)
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.movie.id = :movieId AND c.rating >= 4.5 AND c.rating <= 5.0 AND c.status = true")
+    long countByMovieIdAndFiveStar(@Param("movieId") Long movieId);
+    
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.movie.id = :movieId AND c.rating >= 4.0 AND c.rating < 4.5 AND c.status = true")
+    long countByMovieIdAndFourStar(@Param("movieId") Long movieId);
+    
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.movie.id = :movieId AND c.rating >= 3.0 AND c.rating < 4.0 AND c.status = true")
+    long countByMovieIdAndThreeStar(@Param("movieId") Long movieId);
+    
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.movie.id = :movieId AND c.rating >= 2.0 AND c.rating < 3.0 AND c.status = true")
+    long countByMovieIdAndTwoStar(@Param("movieId") Long movieId);
+    
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.movie.id = :movieId AND c.rating >= 1.0 AND c.rating < 2.0 AND c.status = true")
+    long countByMovieIdAndOneStar(@Param("movieId") Long movieId);
 }
