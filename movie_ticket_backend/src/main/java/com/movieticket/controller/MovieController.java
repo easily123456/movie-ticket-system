@@ -3,6 +3,8 @@ package com.movieticket.controller;
 import com.movieticket.dto.ApiResponse;
 import com.movieticket.dto.request.movie.MovieQueryRequest;
 import com.movieticket.dto.response.movie.MovieResponse;
+import com.movieticket.entity.Genre;
+import com.movieticket.service.GenreService;
 import com.movieticket.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,9 +20,12 @@ import java.util.Optional;
 public class MovieController {
 
     private final MovieService movieService;
+    private final GenreService genreService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<MovieResponse>>> getMovies(MovieQueryRequest request) {
+    public ResponseEntity<ApiResponse<Page<MovieResponse>>> getMovies(
+            MovieQueryRequest request) {
+        
         try {
             Page<MovieResponse> movies = movieService.getMovies(request);
             return ResponseEntity.ok(ApiResponse.success(movies));
@@ -76,17 +81,32 @@ public class MovieController {
         }
     }
 
-    @GetMapping("/genre/{genreId}")
+    @GetMapping("/by-genre/{genreId}")
     public ResponseEntity<ApiResponse<Page<MovieResponse>>> getMoviesByGenre(
             @PathVariable Long genreId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size) {
         try {
+            if (!genreService.existsById(genreId)) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("电影类型不存在"));
+            }
+
             Page<MovieResponse> movies = movieService.getMoviesByGenre(genreId, 
                 org.springframework.data.domain.PageRequest.of(page, size));
+
             return ResponseEntity.ok(ApiResponse.success(movies));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error("获取类型电影失败"));
+        }
+    }
+
+    @GetMapping("/genres")
+    public ResponseEntity<ApiResponse<List<Genre>>> getMovieGenres() {
+        try {
+            List<Genre> genres = genreService.getAllActiveGenres();
+            return ResponseEntity.ok(ApiResponse.success(genres));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("获取电影类型失败"));
         }
     }
 
@@ -104,14 +124,5 @@ public class MovieController {
         }
     }
 
-    @GetMapping("/genres")
-    public ResponseEntity<ApiResponse<List<Object[]>>> getMovieGenres() {
-        try {
-            // 这里应该调用GenreService获取所有类型
-            // 暂时返回空列表
-            return ResponseEntity.ok(ApiResponse.success(List.of()));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error("获取电影类型失败"));
-        }
-    }
+
 }

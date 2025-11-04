@@ -10,17 +10,41 @@ import com.movieticket.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+
+// 添加需要的导入
+import com.movieticket.service.OrderService;
+import com.movieticket.service.FavoriteService;
+import com.movieticket.service.CommentService;
+import com.movieticket.entity.Order;
+import com.movieticket.entity.Favorite;
+import com.movieticket.entity.Comment;
+import com.movieticket.dto.response.order.OrderResponse;
+import com.movieticket.dto.response.movie.MovieResponse;
+import com.movieticket.dto.response.comment.CommentResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 
+    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    // 添加新的服务依赖
+    private final OrderService orderService;
+    private final FavoriteService favoriteService;
+    private final CommentService commentService;
+    private final ObjectMapper objectMapper;
 
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(@RequestHeader("Authorization") String token) {//获取用户信息
@@ -90,7 +114,8 @@ public class UserController {
                 }
 
                 // 从请求体中获取新密码，并将其设置给用户对象
-                user.setPassword(request.getNewPassword());
+//                user.setPassword(request.getNewPassword());
+                user.setPassword(passwordEncoder.encode(request.getNewPassword()));
                 userService.updateUser(user);
 
                 return ResponseEntity.ok(ApiResponse.success("密码修改成功", null));
@@ -100,5 +125,134 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error("Token无效"));
         }
+    }
+
+    /**
+     * 获取用户订单列表
+     */
+    @GetMapping("/orders")
+    public ResponseEntity<ApiResponse<Page<OrderResponse>>> getOrders(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            String authToken = token.substring(7);
+            Long userId = jwtUtil.getUserIdFromToken(authToken);
+
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Order> orders = orderService.getOrdersByUser(userId, pageable);
+            Page<OrderResponse> response = orders.map(this::convertToOrderResponse);
+
+            return ResponseEntity.ok(ApiResponse.success(response));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("获取订单失败"));
+        }
+    }
+
+    /**
+     * 获取用户收藏列表
+     */
+    @GetMapping("/favorites")
+    public ResponseEntity<ApiResponse<Page<MovieResponse>>> getFavorites(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            String authToken = token.substring(7);
+            Long userId = jwtUtil.getUserIdFromToken(authToken);
+
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Favorite> favorites = favoriteService.getFavoritesByUser(userId, pageable);
+            Page<MovieResponse> response = favorites.map(favorite -> convertToMovieResponse(favorite.getMovie()));
+
+            return ResponseEntity.ok(ApiResponse.success(response));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("获取收藏失败"));
+        }
+    }
+
+    /**
+     * 获取用户评论列表
+     */
+    @GetMapping("/comments")
+    public ResponseEntity<ApiResponse<Page<CommentResponse>>> getComments(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            String authToken = token.substring(7);
+            Long userId = jwtUtil.getUserIdFromToken(authToken);
+
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Comment> comments = commentService.getCommentsByUser(userId, pageable);
+            Page<CommentResponse> response = comments.map(this::convertToCommentResponse);
+
+            return ResponseEntity.ok(ApiResponse.success(response));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("获取评论失败"));
+        }
+    }
+
+    /**
+     * 转换订单实体为响应DTO
+     */
+    private OrderResponse convertToOrderResponse(Order order) {
+        try {
+            OrderResponse response = new OrderResponse(order);
+
+            List<String> seatNumbers = objectMapper.readValue(order.getSeatNumbers(), new TypeReference<List<String>>() {});
+            String seatNumbersString = String.join(",", seatNumbers);
+            response.setSeatNumbers(seatNumbersString);
+
+            return response;
+        } catch (Exception e) {
+            throw new RuntimeException("转换订单响应失败", e);
+        }
+    }
+
+    /**
+     * 转换电影实体为响应DTO
+     */
+    private MovieResponse convertToMovieResponse(com.movieticket.entity.Movie movie) {
+        MovieResponse response = new MovieResponse();
+        response.setId(movie.getId());
+        response.setTitle(movie.getTitle());
+        response.setOriginalTitle(movie.getOriginalTitle());
+        if (movie.getGenre() != null) {
+            response.setGenreName(movie.getGenre().getName());
+            response.setGenreId(movie.getGenre().getId());
+        }
+        response.setDuration(movie.getDuration());
+        response.setDirector(movie.getDirector());
+        response.setActors(movie.getActors());
+        response.setReleaseDate(movie.getReleaseDate());
+        response.setCountry(movie.getCountry());
+        response.setLanguage(movie.getLanguage());
+        response.setDescription(movie.getDescription());
+        response.setPosterUrl(movie.getPosterUrl());
+        response.setTrailerUrl(movie.getTrailerUrl());
+        response.setRating(movie.getRating());
+        response.setVoteCount(movie.getVoteCount());
+        response.setPrice(movie.getPrice());
+        response.setIsHot(movie.getIsHot());
+        response.setStatus(movie.getStatus());
+        return response;
+    }
+
+    /**
+     * 转换评论实体为响应DTO
+     */
+    private CommentResponse convertToCommentResponse(Comment comment) {
+        CommentResponse response = new CommentResponse();
+        response.setId(comment.getId());
+        response.setUserId(comment.getUser().getId());
+        response.setUsername(comment.getUser().getUsername());
+        response.setAvatar(comment.getUser().getAvatar());
+        response.setMovieId(comment.getMovie().getId());
+        response.setContent(comment.getContent());
+        response.setRating(comment.getRating());
+        response.setLikeCount(comment.getLikeCount());
+        response.setCreateTime(comment.getCreateTime());
+        return response;
     }
 }

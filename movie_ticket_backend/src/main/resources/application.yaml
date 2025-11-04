@@ -30,14 +30,16 @@ spring:
     hibernate: #jpa的实现
       ddl-auto: update #根据实体类自动更新表结构
     show-sql: true #输出 Hibernate 生成的 SQL 语句
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
         format_sql: true #格式化输出的 SQL 语句
         dialect: org.hibernate.dialect.MySQL8Dialect  #指定 Hibernate 使用的数据库方言
         jdbc:
           time_zone: Asia/Shanghai #设置 Hibernate 使用的 JDBC 连接时区
-        connection:
-          provider_disables_autocommit: true  #禁用 Hibernate 自动提交模式
+        # provider_disables_autocommit 配置已移除
+        # Spring 的 PlatformTransactionManager 会自动管理事务和连接的自动提交状态
+        # 手动设置此配置会导致事务回滚失败
   # 文件上传配置
   servlet:
     multipart:

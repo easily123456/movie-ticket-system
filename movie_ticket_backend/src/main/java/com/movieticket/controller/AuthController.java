@@ -106,4 +106,13 @@ public class AuthController {
             return ResponseEntity.badRequest().body(ApiResponse.error("Token刷新失败"));
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<String>> logout() {
+        // JWT令牌是无状态的，登出操作通常由前端删除令牌来实现
+        // 后端可以将令牌加入黑名单（如果实现了令牌黑名单机制）
+        return ResponseEntity.ok(ApiResponse.success("登出成功", null));
+    }
+
+    
 }

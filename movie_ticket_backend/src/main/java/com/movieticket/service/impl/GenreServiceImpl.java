@@ -120,4 +120,9 @@ public class GenreServiceImpl implements GenreService {
         }
         genreRepository.saveAll(genres);
     }
+
+    @Override
+    public boolean existsById(Long id){
+        return genreRepository.existsById(id);
+    }
 }

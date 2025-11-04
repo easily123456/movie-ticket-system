@@ -1,0 +1,166 @@
+		-- 创建数据库
+CREATE DATABASE IF NOT EXISTS movie_ticket_system 
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE movie_ticket_system;
+
+-- 删除已存在的表（按依赖关系逆序）
+DROP TABLE IF EXISTS system_config;
+DROP TABLE IF EXISTS favorites;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS halls;
+DROP TABLE IF EXISTS movies;
+DROP TABLE IF EXISTS news;
+DROP TABLE IF EXISTS genres;
+DROP TABLE IF EXISTS users;
+
+-- 创建表（按依赖关系顺序）
+-- 用户表
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '用户ID',
+    username VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
+    password VARCHAR(255) NOT NULL COMMENT '密码',
+    email VARCHAR(100) NOT NULL UNIQUE COMMENT '邮箱',
+    phone VARCHAR(20) COMMENT '手机号',
+    avatar VARCHAR(255) COMMENT '头像URL',
+    role ENUM('ADMIN', 'USER') DEFAULT 'USER' COMMENT '角色',
+    status TINYINT DEFAULT 1 COMMENT '状态(0:禁用,1:正常)',
+    last_login_time DATETIME COMMENT '最后登录时间',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
+
+-- 电影类型表
+CREATE TABLE genres (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '类型ID',
+    name VARCHAR(50) NOT NULL UNIQUE COMMENT '类型名称',
+    description TEXT COMMENT '类型描述',
+    status TINYINT DEFAULT 1 COMMENT '状态(0:禁用,1:正常)',
+    sort_order INT DEFAULT 0 COMMENT '排序',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='电影类型表';
+
+-- 资讯表
+CREATE TABLE news (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '资讯ID',
+    title VARCHAR(200) NOT NULL COMMENT '资讯标题',
+    content TEXT NOT NULL COMMENT '资讯内容',
+    cover_image VARCHAR(255) COMMENT '封面图片',
+    author VARCHAR(50) COMMENT '作者',
+    view_count INT DEFAULT 0 COMMENT '浏览数',
+    is_top TINYINT DEFAULT 0 COMMENT '是否置顶(0:否,1:是)',
+    status TINYINT DEFAULT 1 COMMENT '状态(0:草稿,1:发布)',
+    publish_time DATETIME COMMENT '发布时间',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='资讯表';
+
+-- 电影表
+CREATE TABLE movies (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '电影ID',
+    title VARCHAR(200) NOT NULL COMMENT '电影标题',
+    original_title VARCHAR(200) COMMENT '原始标题',
+    genre_id BIGINT NOT NULL COMMENT '类型ID',
+    duration INT COMMENT '时长(分钟)',
+    director VARCHAR(100) COMMENT '导演',
+    actors TEXT COMMENT '演员列表',
+    release_date DATE COMMENT '上映日期',
+    country VARCHAR(50) COMMENT '国家/地区',
+    language VARCHAR(50) COMMENT '语言',
+    description TEXT COMMENT '电影描述',
+    poster_url VARCHAR(255) COMMENT '海报URL',
+    trailer_url VARCHAR(255) COMMENT '预告片URL',
+    rating DECIMAL(3,1) DEFAULT 0.0 COMMENT '评分',
+    vote_count INT DEFAULT 0 COMMENT '评分人数',
+    price DECIMAL(10,2) NOT NULL COMMENT '基础价格',
+    is_hot TINYINT DEFAULT 0 COMMENT '是否热门(0:否,1:是)',
+    status TINYINT DEFAULT 1 COMMENT '状态(0:下架,1:上架)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='电影表';
+
+-- 放映厅表
+CREATE TABLE halls (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '放映厅ID',
+    name VARCHAR(100) NOT NULL COMMENT '放映厅名称',
+    capacity INT NOT NULL COMMENT '容量',
+    seat_layout TEXT COMMENT '座位布局(JSON格式)',
+    status TINYINT DEFAULT 1 COMMENT '状态(0:禁用,1:正常)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='放映厅表';
+
+-- 场次表
+CREATE TABLE sessions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '场次ID',
+    movie_id BIGINT NOT NULL COMMENT '电影ID',
+    hall_id BIGINT NOT NULL COMMENT '放映厅ID',
+    start_time DATETIME NOT NULL COMMENT '开始时间',
+    end_time DATETIME NOT NULL COMMENT '结束时间',
+    price DECIMAL(10,2) NOT NULL COMMENT '实际价格',
+    available_seats INT NOT NULL COMMENT '可用座位数',
+    booked_seats INT DEFAULT 0 COMMENT '已预订座位数',
+    status TINYINT DEFAULT 1 COMMENT '状态(0:取消,1:正常)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+    FOREIGN KEY (hall_id) REFERENCES halls(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='场次表';
+
+-- 订单表
+CREATE TABLE orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '订单ID',
+    order_no VARCHAR(50) NOT NULL UNIQUE COMMENT '订单号',
+    user_id BIGINT NOT NULL COMMENT '用户ID',
+    session_id BIGINT NOT NULL COMMENT '场次ID',
+    seat_numbers VARCHAR(500) NOT NULL COMMENT '座位号(JSON数组)',
+    seat_count INT NOT NULL COMMENT '座位数量',
+    total_price DECIMAL(10,2) NOT NULL COMMENT '总金额',
+    status ENUM('PENDING', 'PAID', 'CANCELLED', 'REFUNDED') DEFAULT 'PENDING' COMMENT '订单状态',
+    pay_time DATETIME COMMENT '支付时间',
+    cancel_time DATETIME COMMENT '取消时间',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单表';
+
+-- 评论表
+CREATE TABLE comments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '评论ID',
+    user_id BIGINT NOT NULL COMMENT '用户ID',
+    movie_id BIGINT NOT NULL COMMENT '电影ID',
+    content TEXT NOT NULL COMMENT '评论内容',
+    rating DECIMAL(2,1) NOT NULL COMMENT '评分(0.0-5.0)',
+    like_count INT DEFAULT 0 COMMENT '点赞数',
+    status TINYINT DEFAULT 1 COMMENT '状态(0:删除,1:正常)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='评论表';
+
+-- 收藏表
+CREATE TABLE favorites (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '收藏ID',
+    user_id BIGINT NOT NULL COMMENT '用户ID',
+    movie_id BIGINT NOT NULL COMMENT '电影ID',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    UNIQUE KEY uk_user_movie (user_id, movie_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='收藏表';
+
+-- 系统配置表
+CREATE TABLE system_config (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '配置ID',
+    config_key VARCHAR(100) NOT NULL UNIQUE COMMENT '配置键',
+    config_value TEXT COMMENT '配置值',
+    description VARCHAR(200) COMMENT '配置描述',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统配置表';

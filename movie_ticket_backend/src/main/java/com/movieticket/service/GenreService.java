@@ -19,4 +19,6 @@ public interface GenreService {
     Page<Genre> getGenresByStatus(Boolean status, Pageable pageable);
     void batchDeleteGenres(List<Long> genreIds);
     void batchChangeGenreStatus(List<Long> genreIds, Boolean status);
+
+    boolean existsById(Long genreId);
 }

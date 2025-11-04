@@ -5,6 +5,7 @@ import com.movieticket.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -16,6 +17,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public User register(User user) {
         // 检查用户名是否已存在
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
@@ -33,12 +35,12 @@ public class AuthService {
         // 设置默认值
         user.setRole(User.Role.USER);
         user.setStatus(true);
-        user.setCreateTime(LocalDateTime.now());
-        user.setUpdateTime(LocalDateTime.now());
+        // createTime 和 updateTime 由 JPA Auditing 自动设置，无需手动设置
 
         return userRepository.save(user);
     }
 
+    @Transactional
     public Optional<User> login(String username, String password) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         if (userOpt.isPresent()) {

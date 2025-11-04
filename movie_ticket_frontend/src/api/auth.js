@@ -43,5 +43,13 @@ export const authApi = {
       url: '/api/auth/refresh',
       method: 'post'
     })
+  },
+
+  // 登出
+  logout() {
+    return request({
+      url: '/api/auth/logout',
+      method: 'post'
+    })
   }
 }

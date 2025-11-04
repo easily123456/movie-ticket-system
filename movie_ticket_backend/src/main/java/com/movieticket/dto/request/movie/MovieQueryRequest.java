@@ -26,4 +26,7 @@ public class MovieQueryRequest {
 
     private Integer page = 0;
     private Integer size = 12;
+    
+    // 添加排序字段，用于接收Spring Data REST风格的排序参数
+    private String sort;
 }

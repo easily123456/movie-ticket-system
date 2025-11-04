@@ -1,45 +1,25 @@
 import request from '@/utils/request'
-
-// 认证相关API
-export const authApi = {
-  login(data) {
-    return request.post('/auth/login', data)// 发送POST请求到'/auth/login'端点，data为请求体
-  },
-  register(data) {
-    return request.post('/auth/register', data)
-  },
-  checkUsername(username) {
-    return request.get('/auth/check-username', { params: { username } })
-    // 发送GET请求到'/auth/check-username'端点，携带查询参数username
-    // params选项用于指定查询参数，会被序列化并附加到URL中，如：/auth/check-username?username=someUsername
-  },
-  checkEmail(email) {
-    return request.get('/auth/check-email', { params: { email } })
-  },
-  logout() {
-    return request.post('/auth/logout')
-  }
-}
+import { authApi } from './auth'
 
 // 用户相关API
 export const userApi = {
   getProfile() {
-    return request.get('/user/profile')
+    return request.get('/api/user/profile')
   },
   updateProfile(data) {
-    return request.put('/user/profile', data)
+    return request.put('/api/user/profile', data)
   },
   changePassword(data) {
-    return request.post('/user/change-password', data)
+    return request.post('/api/user/change-password', data)
   },
   getOrders(params = {}) {
-    return request.get('/orders/user', { params })
+    return request.get('/api/user/orders', { params })
   },
   getFavorites(params = {}) {
-    return request.get('/favorites', { params })
+    return request.get('/api/user/favorites', { params })
   },
   getComments(params = {}) {
-    return request.get('/comments/user', { params })
+    return request.get('/api/user/comments', { params })
   }
 }
 
@@ -72,7 +52,7 @@ export const movieApi = {
 
   // 根据类型获取电影
   getMoviesByGenre(genreId, page = 0, size = 12) {
-    return request.get(`/api/movies/genre/${genreId}?page=${page}&size=${size}`)
+    return request.get(`/api/movies/by-genre/${genreId}?page=${page}&size=${size}`)
   },
 
   // 获取电影详情
@@ -86,15 +66,15 @@ export const movieApi = {
   },
 
   // 获取电影场次
-  getMovieSessions(movieId) {
-    return request.get(`/api/sessions/movie/${movieId}`)
-  }
+  // getMovieSessions(movieId) {
+  //   return request.get(`/api/sessions/movie/${movieId}`)
+  // }
 }
 
 // 场次相关API
 export const sessionApi = {
   getSessionsByMovie(movieId) {
-    return request.get(`/sessions/movie/${movieId}`)
+    return request.get(`/api/sessions/movie/${movieId}`)
   },
     // 获取场次详情（包含座位信息）
   getSessionDetail(sessionId) {
@@ -120,10 +100,10 @@ export const sessionApi = {
 //订单相关API
 export const orderApi = {
   createOrder(data) {
-    return request.post('/orders', data)
+    return request.post('/api/orders', data)
   },
   getOrderStats() {
-    return request.get('/orders/stats')
+    return request.get('/api/orders/stats')
   },
     // 创建选座订单
   createSeatOrder(data) {
@@ -154,7 +134,7 @@ export const orderApi = {
 // 评论相关API
 export const commentApi = {
   updateComment(id, data) {
-    return request.put(`/comments/${id}`, data)
+    return request.put(`/api/comments/${id}`, data)
   },
     // 获取评论列表
   getComments(params) {
@@ -248,20 +228,20 @@ export const favoriteApi = {
 // 资讯相关API
 export const newsApi = {
   getNewsList(params = {}) {
-    return request.get('/news', { params })
+    return request.get('/api/news', { params })
   },
   getNewsDetail(id) {
-    return request.get(`/news/${id}`)
+    return request.get(`/api/news/${id}`)
   },
   getTopNews() {
-    return request.get('/news/top')
+    return request.get('/api/news/top')
   }
 }
 
 // 类型相关API
 export const genreApi = {
   getGenres() {
-    return request.get('/genres')
+    return request.get('/api/genres')
   }
 }
 
@@ -269,70 +249,70 @@ export const genreApi = {
 export const adminApi = {
   // 用户管理
   getUsers(params = {}) {
-    return request.get('/admin/users', { params })
+    return request.get('/api/admin/users', { params })
   },
   updateUserStatus(id, status) {
-    return request.put(`/admin/users/${id}/status`, null, {
+    return request.put(`/api/admin/users/${id}/status`, null, {
       params: { status }
     })
   },
   deleteUser(id) {
-    return request.delete(`/admin/users/${id}`)
+    return request.delete(`/api/admin/users/${id}`)
   },
 
   // 电影管理
   createMovie(data) {
-    return request.post('/admin/movies', data)
+    return request.post('/api/admin/movies', data)
   },
   updateMovie(id, data) {
-    return request.put(`/admin/movies/${id}`, data)
+    return request.put(`/api/admin/movies/${id}`, data)
   },
   updateMovieStatus(id, status) {
-    return request.put(`/admin/movies/${id}/status`, null, {
+    return request.put(`/api/admin/movies/${id}/status`, null, {
       params: { status }
     })
   },
   toggleHotMovie(id, isHot) {
-    return request.put(`/admin/movies/${id}/hot`, null, {
+    return request.put(`/api/admin/movies/${id}/hot`, null, {
       params: { isHot }
     })
   },
 
   // 场次管理
   createSession(data) {
-    return request.post('/admin/sessions', data)
+    return request.post('/api/admin/sessions', data)
   },
   updateSession(id, data) {
-    return request.put(`/admin/sessions/${id}`, data)
+    return request.put(`/api/admin/sessions/${id}`, data)
   },
   deleteSession(id) {
-    return request.delete(`/admin/sessions/${id}`)
+    return request.delete(`/api/admin/sessions/${id}`)
   },
   // 订单管理
   getAdminOrders(params = {}) {
-    return request.get('/admin/orders', { params })
+    return request.get('/api/admin/orders', { params })
   },
   // 资讯管理
   createNews(data) {
-    return request.post('/admin/news', data)
+    return request.post('/api/admin/news', data)
   },
   updateNews(id, data) {
-    return request.put(`/admin/news/${id}`, data)
+    return request.put(`/api/admin/news/${id}`, data)
   },
   updateNewsStatus(id, status) {
-    return request.put(`/admin/news/${id}/status`, null, {
+    return request.put(`/api/admin/news/${id}/status`, null, {
       params: { status }
     })
   },
   toggleTopNews(id, isTop) {
-    return request.put(`/admin/news/${id}/top`, null, {
+    return request.put(`/api/admin/news/${id}/top`, null, {
       params: { isTop }
     })
   },
 
   // 仪表盘
   getDashboardStats() {
-    return request.get('/admin/dashboard/stats')
+    return request.get('/api/admin/dashboard/stats')
   }
 }
 
