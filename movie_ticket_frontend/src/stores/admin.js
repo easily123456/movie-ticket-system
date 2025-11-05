@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { adminApi } from '@/api'
+import { adminApi } from '@/api/index'
 
 export const useAdminStore = defineStore('admin', () => {
   const dashboardStats = ref({})

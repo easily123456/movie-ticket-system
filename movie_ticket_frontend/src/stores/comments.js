@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { commentApi } from '@/api'
+import { commentApi } from '@/api/index'
 
 export const useCommentStore = defineStore('comment', () => {
   const comments = ref([])

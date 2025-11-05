@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { sessionApi } from '@/api'
+import { sessionApi } from '@/api/index'
 
 export const useSessionStore = defineStore('session', () => {
   const sessions = ref([])

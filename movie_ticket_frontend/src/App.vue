@@ -25,6 +25,8 @@ onMounted(() => {
 })
 </script>
 <style lang="scss">
+@use "sass:color";
+
 #app {
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
     'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
@@ -55,17 +57,17 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  background: lighten($bg-gray, 2%);
+  background: color.adjust($bg-gray, $lightness: 2%);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: darken($border-base, 15%);
+  background: color.adjust($border-base, $lightness: -15%);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: darken($border-base, 25%);
+  background: color.adjust($border-base, $lightness: -25%);
 }
 
 /* 响应式图片 */

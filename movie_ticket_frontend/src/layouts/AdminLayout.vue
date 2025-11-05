@@ -1,6 +1,5 @@
 <template>
   <div class="admin-layout">
-    <!-- 侧边栏 -->
     <aside class="sidebar" :class="{ collapsed: sidebarCollapsed }">
       <div class="sidebar-header">
         <h2 v-if="!sidebarCollapsed" class="logo">电影票务管理系统</h2>
@@ -50,7 +49,7 @@
         </el-menu-item>
 
         <el-menu-item index="/admin/news">
-          <el-icon><News /></el-icon>
+          <el-icon><Reading /></el-icon>
           <template #title>资讯管理</template>
         </el-menu-item>
 
@@ -65,9 +64,7 @@
       </el-menu>
     </aside>
 
-    <!-- 主内容区 -->
     <div class="main-container">
-      <!-- 顶部导航 -->
       <header class="header">
         <div class="header-left">
           <el-breadcrumb separator="/">
@@ -108,7 +105,6 @@
         </div>
       </header>
 
-      <!-- 内容区域 -->
       <main class="content">
         <router-view />
       </main>
@@ -122,7 +118,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   Monitor, Expand, Fold, Odometer, Film,
-  Document, User, News, Setting,
+  Document, User, Reading, Setting,
   ArrowDown, House, SwitchButton
 } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
@@ -180,26 +176,27 @@ const handleLogout = async () => {
   }
 }
 
-// 从store恢复侧边栏状态
 watch(() => appStore.sidebarCollapsed, (newVal) => {
   sidebarCollapsed.value = newVal
 }, { immediate: true })
 </script>
 
 <style scoped lang="scss">
+@use '@/assets/styles/variables.scss';
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background: $bg-gray;
+  background: variables.$bg-gray;
 }
 
 .sidebar {
   width: 240px;
-  background: $secondary-color;
-  transition: $transition-base;
+  background: variables.$secondary-color;
+  transition: variables.$transition-base;
   display: flex;
   flex-direction: column;
-  z-index: $z-index-sidebar;
+  z-index: variables.$z-index-sidebar;
 
   &.collapsed {
     width: 64px;
@@ -210,11 +207,11 @@ watch(() => appStore.sidebarCollapsed, (newVal) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $spacing-lg;
-  border-bottom: 1px solid rgba($bg-white, 0.1);
+  padding: variables.$spacing-lg;
+  border-bottom: 1px solid rgba(variables.$bg-white, 0.1);
 
   .logo {
-    color: $bg-white;
+    color: variables.$bg-white;
     font-size: 18px;
     font-weight: 600;
     margin: 0;
@@ -223,17 +220,17 @@ watch(() => appStore.sidebarCollapsed, (newVal) => {
   }
 
   .sidebar-icon {
-    color: $bg-white;
+    color: variables.$bg-white;
     font-size: 24px;
   }
 
   .collapse-btn {
-    color: $bg-white;
+    color: variables.$bg-white;
     font-size: 16px;
     padding: 0;
 
     &:hover {
-      background: rgba($bg-white, 0.1);
+      background: rgba(variables.$bg-white, 0.1);
     }
   }
 }
@@ -250,18 +247,18 @@ watch(() => appStore.sidebarCollapsed, (newVal) => {
 
   :deep(.el-menu-item),
   :deep(.el-sub-menu__title) {
-    color: rgba($bg-white, 0.8);
+    color: rgba(variables.$bg-white, 0.8);
     height: 48px;
     line-height: 48px;
 
     &:hover {
-      background: rgba($bg-white, 0.1);
-      color: $bg-white;
+      background: rgba(variables.$bg-white, 0.1);
+      color: variables.$bg-white;
     }
 
     &.is-active {
-      background: $primary-color;
-      color: $bg-white;
+      background: variables.$primary-color;
+      color: variables.$bg-white;
     }
 
     .el-icon {
@@ -288,28 +285,28 @@ watch(() => appStore.sidebarCollapsed, (newVal) => {
 }
 
 .header {
-  background: $bg-white;
-  padding: $spacing-md $spacing-lg;
-  border-bottom: 1px solid $border-light;
+  background: variables.$bg-white;
+  padding: variables.$spacing-md variables.$spacing-lg;
+  border-bottom: 1px solid variables.$border-light;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: $shadow-base;
-  z-index: $z-index-header;
+  box-shadow: variables.$shadow-base;
+  z-index: variables.$z-index-header;
 
   .header-left {
     :deep(.el-breadcrumb) {
-      font-size: $font-size-base;
+      font-size: variables.$font-size-base;
 
       .el-breadcrumb__inner {
-        color: $text-regular;
+        color: variables.$text-regular;
 
         &.is-link {
-          color: $text-secondary;
+          color: variables.$text-secondary;
           font-weight: 400;
 
           &:hover {
-            color: $primary-color;
+            color: variables.$primary-color;
           }
         }
       }
@@ -321,37 +318,36 @@ watch(() => appStore.sidebarCollapsed, (newVal) => {
   .user-info {
     display: flex;
     align-items: center;
-    gap: $spacing-sm;
-    padding: $spacing-xs $spacing-sm;
-    border-radius: $border-radius-base;
+    gap: variables.$spacing-sm;
+    padding: variables.$spacing-xs variables.$spacing-sm;
+    border-radius: variables.$border-radius-base;
     cursor: pointer;
-    transition: $transition-base;
+    transition: variables.$transition-base;
 
     &:hover {
-      background: $bg-gray;
+      background: variables.$bg-gray;
     }
 
     .username {
       font-weight: 500;
-      color: $text-primary;
+      color: variables.$text-primary;
     }
   }
 }
 
 .content {
   flex: 1;
-  padding: $spacing-lg;
+  padding: variables.$spacing-lg;
   overflow: auto;
 }
 
-// 响应式设计
-@media (max-width: $breakpoint-md) {
+@media (max-width: variables.$breakpoint-md) {
   .sidebar {
     position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
-    z-index: $z-index-fixed;
+    z-index: variables.$z-index-fixed;
 
     &:not(.collapsed) {
       transform: translateX(0);

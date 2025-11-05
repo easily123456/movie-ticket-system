@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { orderApi } from '@/api'
+import { orderApi } from '@/api/index'
 
 export const useOrderStore = defineStore('order', () => {
   // State

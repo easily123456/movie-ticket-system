@@ -100,15 +100,7 @@ public class MovieController {
         }
     }
 
-    @GetMapping("/genres")
-    public ResponseEntity<ApiResponse<List<Genre>>> getMovieGenres() {
-        try {
-            List<Genre> genres = genreService.getAllActiveGenres();
-            return ResponseEntity.ok(ApiResponse.success(genres));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error("获取电影类型失败"));
-        }
-    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<MovieResponse>> getMovie(@PathVariable Long id) {

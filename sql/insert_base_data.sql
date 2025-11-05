@@ -16,12 +16,12 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 -- 插入管理员用户 (密码: admin123)
 INSERT INTO users (username, password, email, phone, avatar, role, status, last_login_time) VALUES
-('admin', '$2a$10$RnGhyvtCjUbxOcSD2b7HaeO./TRxPZlZpRqfilQHWdDTvsN.GFOri', 'admin@cinema.com', '13800138000', '/avatars/admin.jpg', 'ADMIN', 1, '2024-01-14 09:00:00'),
-('user1', '$2a$10$RnGhyvtCjUbxOcSD2b7HaeO./TRxPZlZpRqfilQHWdDTvsN.GFOri', 'user1@email.com', '13800138001', '/avatars/user1.jpg', 'USER', 1, '2024-01-14 10:30:00'),
-('user2', '$2a$10$RnGhyvtCjUbxOcSD2b7HaeO./TRxPZlZpRqfilQHWdDTvsN.GFOri', 'user2@email.com', '13800138002', '/avatars/user2.jpg', 'USER', 1, '2024-01-14 11:15:00'),
-('user3', '$2a$10$RnGhyvtCjUbxOcSD2b7HaeO./TRxPZlZpRqfilQHWdDTvsN.GFOri', 'user3@email.com', '13800138003', '/avatars/user3.jpg', 'USER', 1, '2024-01-14 14:20:00'),
-('user4', '$2a$10$RnGhyvtCjUbxOcSD2b7HaeO./TRxPZlZpRqfilQHWdDTvsN.GFOri', 'user4@email.com', '13800138004', '/avatars/user4.jpg', 'USER', 1, '2024-01-14 16:45:00'),
-('user5', '$2a$10$RnGhyvtCjUbxOcSD2b7HaeO./TRxPZlZpRqfilQHWdDTvsN.GFOri', 'user5@email.com', '13800138005', '/avatars/user5.jpg', 'USER', 1, '2024-01-14 18:30:00');
+('admin', '$2a$10$ysC9h5LYys7QDfYPIbe4kOmDE1MCMWEpRmxRqGq8LtN3lPBOat1Qm', 'admin@cinema.com', '13800138000', '/avatars/admin.jpg', 'ADMIN', 1, '2024-01-14 09:00:00'),
+('user1', '$2a$10$ysC9h5LYys7QDfYPIbe4kOmDE1MCMWEpRmxRqGq8LtN3lPBOat1Qm', 'user1@email.com', '13800138001', '/avatars/user1.jpg', 'USER', 1, '2024-01-14 10:30:00'),
+('user2', '$2a$10$ysC9h5LYys7QDfYPIbe4kOmDE1MCMWEpRmxRqGq8LtN3lPBOat1Qm', 'user2@email.com', '13800138002', '/avatars/user2.jpg', 'USER', 1, '2024-01-14 11:15:00'),
+('user3', '$2a$10$ysC9h5LYys7QDfYPIbe4kOmDE1MCMWEpRmxRqGq8LtN3lPBOat1Qm', 'user3@email.com', '13800138003', '/avatars/user3.jpg', 'USER', 1, '2024-01-14 14:20:00'),
+('user4', '$2a$10$ysC9h5LYys7QDfYPIbe4kOmDE1MCMWEpRmxRqGq8LtN3lPBOat1Qm', 'user4@email.com', '13800138004', '/avatars/user4.jpg', 'USER', 1, '2024-01-14 16:45:00'),
+('user5', '$2a$10$ysC9h5LYys7QDfYPIbe4kOmDE1MCMWEpRmxRqGq8LtN3lPBOat1Qm', 'user5@email.com', '13800138005', '/avatars/user5.jpg', 'USER', 1, '2024-01-14 18:30:00');
 
 -- 插入电影类型
 INSERT INTO genres (name, description, sort_order) VALUES

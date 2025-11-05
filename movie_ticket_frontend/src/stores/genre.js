@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { genreApi } from '@/api'
+import { genreApi } from '@/api/index'
 
 export const useGenreStore = defineStore('genre', () => {
   const genres = ref([])

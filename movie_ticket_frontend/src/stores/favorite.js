@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { favoriteApi } from '@/api'
+import { favoriteApi } from '@/api/index'
 
 export const useFavoriteStore = defineStore('favorite', () => {
   const favorites = ref([])

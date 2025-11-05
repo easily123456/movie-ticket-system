@@ -1,6 +1,5 @@
 <template>
   <div class="session-seats" v-if="session">
-    <!-- 场次信息 -->
     <div class="session-header">
       <h3 class="session-title">{{ session.movieTitle }}</h3>
       <div class="session-info">
@@ -11,11 +10,8 @@
         </span>
       </div>
     </div>
-    <!-- 座位图 -->
     <div class="seats-container">
-      <!-- 屏幕 -->
       <div class="screen">银幕</div>
-      <!-- 座位布局 -->
       <div class="seats-layout">
         <div
           v-for="row in seatLayout.rows"
@@ -41,7 +37,6 @@
           <span class="row-label">{{ getRowLabel(row) }}</span>
         </div>
       </div>
-      <!-- 座位图例 -->
       <div class="seat-legend">
         <div class="legend-item">
           <div class="seat-sample available"></div>
@@ -61,7 +56,6 @@
         </div>
       </div>
     </div>
-    <!-- 操作按钮 -->
     <div class="seats-actions">
       <el-button @click="handleClose">关闭</el-button>
       <el-button
@@ -88,17 +82,14 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-// 座位状态：0-不可用，1-可选，2-已售，3-已选（管理员选择）
 const seats = ref({})
 const selectedSeats = ref([])
 
-// 座位布局配置
 const seatLayout = reactive({
   rows: 8,
   cols: 10
 })
 
-// 计算属性
 const totalSeats = computed(() => {
   return props.session.availableSeats || 0
 })
@@ -111,25 +102,19 @@ onMounted(() => {
   loadSeatMap()
 })
 
-// 加载座位图
 const loadSeatMap = async () => {
   try {
-    // 调用API获取座位图
-    // const seatMap = await adminApi.getSessionSeats(props.session.id)
-
-    // 临时模拟数据
     const mockSeats = {}
     for (let row = 1; row <= seatLayout.rows; row++) {
       for (let col = 1; col <= seatLayout.cols; col++) {
         const seatId = `${row}-${col}`
-        // 随机设置一些已售和不可用座位
         const random = Math.random()
         if (random < 0.1) {
-          mockSeats[seatId] = 0 // 不可用
+          mockSeats[seatId] = 0
         } else if (random < 0.3) {
-          mockSeats[seatId] = 2 // 已售
+          mockSeats[seatId] = 2
         } else {
-          mockSeats[seatId] = 1 // 可选
+          mockSeats[seatId] = 1
         }
       }
     }
@@ -139,7 +124,6 @@ const loadSeatMap = async () => {
   }
 }
 
-// 获取座位类名
 const getSeatClass = (row, col) => {
   const seatId = `${row}-${col}`
   const status = seats.value[seatId]
@@ -158,16 +142,13 @@ const getSeatClass = (row, col) => {
   }
 }
 
-// 座位点击处理
 const handleSeatClick = (row, col) => {
   const seatId = `${row}-${col}`
   const status = seats.value[seatId]
 
-  // 只能选择可选或已选的座位
   if (status !== 1 && status !== 3) return
 
   if (status === 1) {
-    // 选择座位
     seats.value[seatId] = 3
     selectedSeats.value.push({
       id: seatId,
@@ -177,30 +158,21 @@ const handleSeatClick = (row, col) => {
       colIndex: col
     })
   } else {
-    // 取消选择
     seats.value[seatId] = 1
     selectedSeats.value = selectedSeats.value.filter(seat => seat.id !== seatId)
   }
 }
 
-// 获取行标签
 const getRowLabel = (row) => {
-  return String.fromCharCode(64 + row) // 1->A, 2->B, ...
+  return String.fromCharCode(64 + row)
 }
 
-// 关闭
 const handleClose = () => {
   emit('close')
 }
 
-// 保存座位状态
 const handleSaveSeats = async () => {
   try {
-    // 调用API保存座位状态
-    // await adminApi.updateSessionSeats(props.session.id, {
-    //   unavailableSeats: selectedSeats.value.map(seat => seat.id)
-    // })
-
     ElMessage.success('座位状态已更新')
     emit('close')
   } catch (error) {
@@ -210,27 +182,30 @@ const handleSaveSeats = async () => {
 }
 </script>
 <style scoped lang="scss">
+@use "sass:color";
+@use '@/assets/styles/variables.scss';
+
 .session-seats {
   .session-header {
     text-align: center;
-    margin-bottom: $spacing-lg;
+    margin-bottom: variables.$spacing-lg;
 
     .session-title {
       font-size: 20px;
       font-weight: 700;
-      color: $text-primary;
-      margin: 0 0 $spacing-sm 0;
+      color: variables.$text-primary;
+      margin: 0 0 variables.$spacing-sm 0;
     }
 
     .session-info {
       display: flex;
       justify-content: center;
-      gap: $spacing-lg;
-      color: $text-secondary;
+      gap: variables.$spacing-lg;
+      color: variables.$text-secondary;
 
       .seats-stats {
         font-weight: 600;
-        color: $primary-color;
+        color: variables.$primary-color;
       }
     }
   }
@@ -238,44 +213,44 @@ const handleSaveSeats = async () => {
 
 .seats-container {
   text-align: center;
-  margin-bottom: $spacing-xl;
+  margin-bottom: variables.$spacing-xl;
 }
 
 .screen {
   width: 80%;
   height: 40px;
-  background: linear-gradient(180deg, lighten($border-base, 20%) 0%, $border-base 100%);
-  margin: 0 auto $spacing-xl;
+  background: linear-gradient(180deg, color.adjust(variables.$border-base, $lightness: 20%) 0%, variables.$border-base 100%);
+  margin: 0 auto variables.$spacing-xl;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $text-secondary;
+  color: variables.$text-secondary;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .seats-layout {
-  margin-bottom: $spacing-xl;
+  margin-bottom: variables.$spacing-xl;
 
   .seat-row {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: $spacing-md;
+    margin-bottom: variables.$spacing-md;
 
     .row-label {
       width: 30px;
       text-align: center;
       font-weight: 600;
-      color: $text-primary;
-      font-size: $font-size-small;
+      color: variables.$text-primary;
+      font-size: variables.$font-size-small;
     }
 
     .seats-in-row {
       display: flex;
       gap: 4px;
-      margin: 0 $spacing-sm;
+      margin: 0 variables.$spacing-sm;
     }
   }
 }
@@ -298,32 +273,32 @@ const handleSaveSeats = async () => {
   border: 1px solid transparent;
 
   &.available {
-    background: $success-color;
+    background: variables.$success-color;
     color: white;
-    border-color: $success-color;
+    border-color: variables.$success-color;
 
     &:hover {
-      background: darken($success-color, 10%);
+      background: color.adjust(variables.$success-color, $lightness: -10%);
     }
   }
 
   &.selected {
-    background: $primary-color;
+    background: variables.$primary-color;
     color: white;
-    border-color: $primary-color;
+    border-color: variables.$primary-color;
   }
 
   &.occupied {
-    background: $danger-color;
+    background: variables.$danger-color;
     color: white;
-    border-color: $danger-color;
+    border-color: variables.$danger-color;
     cursor: not-allowed;
   }
 
   &.unavailable {
-    background: $bg-gray;
-    color: $text-disabled;
-    border-color: $border-light;
+    background: variables.$bg-gray;
+    color: variables.$text-disabled;
+    border-color: variables.$border-light;
     cursor: not-allowed;
   }
 }
@@ -331,13 +306,13 @@ const handleSaveSeats = async () => {
 .seat-legend {
   display: flex;
   justify-content: center;
-  gap: $spacing-lg;
+  gap: variables.$spacing-lg;
   flex-wrap: wrap;
 
   .legend-item {
     display: flex;
     align-items: center;
-    gap: $spacing-xs;
+    gap: variables.$spacing-xs;
 
     .seat-sample {
       width: 20px;
@@ -346,29 +321,29 @@ const handleSaveSeats = async () => {
       border: 1px solid transparent;
 
       &.available {
-        background: $success-color;
-        border-color: $success-color;
+        background: variables.$success-color;
+        border-color: variables.$success-color;
       }
 
       &.selected {
-        background: $primary-color;
-        border-color: $primary-color;
+        background: variables.$primary-color;
+        border-color: variables.$primary-color;
       }
 
       &.occupied {
-        background: $danger-color;
-        border-color: $danger-color;
+        background: variables.$danger-color;
+        border-color: variables.$danger-color;
       }
 
       &.unavailable {
-        background: $bg-gray;
-        border-color: $border-light;
+        background: variables.$bg-gray;
+        border-color: variables.$border-light;
       }
     }
 
     span {
-      font-size: $font-size-small;
-      color: $text-secondary;
+      font-size: variables.$font-size-small;
+      color: variables.$text-secondary;
     }
   }
 }
@@ -376,16 +351,15 @@ const handleSaveSeats = async () => {
 .seats-actions {
   display: flex;
   justify-content: center;
-  gap: $spacing-md;
-  padding-top: $spacing-lg;
-  border-top: 1px solid $border-light;
+  gap: variables.$spacing-md;
+  padding-top: variables.$spacing-lg;
+  border-top: 1px solid variables.$border-light;
 }
 
-// 响应式设计
-@media (max-width: $breakpoint-sm) {
+@media (max-width: variables.$breakpoint-sm) {
   .session-info {
     flex-direction: column;
-    gap: $spacing-sm !important;
+    gap: variables.$spacing-sm !important;
   }
 
   .seat {
@@ -395,7 +369,7 @@ const handleSaveSeats = async () => {
   }
 
   .seat-legend {
-    gap: $spacing-md;
+    gap: variables.$spacing-md;
   }
 }
 </style>

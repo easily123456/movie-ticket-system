@@ -60,6 +60,19 @@ request.interceptors.response.use(
           ElMessage.error('权限不足，无法访问该资源')
           break
 
+        case 400:
+          // 对于登录接口的400错误，不显示额外的错误消息
+          if (response.config.url.includes('/api/auth/login')) {
+            // 已经在登录页面显示了具体的错误信息，不需要重复提示
+            break;
+          }
+          // 其他400错误显示具体消息
+          if (data && data.message) {
+            ElMessage.error(data.message)
+          } else {
+            ElMessage.error('网络错误，请稍后重试')
+          }
+          break
         case 404:
           ElMessage.error('请求的资源不存在')
           break

@@ -1,13 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import adminRoutes, { adminRouteGuard } from './admin.js'
+import { ElMessage } from 'element-plus'
 
 const routes = [
+  // 首页路由
   {
     path: '/',
     name: 'home',
     component: () => import('@/views/front/Home.vue'),
     meta: { title: '首页' }
   },
+
+  // 认证路由
   {
     path: '/login',
     name: 'login',
@@ -26,6 +31,8 @@ const routes = [
       guestOnly: true
     }
   },
+
+  // 前台公共路由
   {
     path: '/movies',
     name: 'movies',
@@ -39,144 +46,114 @@ const routes = [
     meta: { title: '电影详情' }
   },
   {
-    path: '/movie/:id/sessions',
-    name: 'MovieSessions',
-    component: () => import('@/views/front/movies/MovieSessions.vue')
-  },
-  {
     path: '/search',
     name: 'MovieSearch',
     component: () => import('@/views/front/movies/MovieSearch.vue')
   },
   {
+    path: '/movie/:id/sessions',
+    name: 'MovieSessions',
+    component: () => import('@/views/front/movies/MovieSessions.vue')
+  },
+
+  // 用户中心路由
+  {
+    // 定义路由访问路径，当用户访问 '/user' 时会匹配此路由
+    path: '/user',
+    // 为路由定义唯一名称，便于在代码中通过名称进行导航（如 router.push({ name: 'UserCenter' })）
+    name: 'UserCenter',
+    // 指定该路由对应的组件，使用动态导入（懒加载）方式加载 UserCenter.vue 组件
+    component: () => import('@/views/front/user/UserCenter.vue'),
+    // 定义路由元信息，这里表示访问此路由需要用户已认证（已在 router.beforeEach 路由守卫中处理）
+    meta: { requiresAuth: true },
+    // 定义重定向规则，当用户直接访问 '/user' 时，会自动重定向到 '/user/profile' 路径
+    redirect: '/user/profile',
+    children: [
+      {
+        path: 'profile',
+        name: 'UserProfile',
+        component: () => import('@/views/front/user/Profile.vue'),
+        meta: {
+          title: '个人资料',
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'orders',
+        name: 'OrderList',
+        component: () => import('@/views/front/orders/OrderList.vue'),
+        meta: {
+          title: '我的订单',
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'comments',
+        name: 'UserComments',
+        component: () => import('@/views/front/user/Comments.vue'),
+        meta: {
+          title: '我的评论',
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'favorites',
+        name: 'UserFavorites',
+        component: () => import('@/views/front/user/Favorites.vue'),
+        meta: {
+          title: '我的收藏',
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+
+  // 订单相关路由
+  {
     path: '/booking/:sessionId',
     name: 'booking',
-    component: () => import('@/views/front/orders/SelectSeats.vue'),
+    component: () => import('@/views/front/orders/SeatSelection.vue'),
     meta: {
       title: '选座购票',
       requiresAuth: true // 需要登录
     }
   },
+  // {
+  //   path: '/session/:sessionId/select-seats',
+  //   name: 'SelectSeats',
+  //   component: () => import('@/views/front/SelectSeats.vue')
+  // },
   {
-    path: '/profile',
-    name: 'profile',
-    component: () => import('@/views/front/user/Profile.vue'),
+    path: '/order/create',
+    name: 'CreateOrder',
+    component: () => import('@/views/front/orders/CreateOrder.vue'),
     meta: {
-      title: '个人中心',
-      requiresAuth: true
-    }
-  },
-  {
-    path: '/orders',
-    name: 'orders',
-    component: () => import('@/views/front/orders/OrderList.vue'),
-    meta: {
-      title: '我的订单',
+      title: '创建订单',
       requiresAuth: true
     }
   },
   // {
-  //   path: '/movie/:id/sessions',
-  //   name: 'MovieSessions',
-  //   component: () => import('@/views/front/MovieSessions.vue')
+  //   path: '/orders',
+  //   name: 'orders',
+  //   component: () => import('@/views/front/orders/OrderList.vue'),
+  //   meta: {
+  //     title: '我的订单',
+  //     requiresAuth: true
+  //   }
   // },
-  {
-    path: '/session/:sessionId/select-seats',
-    name: 'SelectSeats',
-    component: () => import('@/views/front/SelectSeats.vue')
-  },
-  {
-    path: '/order/create',
-    name: 'CreateOrder',
-    component: () => import('@/views/front/CreateOrder.vue')
-  },
   {
     path: '/order/:orderId',
     name: 'OrderDetail',
-    component: () => import('@/views/front/OrderDetail.vue')
-  },
-  
-  // 用户相关路由
-  {
-    path: '/user',
-    name: 'UserCenter',
-    component: () => import('@/views/front/UserCenter.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/user/comments',
-    name: 'UserComments',
-    component: () => import('@/views/front/user/Comments.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/user/favorites',
-    name: 'UserFavorites',
-    component: () => import('@/views/front/user/Favorites.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/user/orders',
-    name: 'OrderList',
-    component: () => import('@/views/front/OrderList.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/user/profile',
-    name: 'UserProfile',
-    component: () => import('@/views/front/user/Profile.vue'),
-    meta: { requiresAuth: true }
+    component: () => import('@/views/front/orders/OrderDetail.vue'),
+    meta: {
+      title: '订单详情',
+      requiresAuth: true
+    }
   },
 
   // 管理员路由
-  {
-    path: '/admin',
-    name: 'admin',
-    component: () => import('@/layouts/AdminLayout.vue'),
-    redirect: '/admin/dashboard',
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true // 需要管理员权限
-    },
-    children: [
-      {
-        path: 'dashboard',
-        name: 'admin-dashboard',
-        component: () => import('@/views/admin/AdminDashboard.vue'),
-        meta: { title: '仪表盘' }
-      },
-      {
-        path: 'users',
-        name: 'user-management',
-        component: () => import('@/views/admin/UserManagement.vue'),
-        meta: { title: '用户管理' }
-      },
-      {
-        path: 'movies',
-        name: 'movie-management',
-        component: () => import('@/views/admin/MovieManagement.vue'),
-        meta: { title: '电影管理' }
-      },
-      {
-        path: 'sessions',
-        name: 'session-management',
-        component: () => import('@/views/admin/SessionManagement.vue'),
-        meta: { title: '场次管理' }
-      },
-      {
-        path: 'orders',
-        name: 'order-management',
-        component: () => import('@/views/admin/OrderManagement.vue'),
-        meta: { title: '订单管理' }
-      },
-      {
-        path: 'news',
-        name: 'news-management',
-        component: () => import('@/views/admin/NewsManagement.vue'),
-        meta: { title: '资讯管理' }
-      }
-    ]
-  },
+  ...adminRoutes,
+
   // 404 页面
   {
     path: '/:pathMatch(.*)*',
@@ -243,12 +220,14 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
-  next()
+  // 管理员路由守卫
+  adminRouteGuard(to, from, next)
 })
 
 // 路由错误处理
 router.onError((error) => {
   console.error('路由错误:', error)
+  ElMessage.error('页面加载失败，请刷新页面重试')
 })
 
 export default router

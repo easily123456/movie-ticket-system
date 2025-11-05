@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import { authApi } from './auth'
+import { adminApi } from './admin'
 
 // 用户相关API
 export const userApi = {
@@ -253,76 +254,7 @@ export const genreApi = {
   }
 }
 
-// 管理员API
-export const adminApi = {
-  // 用户管理
-  getUsers(params = {}) {
-    return request.get('/api/admin/users', { params })
-  },
-  updateUserStatus(id, status) {
-    return request.put(`/api/admin/users/${id}/status`, null, {
-      params: { status }
-    })
-  },
-  deleteUser(id) {
-    return request.delete(`/api/admin/users/${id}`)
-  },
-
-  // 电影管理
-  createMovie(data) {
-    return request.post('/api/admin/movies', data)
-  },
-  updateMovie(id, data) {
-    return request.put(`/api/admin/movies/${id}`, data)
-  },
-  updateMovieStatus(id, status) {
-    return request.put(`/api/admin/movies/${id}/status`, null, {
-      params: { status }
-    })
-  },
-  toggleHotMovie(id, isHot) {
-    return request.put(`/api/admin/movies/${id}/hot`, null, {
-      params: { isHot }
-    })
-  },
-
-  // 场次管理
-  createSession(data) {
-    return request.post('/api/admin/sessions', data)
-  },
-  updateSession(id, data) {
-    return request.put(`/api/admin/sessions/${id}`, data)
-  },
-  deleteSession(id) {
-    return request.delete(`/api/admin/sessions/${id}`)
-  },
-  // 订单管理
-  getAdminOrders(params = {}) {
-    return request.get('/api/admin/orders', { params })
-  },
-  // 资讯管理
-  createNews(data) {
-    return request.post('/api/admin/news', data)
-  },
-  updateNews(id, data) {
-    return request.put(`/api/admin/news/${id}`, data)
-  },
-  updateNewsStatus(id, status) {
-    return request.put(`/api/admin/news/${id}/status`, null, {
-      params: { status }
-    })
-  },
-  toggleTopNews(id, isTop) {
-    return request.put(`/api/admin/news/${id}/top`, null, {
-      params: { isTop }
-    })
-  },
-
-  // 仪表盘
-  getDashboardStats() {
-    return request.get('/api/admin/dashboard/stats')
-  }
-}
+// 管理员API已移至admin.js文件中，通过import导入使用
 
 export default {
   auth: authApi,     // 将认证相关API集合映射为auth属性，可通过api.auth访问认证接口
