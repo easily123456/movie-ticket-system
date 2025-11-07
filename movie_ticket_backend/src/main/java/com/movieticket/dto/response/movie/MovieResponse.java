@@ -28,11 +28,13 @@ public class MovieResponse {
     private Boolean status;
     private LocalDate createTime;
     private LocalDate updateTime;
-    
+
     // 前端显示字段
     private String formattedDuration;
     private String formattedRating;
     private Boolean isNew;
+    // 来自评论表的平均分（只用于展示，不会写回 movie 表）
+    private java.math.BigDecimal commentAverageRating;
 
     public MovieResponse() {
     }

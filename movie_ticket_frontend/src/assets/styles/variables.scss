@@ -26,10 +26,13 @@ $border-lighter: #ebeef5; // 更浅边框
 $border-extra-light: #f2f6fc; // 最浅边框
 
 // 字体
-$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-$font-size-base: 14px;   // 基础字体大小，用于常规文本内容
-$font-size-small: 13px;  // 小号字体大小，用于辅助性或次要文本内容
-$font-size-large: 16px;  // 大号字体大小，用于标题或需要强调的文本内容
+$font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+$font-family-movie: 'Montserrat', 'Roboto', 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+// $font-family: Microsoft YaHei, Helvetica, Arial, sans-serif;
+$font-size-base: 17px;   // 基础字体大小，用于常规文本内容
+$font-size-small: 15px;  // 小号字体大小，用于辅助性或次要文本内容
+$font-size-large: 18px;  // 大号字体大小，用于标题或需要强调的文本内容
+$font-size-big: 30px;    // 超大字体大小，用于主要标题或重要信息展示
 
 // 阴影
 $shadow-base: 0 2px 4px rgba(0, 0, 0, 0.12);    // 基础阴影效果，用于常规元素的轻微投影

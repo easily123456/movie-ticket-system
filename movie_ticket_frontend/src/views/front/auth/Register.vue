@@ -313,7 +313,18 @@ const handleRegister = async () => {
     ElMessage.success('注册成功！')
     router.push('/')
   } catch (error) {
-    ElMessage.error(error.message || '注册失败，请稍后重试')
+    // 根据具体的错误信息显示相应的提示
+    if (error.response && error.response.data && error.response.data.message) {
+      if (error.response.data.message.includes('用户名')) {
+        // ElMessage.error('用户名已存在')
+      } else if (error.response.data.message.includes('邮箱')) {
+        // ElMessage.error('邮箱名已存在')
+      } else {
+        ElMessage.error(error.response.data.message)
+      }
+    } else {
+      ElMessage.error('注册失败，请稍后重试')
+    }
   } finally {
     loading.value = false
   }

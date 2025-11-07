@@ -135,7 +135,7 @@ CREATE TABLE comments (
     user_id BIGINT NOT NULL COMMENT '用户ID',
     movie_id BIGINT NOT NULL COMMENT '电影ID',
     content TEXT NOT NULL COMMENT '评论内容',
-    rating DECIMAL(2,1) NOT NULL COMMENT '评分(0.0-5.0)',
+    rating DECIMAL(2,1) NOT NULL COMMENT '评分(0.0-10.0)',
     like_count INT DEFAULT 0 COMMENT '点赞数',
     status TINYINT DEFAULT 1 COMMENT '状态(0:删除,1:正常)',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

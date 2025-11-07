@@ -174,16 +174,16 @@ const router = createRouter({
 
     // 如果路由包含 hash（锚点），尝试滚动到该元素（若存在）。
     // 返回对象也可以包含 behavior: 'smooth' 以启用平滑滚动。
-    if (to.hash) {
-      return {
-        el: to.hash,
-        top: 0,
-        behavior: 'smooth'
-      }
-    }
+    // if (to.hash) {
+    //   return {
+    //     el: to.hash,
+    //     top: 0,
+    //     behavior: 'smooth'
+    //   }
+    // }
 
     // 默认行为：滚动到页面顶部（平滑）
-    return { left: 0, top: 0, behavior: 'smooth' }
+    return { left: 0, top: 0 }//, behavior: 'smooth'
   }
 })
 

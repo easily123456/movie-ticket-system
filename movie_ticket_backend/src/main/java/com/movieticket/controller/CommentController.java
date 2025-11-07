@@ -34,6 +34,7 @@ public class CommentController {
     private final MovieService movieService;
     private final JwtUtil jwtUtil;
 
+    // 创建评论
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<CommentResponse>> createComment(
             @RequestHeader("Authorization") String token,
@@ -72,6 +73,7 @@ public class CommentController {
         }
     }
 
+    // 获取评论详情
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CommentResponse>> getCommentDetail(@PathVariable Long id) {
         try {
@@ -88,6 +90,7 @@ public class CommentController {
         }
     }
 
+    // 更新评论
     @PutMapping("/{id}/update")
     public ResponseEntity<ApiResponse<CommentResponse>> updateComment(
             @RequestHeader("Authorization") String token,
@@ -124,6 +127,7 @@ public class CommentController {
         }
     }
 
+    // 获取电影评论
     @GetMapping("/movie/{movieId}")
     public ResponseEntity<ApiResponse<Page<CommentResponse>>> getMovieComments(
             @PathVariable Long movieId,
@@ -137,6 +141,7 @@ public class CommentController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    // 获取用户评论
     @GetMapping("/user")
     public ResponseEntity<ApiResponse<Page<CommentResponse>>> getUserComments(
             @RequestHeader("Authorization") String token,
@@ -156,6 +161,7 @@ public class CommentController {
         }
     }
 
+    // 删除评论
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
             @RequestHeader("Authorization") String token,
@@ -182,6 +188,7 @@ public class CommentController {
         }
     }
 
+    // 点赞评论
     @PostMapping("/{id}/like")
     public ResponseEntity<ApiResponse<Void>> likeComment(
             @RequestHeader(value = "Authorization") String token,

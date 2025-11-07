@@ -54,59 +54,12 @@
         </div>
 
         <div class="movie-grid">
-          <div
+          <MovieCard
             v-for="movie in hotMovies"
             :key="movie.id"
-            class="movie-card"
-            @click="goToMovieDetail(movie.id)"
-          >
-            <!--点击电影卡片时跳转到电影详情页面-->
-            <div class="movie-poster">
-              <img
-                :src="movie.poster"
-                :alt="movie.title"
-                class="poster-image"
-              />
-              <div class="movie-overlay">
-                <div class="movie-actions">
-                  <el-button type="primary" size="small" @click.stop="handleBuyTicket(movie)">
-                  <!--当用户点击"购票"按钮时，如果不使用 .stop 修饰符，点击事件会继续向上传播到父元素 .movie-card
-                  ，从而同时触发 handleBuyTicket(movie) 和 goToMovieDetail(movie.id) 两个方法-->
-                    <el-icon><Ticket /></el-icon>
-                    购票
-                  </el-button>
-                  <el-button size="small" @click.stop="handleAddFavorite(movie)">
-                    <el-icon><Star /></el-icon>
-                    收藏
-                  </el-button>
-                </div>
-              </div>
-              <div v-if="movie.isHot" class="hot-badge">热映</div>
-            </div>
-            <div class="movie-info">
-              <h3 class="movie-title text-ellipsis">{{ movie.title }}</h3>
-              <!--text-ellipsis 是 Element Plus 提供的类，用于实现文本省略功能，当文本长度超出容器宽度时，会自动截断并添加省略号。-->
-              <p class="movie-rating">
-                <el-rate
-                  v-model="movie.rating"
-                  disabled
-                  show-score
-                  text-color="#e6a23c"
-                  score-template="{value}"
-                  size="small"
-                />
-                <!--el-rate 是 Element Plus 的评分组件，通过 v-model 接收这个评分值，并将其渲染为对应的星级显示
-                  v-model="movie.rating"     // 双向绑定评分值
-                  disabled                   // 设置为禁用状态，仅展示评分
-                  show-score                 // 显示具体评分数字
-                  text-color="#ff9900"       // 设置评分文字颜色为橙色
-                  score-template="{value}"   // 评分显示模板
-                  size="small"               // 设置组件大小为小号
-                -->
-              </p>
-              <p class="movie-genre">{{ movie.genre }}</p>
-            </div>
-          </div>
+            :movie="movie"
+            @buy-ticket="handleBuyTicket"
+          />
         </div>
       </div>
     </section>
@@ -125,32 +78,12 @@
         </div>
 
         <div class="movie-grid">
-          <div
+          <MovieCard
             v-for="movie in upcomingMovies"
             :key="movie.id"
-            class="movie-card coming-soon"
-          >
-            <div class="movie-poster">
-              <img
-                :src="movie.poster"
-                :alt="movie.title"
-                class="poster-image"
-              />
-              <div class="release-date">
-                {{ movie.releaseDate }} 上映
-              </div>
-              <div class="movie-overlay">
-                <el-button type="primary" size="small" @click.stop="handleRemind(movie)">
-                  <el-icon><Bell /></el-icon>
-                  提醒我
-                </el-button>
-              </div>
-            </div>
-            <div class="movie-info">
-              <h3 class="movie-title text-ellipsis">{{ movie.title }}</h3>
-              <p class="movie-genre">{{ movie.genre }}</p>
-            </div>
-          </div>
+            :movie="movie"
+            @buy-ticket="handleBuyTicket"
+          />
         </div>
       </div>
     </section>
@@ -160,19 +93,16 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router' // 导入 useRouter 用于路由跳转
 import { ElMessage } from 'element-plus'
-import {
-  ArrowRight,
-  Ticket,
-  Star,
-  Bell
-} from '@element-plus/icons-vue'
+import MovieCard from '@/components/front/MovieCard.vue'
+import { movieApi } from '@/api'
+import { ArrowRight } from '@element-plus/icons-vue'
 
 defineOptions({ name: 'HomePage' })
 //明确指定组件的名称为 'HomePage'，组件会以 'HomePage' 的名称显示，而不是默认的文件名或匿名组件
 
 const router = useRouter() // 获取路由实例
 
-// 模拟数据 - 实际开发中从API获取
+// 轮播图（仍使用静态演示图）
 const banners = ref([ //ref创建响应式数据
   {
     id: 1, // 轮播图项的唯一标识符
@@ -197,71 +127,9 @@ const banners = ref([ //ref创建响应式数据
   }
 ])
 
-const hotMovies = ref([
-  {
-    id: 1,
-    title: '创：战神',
-    poster: '/images/poster-1.jpg',
-    rating: 4.8,
-    genre: '动作/冒险',
-    isHot: true
-  },
-  {
-    id: 2,
-    title: '志愿军：浴血和平',
-    poster: '/images/poster-2.jpg',
-    rating: 4.6,
-    genre: '剧情/战争',
-    isHot: true
-  },
-  {
-    id: 3,
-    title: '震耳欲聋',
-    poster: '/images/poster-3.jpg',
-    rating: 4.5,
-    genre: '剧情/犯罪',
-    isHot: true
-  },
-  {
-    id: 4,
-    title: '浪浪人生',
-    poster: '/images/poster-4.jpg',
-    rating: 4.7,
-    genre: '喜剧/家庭',
-    isHot: true
-  }
-])
+const hotMovies = ref([])
 
-const upcomingMovies = ref([
-  {
-    id: 5,
-    title: '暗杠',
-    poster: '/images/poster-5.jpg',
-    genre: '悬疑/惊悚',
-    releaseDate: '10月28日'
-  },
-  {
-    id: 6,
-    title: '天鹰战士：最后的冲击',
-    poster: '/images/poster-6.jpg',
-    genre: '动画/冒险',
-    releaseDate: '10月31日'
-  },
-  {
-    id: 7,
-    title: '书香少年',
-    poster: '/images/poster-7.jpg',
-    genre: '成长/亲情',
-    releaseDate: '10月31日'
-  },
-  {
-    id: 8,
-    title: '不要错过你',
-    poster: '/images/poster-8.jpg',
-    genre: '爱情/剧情',
-    releaseDate: '11月07日'
-  }
-])
+const upcomingMovies = ref([])
 
 onMounted(() => {
   // 页面加载时获取数据
@@ -269,19 +137,18 @@ onMounted(() => {
 })
 
 const loadHomeData = async () => {
-  // 实际开发中调用API
-  // try {
-  //   const [bannersRes, hotMoviesRes, upcomingMoviesRes] = await Promise.all([
-  //     movieApi.getBanners(),
-  //     movieApi.getHotMovies(),
-  //     movieApi.getUpcomingMovies()
-  //   ])
-  //   banners.value = bannersRes
-  //   hotMovies.value = hotMoviesRes
-  //   upcomingMovies.value = upcomingMoviesRes
-  // } catch (error) {
-  //   ElMessage.error('数据加载失败')
-  // }
+  try {
+    const [hotRes, upcomingRes] = await Promise.all([
+      movieApi.getHotMovies(8),
+      movieApi.getMovies({ upcoming: true, page: 0, size: 8, sort: 'releaseDate', direction: 'asc' })
+    ])
+    hotMovies.value = hotRes.data || []
+    // 支持分页或非分页两种返回结构
+    upcomingMovies.value = (upcomingRes.data && (upcomingRes.data.content || upcomingRes.data)) || []
+  } catch (error) {
+    console.error('加载首页数据失败:', error)
+    ElMessage.error('数据加载失败')
+  }
 }
 
 const handleBannerError = (event) => {
@@ -292,20 +159,8 @@ const handleBannerClick = (banner) => {
   router.push(banner.link)
 }
 
-const goToMovieDetail = (movieId) => {
-  router.push(`/movie/${movieId}`)
-}
-
 const handleBuyTicket = (movie) => {
   ElMessage.success(`即将跳转到 ${movie.title} 的购票页面`)
-}
-
-const handleAddFavorite = (movie) => {
-  ElMessage.success(`已收藏 ${movie.title}`)
-}
-
-const handleRemind = (movie) => {
-  ElMessage.info(`已设置 ${movie.title} 的上映提醒`)
 }
 </script>
 <style scoped lang="scss">
@@ -391,11 +246,11 @@ const handleRemind = (movie) => {
 
 .movie-grid {
   display: grid; // 使用CSS Grid布局来排列电影卡片
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); // 创建自适应列数的网格，每列最小宽度240px，最大占满剩余空间
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); // 调整为与海报宽度匹配的最小列宽270px
   gap: $spacing-lg; // 设置网格项之间的间距为大号间距
 
   @media (max-width: $breakpoint-sm) { // 当屏幕宽度小于或等于小屏幕断点时应用以下样式
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); // 在小屏幕上使用更小的最小宽度160px
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); // 小屏上稍作提高以保持比例显示
     gap: $spacing-md; // 在小屏幕上使用中等间距
   }
 }

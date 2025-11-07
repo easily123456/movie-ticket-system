@@ -130,22 +130,19 @@ const selectSession = (session) => {
 </script>
 
 <style scoped lang="scss">
-@use "sass:color";
-@use '@/assets/styles/variables.scss';
-
 .session-selector {
-  background: variables.$bg-white;
-  border-radius: variables.$border-radius-base;
-  box-shadow: variables.$shadow-light;
+  background: $bg-white;
+  border-radius: $border-radius-base;
+  box-shadow: $shadow-light;
 
   .selector-header {
-    padding: variables.$spacing-lg;
+    padding: $spacing-lg;
 
     .selector-title {
-      font-size: 18px;
+      font-size: $font-size-large;
       font-weight: 600;
-      color: variables.$text-primary;
-      margin: 0 0 variables.$spacing-md 0;
+      color: $text-primary;
+      margin: 0 0 $spacing-md 0;
     }
 
     .date-tabs {
@@ -158,8 +155,8 @@ const selectSession = (session) => {
       }
 
       :deep(.el-tabs__item) {
-        font-size: variables.$font-size-small;
-        padding: 0 variables.$spacing-md;
+        font-size: $font-size-small;
+        padding: 0 $spacing-md;
         height: 32px;
         line-height: 32px;
       }
@@ -167,22 +164,22 @@ const selectSession = (session) => {
   }
 
   .sessions-container {
-    border-top: 1px solid variables.$border-light;
+    border-top: 1px solid $border-light;
 
     .session-item {
       display: flex;
       align-items: center;
-      padding: variables.$spacing-lg;
-      border-bottom: 1px solid variables.$border-light;
+      padding: $spacing-lg;
+      border-bottom: 1px solid $border-light;
       cursor: pointer;
-      transition: variables.$transition-base;
+      transition: $transition-base;
 
       &:last-child {
         border-bottom: none;
       }
 
       &:hover {
-        background: color.adjust(variables.$bg-gray, $lightness: 2%);
+        background: color.adjust($bg-gray, $lightness: 2%);
       }
 
       .session-time {
@@ -192,36 +189,36 @@ const selectSession = (session) => {
         .start-time {
           font-size: 18px;
           font-weight: 600;
-          color: variables.$text-primary;
+          color: $text-primary;
         }
 
         .end-time {
-          font-size: variables.$font-size-small;
-          color: variables.$text-secondary;
+          font-size: $font-size-small;
+          color: $text-secondary;
         }
       }
 
       .session-info {
         flex: 1;
-        margin-left: variables.$spacing-lg;
+        margin-left: $spacing-lg;
 
         .hall-name {
           font-weight: 500;
-          color: variables.$text-primary;
-          margin-bottom: variables.$spacing-xs;
+          color: $text-primary;
+          margin-bottom: $spacing-xs;
         }
 
         .language-type {
-          font-size: variables.$font-size-small;
-          color: variables.$text-secondary;
+          font-size: $font-size-small;
+          color: $text-secondary;
         }
       }
 
       .session-price {
         font-size: 18px;
         font-weight: 600;
-        color: variables.$primary-color;
-        margin-right: variables.$spacing-lg;
+        color: $primary-color;
+        margin-right: $spacing-lg;
       }
 
       .session-seats {
@@ -229,19 +226,19 @@ const selectSession = (session) => {
 
         .available-seats {
           font-weight: 500;
-          color: variables.$success-color;
-          margin-bottom: variables.$spacing-xs;
+          color: $success-color;
+          margin-bottom: $spacing-xs;
         }
 
         .language {
-          font-size: variables.$font-size-small;
-          color: variables.$text-secondary;
+          font-size: $font-size-small;
+          color: $text-secondary;
         }
       }
     }
 
     .empty-sessions {
-      padding: variables.$spacing-xl;
+      padding: $spacing-xl;
       text-align: center;
     }
   }

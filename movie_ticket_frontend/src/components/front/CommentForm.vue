@@ -29,7 +29,7 @@
           type="textarea"
           :rows="4"
           maxlength="500"
-          placeholder="分享你的观影感受...（最多500字）"
+          placeholder="分享你的观影感受...（最少5字，最多500字）"
           show-word-limit
           resize="none"
         />
@@ -78,7 +78,7 @@ const submitting = ref(false)
 // 计算属性
 const isAuthenticated = computed(() => authStore.isAuthenticated)
 const canSubmit = computed(() => {
-  return form.rating > 0 && form.content.trim().length >= 10
+  return form.rating > 0 && form.content.trim().length >= 5
 })
 
 // 处理登录
@@ -89,7 +89,7 @@ const handleLogin = () => {
 // 处理提交
 const handleSubmit = async () => {
   if (!canSubmit.value) {
-    ElMessage.warning('请填写完整的评论内容（至少10个字）')
+    ElMessage.warning('请填写完整的评论内容（至少5个字）')
     return
   }
 
@@ -106,6 +106,13 @@ const handleSubmit = async () => {
     handleReset()
     emits('success')
   } catch (error) {
+    // 如果后端返回了友好的错误消息（比如：您已经评论过该电影），
+    // 全局响应拦截器已经负责展示该消息，避免重复提示。
+    const resp = error && error.response && error.response.data
+    if (resp && resp.message) {
+      // 已由请求拦截器显示，直接返回
+      return
+    }
     ElMessage.error(error.message || '评论发表失败')
   } finally {
     submitting.value = false

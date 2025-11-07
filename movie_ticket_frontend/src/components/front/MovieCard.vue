@@ -9,7 +9,7 @@
       <div class="movie-overlay">
         <div class="movie-rating">
           <span class="rating-star">★</span>
-          {{ movie.formattedRating || '暂无评分' }}
+          {{ movie.rating || '暂无评分' }}
         </div>
         <div class="movie-tags">
           <span v-if="movie.isHot" class="tag hot">热门</span>
@@ -35,7 +35,7 @@
         </span>
         <span class="meta-item">
           <i class="icon">📅</i>
-          {{ formatDate(movie.releaseDate) }}
+          {{ formattedReleaseDate }}
         </span>
       </div>
 
@@ -56,6 +56,7 @@
 </template>
 <script setup>
 import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 
 const props = defineProps({
   movie: {
@@ -65,42 +66,44 @@ const props = defineProps({
 })
 
 const router = useRouter()
-const emits = defineEmits(['book', 'detail'])
+const emits = defineEmits(['buy-ticket', 'favorite'])
 
 const handleImageError = (event) => {
   event.target.src = '/images/default-movie-poster.jpg'
 }
 
-const formatDate = (dateString) => {
-  if (!dateString) return '未知'
-  const date = new Date(dateString)
+const formattedReleaseDate = computed(() => {
+  if (!props.movie.releaseDate) return '未知'
+  const date = new Date(props.movie.releaseDate)
   return date.toLocaleDateString('zh-CN')
-}
+})
 
 const handleClick = () => {
-  emits('detail', props.movie)
+  router.push({ name: 'movie-detail', params: { id: props.movie.id } })
 }
 
-const handleBookClick = () => {
-  emits('book', props.movie)
+const handleBookClick = (event) => {
+  event.stopPropagation()
+  emits('buy-ticket', props.movie)
 }
 
-const handleDetailClick = () => {
-  router.push(`/movie/${props.movie.id}`)
+const handleDetailClick = (event) => {
+  event.stopPropagation()
+  router.push({ name: 'movie-detail', params: { id: props.movie.id } })
 }
 </script>
 <style scoped lang="scss">
 .movie-card {
   background: $bg-white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: $border-radius-base;
+  box-shadow: $shadow-base;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: $transition-base;
   cursor: pointer;
 
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    box-shadow: $shadow-light;
 
     .movie-poster img {
       transform: scale(1.05);
@@ -111,13 +114,14 @@ const handleDetailClick = () => {
 .movie-poster {
   position: relative;
   width: 100%;
-  height: 300px;
+  aspect-ratio: 27 / 40;
   overflow: hidden;
+  background: #000; // 为使用 contain 时提供信噪更好的底色
 
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.3s ease;
   }
 }
@@ -136,15 +140,15 @@ const handleDetailClick = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 12px;
+  padding: $spacing-sm;
 }
 
 .movie-rating {
   background: rgba(255, 193, 7, 0.9);
   color: $bg-white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-small;
+  font-size: $font-size-small;
   font-weight: bold;
   align-self: flex-start;
 
@@ -156,11 +160,11 @@ const handleDetailClick = () => {
 
 .movie-tags {
   display: flex;
-  gap: 4px;
+  gap: $spacing-xs;
 
   .tag {
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: $border-radius-small;
     font-size: 10px;
     font-weight: bold;
     color: $bg-white;
@@ -176,14 +180,14 @@ const handleDetailClick = () => {
 }
 
 .movie-info {
-  padding: 16px;
+  padding: $spacing-md;
 }
 
 .movie-title {
-  font-size: 16px;
+  font-size: $font-size-base;
   font-weight: 600;
   color: $text-primary;
-  margin: 0 0 4px 0;
+  margin: 0 0 $spacing-xs 0;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -193,20 +197,20 @@ const handleDetailClick = () => {
 }
 
 .movie-original-title {
-  font-size: 12px;
+  font-size: $font-size-small;
   color: $text-regular;
-  margin: 0 0 12px 0;
+  margin: 0 0 $spacing-sm 0;
   font-style: italic;
 }
 
 .movie-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
 
   .meta-item {
-    font-size: 12px;
+    font-size: $font-size-small;
     color: $text-secondary;
     display: flex;
     align-items: center;
@@ -219,27 +223,28 @@ const handleDetailClick = () => {
 }
 
 .movie-director {
-  font-size: 12px;
+  font-size: $font-size-small;
   color: $text-regular;
-  margin-bottom: 16px;
+  margin-bottom: $spacing-md;
 }
 
 .movie-actions {
   display: flex;
-  gap: 8px;
+  gap: $spacing-sm;
 
   .el-button {
     flex: 1;
+    font-size: $font-size-small;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: $breakpoint-sm) {
   .movie-poster {
-    height: 250px;
+    height: auto; // 维持 27/40 比例自适应高度
   }
 
   .movie-info {
-    padding: 12px;
+    padding: $spacing-sm;
   }
 
   .movie-actions {
@@ -247,4 +252,3 @@ const handleDetailClick = () => {
   }
 }
 </style>
-    z-index: 2; /* 设置层级，确保标签在海报上方显示 */

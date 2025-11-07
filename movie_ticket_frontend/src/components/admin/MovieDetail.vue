@@ -27,13 +27,7 @@
           <el-tag type="primary" size="large">{{ movie.genreName }}</el-tag>
         </div>
         <div class="movie-rating">
-          <el-rate
-            v-model="movie.rating"
-            disabled
-            show-score
-            text-color="#e6a23c"
-            score-template="{value}"
-          />
+          <StarRating :value="movie.rating" :max="5" :size="20" />
           <span class="vote-count">({{ movie.voteCount }}人评价)</span>
         </div>
       </div>
@@ -137,6 +131,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { Picture } from '@element-plus/icons-vue'
+import StarRating from '@/components/common/StarRating.vue'
 import { formatTime, formatDate, formatPrice, formatDuration } from '@/utils'
 
   // const props = defineProps({

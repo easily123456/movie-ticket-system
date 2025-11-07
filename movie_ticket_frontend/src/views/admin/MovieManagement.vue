@@ -169,14 +169,7 @@
                     <span>{{ row.country }}</span>
                   </div>
                   <div class="movie-rating">
-                    <el-rate
-                      v-model="row.rating"
-                      disabled
-                      show-score
-                      text-color="#e6a23c"
-                      score-template="{value}"
-                      size="small"
-                    />
+                      <StarRating :value="row.rating" :max="5" :size="14" />
                     <span class="vote-count">({{ row.voteCount }})</span>
                   </div>
                 </div>
@@ -359,6 +352,7 @@ import {
   Picture
 } from '@element-plus/icons-vue'
 import { formatTime, formatDate, formatPrice, formatDuration } from '@/utils'
+import StarRating from '@/components/common/StarRating.vue'
 import { useAdminStore } from '@/stores/admin'
 import { useGenreStore } from '@/stores/genre'
 import MovieDetail from '@/components/admin/MovieDetail.vue'

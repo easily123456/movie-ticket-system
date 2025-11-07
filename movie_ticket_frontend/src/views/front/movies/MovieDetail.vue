@@ -27,13 +27,8 @@
           <div class="rating-score">
             <span class="score">{{ movie.rating || 0 }}</span>
             <div class="score-detail">
-              <el-rate
-                v-model="movie.rating"
-                disabled
-                show-score
-                text-color="#e6a23c"
-                score-template="{value}"
-              />
+              <!-- 显示来自评论的平均分（基于评论统计），与 movie.rating（来自 movie 表）区分 -->
+              <span class="comment-average">观众均分：{{ formatCommentAverage(movie.commentAverageRating) }}</span>
               <span class="vote-count">{{ movie.voteCount || 0 }} 人评价</span>
             </div>
           </div>
@@ -73,8 +68,8 @@
             <el-icon><VideoPlay /></el-icon>
             立即购票
           </el-button>
-          <FavoriteButton :movie-id="movie.id" :show-count="true" size="large" />
-          <el-button size="large" @click="handleShare">
+          <FavoriteButton v-if="movieId" :movie-id="movieId" :show-count="true" size="large" />
+          <el-button :type="isShared ? 'primary' : 'default'" size="large" @click="handleShare">
             <el-icon><Share /></el-icon>
             分享
           </el-button>
@@ -99,8 +94,9 @@
               :src="movie.trailerUrl"
               controls
               class="trailer-video"
-              poster="/images/video-poster.jpg"
+
             >
+            <!-- poster="/images/video-poster.jpg" -->
               您的浏览器不支持视频播放
             </video>
           </div>
@@ -110,9 +106,10 @@
       <div class="content-section">
         <h2 class="section-title">观众评论</h2>
         <div class="section-content">
-          <CommentForm :movie-id="movie.id" @success="handleCommentSuccess" />
+          <CommentForm v-if="movieId" :movie-id="movieId" @success="handleCommentSuccess" />
           <CommentList
-            :movie-id="movie.id"
+            v-if="movieId"
+            :movie-id="movieId"
             :show-stats="true"
             :show-sort="true"
             :show-rating-distribution="true"
@@ -129,6 +126,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useMovieStore } from '@/stores/movie'
 import { VideoPlay, Share } from '@element-plus/icons-vue'
 import FavoriteButton from '@/components/front/FavoriteButton.vue'
+// import StarRating from '@/components/common/StarRating.vue'
 import CommentForm from '@/components/front/CommentForm.vue'
 import CommentList from '@/components/front/CommentList.vue'
 import { ElMessage } from 'element-plus'
@@ -140,6 +138,7 @@ const movieStore = useMovieStore()
 const movieId = route.params.id
 const movie = ref({})
 const commentListRef = ref()
+const isShared = ref(false)
 
 // 初始化数据
 onMounted(async () => {
@@ -169,6 +168,14 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('zh-CN')
 }
 
+// 格式化来自评论的平均分（可能为 null）
+const formatCommentAverage = (v) => {
+  if (v === null || v === undefined) return '暂无'
+  const n = Number(v)
+  if (Number.isNaN(n)) return '暂无'
+  return n.toFixed(1)
+}
+
 // 跳转到场次页面
 const goToSessions = () => {
   router.push(`/movie/${movieId}/sessions`)
@@ -176,11 +183,14 @@ const goToSessions = () => {
 
 // 处理分享
 const handleShare = () => {
+  // 立即标记为已点击分享（用户要求：点击即变色）
+  isShared.value = true
   // 这里可以实现分享功能，例如复制链接到剪贴板
   const url = window.location.href
   if (navigator.clipboard) {
     navigator.clipboard.writeText(url).then(() => {
       ElMessage.success('链接已复制到剪贴板')
+      // 标记为已点击分享，切换样式
     })
   } else {
     // 兼容性处理
@@ -203,24 +213,31 @@ const handleCommentSuccess = () => {
 }
 </script>
 <style scoped lang="scss">
+@use '@/assets/styles/variables.scss' as *;
+
 .movie-detail-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: $spacing-lg;
+  font-family: $font-family-movie;
 }
 
 .page-header {
-  margin-bottom: 20px;
+  margin-bottom: $spacing-md;
+
+  :deep(.el-breadcrumb) {
+    font-size: $font-size-large;
+  }
 }
 
 .movie-hero {
   display: flex;
-  gap: 40px;
-  margin-bottom: 40px;
+  gap: $spacing-xl;
+  margin-bottom: $spacing-xl;
   background: $bg-white;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: $border-radius-base;
+  padding: $spacing-lg;
+  box-shadow: $shadow-base;
 
   .movie-poster {
     flex: 0 0 300px;
@@ -229,25 +246,26 @@ const handleCommentSuccess = () => {
     img {
       width: 300px;
       height: 400px;
-      border-radius: 12px;
+      border-radius: $border-radius-base;
       object-fit: cover;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      box-shadow: $shadow-dark;
     }
 
     .movie-badges {
       position: absolute;
-      top: 12px;
-      left: 12px;
+      top: $spacing-sm;
+      left: $spacing-sm;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: $spacing-xs;
 
       .badge {
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 12px;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: $border-radius-small;
+        font-size: $font-size-small;
         font-weight: 600;
         color: $bg-white;
+        font-family: $font-family-movie;
 
         &.hot {
           background: $danger-color;
@@ -267,42 +285,46 @@ const handleCommentSuccess = () => {
       font-size: 32px;
       font-weight: 700;
       color: $text-primary;
-      margin: 0 0 8px 0;
+      margin: 0 0 $spacing-xs 0;
       line-height: 1.2;
+      font-family: $font-family-movie;
     }
 
     .movie-original-title {
-      font-size: 18px;
+      font-size: $font-size-large;
       color: $text-regular;
-      margin: 0 0 24px 0;
+      margin: 0 0 $spacing-lg 0;
       font-style: italic;
+      font-family: $font-family-movie;
     }
   }
 }
 
 .movie-rating {
-  margin-bottom: 24px;
+  margin-bottom: $spacing-lg;
 
   .rating-score {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: $spacing-lg;
 
     .score {
       font-size: 48px;
       font-weight: 700;
-      color: #e6a23c;
+      color: $warning-color;
       line-height: 1;
+      font-family: $font-family-movie;
     }
 
     .score-detail {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: $spacing-xs;
 
       .vote-count {
-        font-size: 14px;
+        font-size: $font-size-base;
         color: $text-secondary;
+        font-family: $font-family-movie;
       }
     }
   }
@@ -311,64 +333,86 @@ const handleCommentSuccess = () => {
 .movie-meta {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 30px;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-xl;
 
   .meta-item {
     display: flex;
 
     .label {
       width: 100px;
-      font-size: 14px;
+      font-size: $font-size-base;
       color: $text-regular;
       font-weight: 500;
+      font-family: $font-family-movie;
     }
 
     .value {
       flex: 1;
-      font-size: 14px;
+      font-size: $font-size-base;
       color: $text-primary;
+      font-family: $font-family-movie;
     }
   }
 }
 
 .movie-actions {
   display: flex;
-  gap: 12px;
+  gap: $spacing-xxl; //按钮之间的间距
 
   .el-button {
     min-width: 120px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: $spacing-xs;
+
+    :deep(span) {
+      font-family: $font-family-movie;
+    }
   }
 }
 
 .movie-content {
   .content-section {
     background: $bg-white;
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: $border-radius-base;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    box-shadow: $shadow-base;
 
     .section-title {
-      font-size: 20px;
+      font-size: $font-size-big;
       font-weight: 600;
       color: $text-primary;
-      margin: 0 0 20px 0;
-      padding-bottom: 12px;
+      margin: 0 0 $spacing-lg 0;
+      padding-bottom: $spacing-sm;
       border-bottom: 2px solid $border-extra-light;
+      position: relative;
+      padding-left: $spacing-md;
+      font-family: $font-family-movie;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: $spacing-sm;
+        width: 7px;
+        background-color: #f56c6c;
+        border-radius: 2px;
+      }
     }
   }
 }
 
 .movie-description {
-  font-size: 16px;
+  font-size: $font-size-base;
   line-height: 1.8;
   color: $text-primary;
   margin: 0;
   white-space: pre-line;
+  font-family: $font-family-movie;
+  text-indent: 2em; /* 首行缩进2字符 */
 }
 
 .trailer-container {
@@ -378,20 +422,20 @@ const handleCommentSuccess = () => {
   .trailer-video {
     width: 100%;
     max-width: 800px;
-    border-radius: 8px;
+    border-radius: $border-radius-small;
     background: #000;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: $breakpoint-md) {
   .movie-detail-page {
-    padding: 16px;
+    padding: $spacing-md;
   }
 
   .movie-hero {
     flex-direction: column;
-    gap: 20px;
-    padding: 20px;
+    gap: $spacing-lg;
+    padding: $spacing-md;
 
     .movie-poster {
       align-self: center;
@@ -407,7 +451,7 @@ const handleCommentSuccess = () => {
     .rating-score {
       flex-direction: column;
       align-items: flex-start;
-      gap: 8px;
+      gap: $spacing-sm;
     }
   }
 
@@ -425,12 +469,12 @@ const handleCommentSuccess = () => {
 
   .movie-content {
     .content-section {
-      padding: 16px;
+      padding: $spacing-md;
     }
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: $breakpoint-sm) {
   .movie-hero {
     .movie-poster {
       img {

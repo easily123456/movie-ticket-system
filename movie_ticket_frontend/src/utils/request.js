@@ -68,7 +68,8 @@ request.interceptors.response.use(
           }
           // 其他400错误显示具体消息
           if (data && data.message) {
-            ElMessage.error(data.message)
+            ElMessage.error(data.message) //弹出后端返回的错误信息
+
           } else {
             ElMessage.error('网络错误，请稍后重试')
           }

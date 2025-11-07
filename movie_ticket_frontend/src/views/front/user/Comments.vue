@@ -39,14 +39,8 @@
                   {{ getMovieTitle(comment.movieId) }}
                 </h3>
                 <div class="comment-rating">
-                  <el-rate
-                    v-model="comment.rating"
-                    disabled
-                    show-score
-                    text-color="#e6a23c"
-                    score-template="{value}"
-                    size="small"
-                  />
+                  <StarRating :value="comment.rating" :max="5" :size="14" />
+                  <span class="score">{{ comment.rating }}</span>
                 </div>
               </div>
             </div>
@@ -111,6 +105,7 @@ import { useRouter } from 'vue-router'
 import { useCommentStore } from '@/stores/comments'
 import { useMovieStore } from '@/stores/movie'
 import { Star } from '@element-plus/icons-vue'
+import StarRating from '@/components/common/StarRating.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 

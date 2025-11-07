@@ -7,14 +7,8 @@
         <div class="stats-summary">
           <div class="average-rating">
             <span class="rating-score">{{ stats.averageRating?.toFixed(1) || '0.0' }}</span>
-            <el-rate
-              v-model="stats.averageRating"
-              disabled
-              :colors="['#909399', '#e6a23c', '#f56c6c']"
-              :max="10"
-              class="rating-stars"
-            />
-            <span class="rating-count">{{ stats.totalCount }}条评价</span>
+            <StarRating :value="stats.averageRating" :max="5" size="18" />
+            <span class="rating-count">{{ stats.totalComments }}条评价</span>
           </div>
         </div>
       </div>
@@ -71,12 +65,7 @@
           <div class="comment-header">
             <div class="user-info">
               <span class="username">{{ comment.username }}</span>
-              <el-rate
-                v-model="comment.rating"
-                disabled
-                :colors="['#909399', '#e6a23c', '#f56c6c']"
-                class="comment-rating"
-              />
+              <StarRating :value="comment.rating" :max="5" size="14" />
             </div>
             <div class="comment-time">
               {{ formatDate(comment.createTime) }}
@@ -86,12 +75,12 @@
             {{ comment.content }}
           </div>
           <div class="comment-actions">
-            <el-button
+          <el-button
               link
               :type="comment.liked ? 'primary' : ''"
               @click="handleLike(comment)"
             >
-              <el-icon><Like /></el-icon>
+            <el-icon><StarFilled /></el-icon>
               {{ comment.likeCount }}
             </el-button>
           </div>
@@ -125,8 +114,10 @@
 <script setup>
 import { ref, reactive,  watch } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Like } from '@element-plus/icons-vue'
+import { StarFilled } from '@element-plus/icons-vue'
+import StarRating from '@/components/common/StarRating.vue'
 import { formatDateTime } from '@/utils'
+import { commentApi } from '@/api'
 
 const props = defineProps({
   movieId: {
@@ -183,43 +174,33 @@ watch(() => props.movieId, (newId) => {
   }
 }, { immediate: true })
 
-// 加载评论列表
-const loadComments = async () => {
+// 加载评论列表（函数声明可提升，避免 watcher immediate 前未初始化）
+async function loadComments() {
   loading.value = true
   try {
-    // 这里应该调用API获取评论数据
-    // const response = await commentApi.getCommentsByMovie(props.movieId, {
-    //   page: pagination.page - 1,
-    //   size: pagination.size,
-    //   sort: sortOption.value
-    // })
-    // comments.value = response.data.content
-    // pagination.total = response.data.totalElements
-
-    // 模拟数据
-    comments.value = [
-      {
-        id: 1,
-        username: '张三',
-        userAvatar: '',
-        rating: 8,
-        content: '这部电影真的很棒，剧情紧凑，演员演技在线，特效也很震撼！',
-        likeCount: 25,
-        liked: false,
-        createTime: '2024-01-15T10:30:00'
-      },
-      {
-        id: 2,
-        username: '李四',
-        userAvatar: '',
-        rating: 6,
-        content: '整体还行，但有些地方感觉节奏有点慢。',
-        likeCount: 8,
-        liked: true,
-        createTime: '2024-01-14T15:45:00'
-      }
-    ]
-    pagination.total = 2
+    // 调用后端接口获取电影评论，兼容常见分页返回结构
+    const params = {
+      page: pagination.page - 1, // 后端可能从0开始
+      size: pagination.size,
+      sort: sortOption.value
+    }
+    const res = await commentApi.getMovieComments(props.movieId, params)
+    // 支持多种后端返回结构：{ data: { content: [], totalElements } } 或 { data: [], total }
+    const data = res.data || res
+    if (Array.isArray(data)) {
+      comments.value = data
+      pagination.total = data.length
+    } else if (data.content) {
+      comments.value = data.content
+      pagination.total = data.totalElements || data.total || 0
+    } else if (data.data && Array.isArray(data.data)) {
+      comments.value = data.data
+      pagination.total = data.total || 0
+    } else {
+      // 兜底：尝试使用 data.items
+      comments.value = data.items || []
+      pagination.total = data.total || comments.value.length
+    }
   } catch (error) {
     console.error('加载评论失败:', error)
     ElMessage.error('加载评论失败')
@@ -229,37 +210,21 @@ const loadComments = async () => {
 }
 
 // 加载统计信息
-const loadStats = async () => {
+async function loadStats() {
   try {
-    // 这里应该调用API获取统计信息
-    // const response = await commentApi.getCommentStats(props.movieId)
-    // stats.value = response.data
-
-    // 模拟数据
-    stats.value = {
-      averageRating: 7.5,
-      totalCount: 128,
-      ratingDistribution: [
-        { rating: 10, count: 25 },
-        { rating: 9, count: 30 },
-        { rating: 8, count: 20 },
-        { rating: 7, count: 15 },
-        { rating: 6, count: 10 },
-        { rating: 5, count: 8 },
-        { rating: 4, count: 5 },
-        { rating: 3, count: 3 },
-        { rating: 2, count: 2 },
-        { rating: 1, count: 1 }
-      ]
-    }
-
-    // 计算评分分布百分比
-    if (stats.value.ratingDistribution) {
-      const total = stats.value.totalCount
-      ratingDistribution.value = stats.value.ratingDistribution.map(item => ({
+    const res = await commentApi.getCommentStats(props.movieId)
+    const d = res.data || res
+    // 兼容不同结构
+    stats.value = d
+    const dist = d.ratingDistribution || d.distribution || []
+    const total = d.totalCount || d.total || (dist.reduce((s, it) => s + (it.count || 0), 0))
+    if (dist && dist.length) {
+      ratingDistribution.value = dist.map(item => ({
         ...item,
-        percentage: total > 0 ? Math.round((item.count / total) * 100) : 0
+        percentage: total > 0 ? Math.round(((item.count || 0) / total) * 100) : 0
       }))
+    } else {
+      ratingDistribution.value = []
     }
   } catch (error) {
     console.error('加载评论统计失败:', error)
@@ -282,17 +247,18 @@ const handlePageChange = (page) => {
 // 处理点赞
 const handleLike = async (comment) => {
   try {
-    // 这里应该调用API处理点赞
-    // await commentApi.likeComment(comment.id)
-
+    // 调用后端点赞/取消点赞接口
     if (comment.liked) {
-      comment.likeCount--
+      await commentApi.unlikeComment(comment.id)
+      comment.likeCount = Math.max(0, (comment.likeCount || 1) - 1)
+      comment.liked = false
+      ElMessage.success('取消点赞')
     } else {
-      comment.likeCount++
+      await commentApi.likeComment(comment.id)
+      comment.likeCount = (comment.likeCount || 0) + 1
+      comment.liked = true
+      ElMessage.success('点赞成功')
     }
-    comment.liked = !comment.liked
-
-    ElMessage.success(comment.liked ? '点赞成功' : '取消点赞')
   } catch (error) {
     console.error('点赞失败:', error)
     ElMessage.error('操作失败')
@@ -318,27 +284,26 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-@use "sass:color";
-@use '@/assets/styles/variables.scss';
+@use 'sass:color';
 
 .comment-list {
   .comment-stats {
-    background: variables.$bg-white;
-    border-radius: variables.$border-radius-base;
-    padding: variables.$spacing-lg;
-    margin-bottom: variables.$spacing-lg;
-    box-shadow: variables.$shadow-light;
+    background: $bg-white;
+    border-radius: $border-radius-base;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    box-shadow: $shadow-light;
 
     .stats-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: variables.$spacing-lg;
+      margin-bottom: $spacing-lg;
 
       .stats-title {
-        font-size: 18px;
+        font-size: $font-size-large;
         font-weight: 600;
-        color: variables.$text-primary;
+        color: $text-primary;
         margin: 0;
       }
 
@@ -346,12 +311,12 @@ defineExpose({
         .average-rating {
           display: flex;
           align-items: center;
-          gap: variables.$spacing-sm;
+          gap: $spacing-sm;
 
           .rating-score {
             font-size: 24px;
             font-weight: 700;
-            color: variables.$warning-color;
+            color: $warning-color;
           }
 
           .rating-stars {
@@ -361,8 +326,9 @@ defineExpose({
           }
 
           .rating-count {
-            color: variables.$text-secondary;
-            font-size: variables.$font-size-small;
+            color: $text-secondary;
+            font-size: $font-size-small;
+            margin-left: $spacing-md;
           }
         }
       }
@@ -372,8 +338,8 @@ defineExpose({
       .distribution-item {
         display: flex;
         align-items: center;
-        gap: variables.$spacing-md;
-        margin-bottom: variables.$spacing-sm;
+        gap: $spacing-md;
+        margin-bottom: $spacing-sm;
 
         &:last-child {
           margin-bottom: 0;
@@ -381,34 +347,34 @@ defineExpose({
 
         .rating-label {
           width: 30px;
-          font-size: variables.$font-size-small;
-          color: variables.$text-secondary;
+          font-size: $font-size-small;
+          color: $text-secondary;
         }
 
         .rating-progress {
           flex: 1;
 
           :deep(.el-progress-bar__outer) {
-            background: color.adjust(variables.$warning-color, $lightness: 25%);
+            background: color.adjust($warning-color, $lightness: 25%);
           }
 
           :deep(.el-progress-bar__inner) {
-            background: variables.$warning-color;
+            background: $warning-color;
           }
         }
 
         .rating-count {
           width: 30px;
           text-align: right;
-          font-size: variables.$font-size-small;
-          color: variables.$text-secondary;
+          font-size: $font-size-small;
+          color: $text-secondary;
         }
       }
     }
   }
 
   .comment-sort {
-    margin-bottom: variables.$spacing-lg;
+    margin-bottom: $spacing-lg;
     text-align: right;
 
     :deep(.el-select) {
@@ -419,9 +385,9 @@ defineExpose({
   .comments-container {
     .comment-item {
       display: flex;
-      gap: variables.$spacing-md;
-      padding: variables.$spacing-lg;
-      border-bottom: 1px solid variables.$border-light;
+      gap: $spacing-md;
+      padding: $spacing-lg;
+      border-bottom: 1px solid $border-light;
 
       &:last-child {
         border-bottom: none;
@@ -439,16 +405,16 @@ defineExpose({
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: variables.$spacing-sm;
+          margin-bottom: $spacing-sm;
 
           .user-info {
             display: flex;
             align-items: center;
-            gap: variables.$spacing-sm;
+            gap: $spacing-sm;
 
             .username {
               font-weight: 500;
-              color: variables.$text-primary;
+              color: $text-primary;
             }
 
             .comment-rating {
@@ -459,25 +425,25 @@ defineExpose({
           }
 
           .comment-time {
-            color: variables.$text-secondary;
-            font-size: variables.$font-size-small;
+            color: $text-secondary;
+            font-size: $font-size-small;
           }
         }
 
         .comment-text {
-          color: variables.$text-regular;
+          color: $text-regular;
           line-height: 1.6;
-          margin-bottom: variables.$spacing-sm;
+          margin-bottom: $spacing-sm;
           white-space: pre-wrap;
         }
 
         .comment-actions {
           :deep(.el-button) {
-            color: variables.$text-secondary;
-            font-size: variables.$font-size-small;
+            color: $text-secondary;
+            font-size: $font-size-small;
 
             &:hover {
-              color: variables.$primary-color;
+              color: $primary-color;
             }
           }
         }
@@ -486,12 +452,12 @@ defineExpose({
 
     .empty-comments,
     .loading-comments {
-      padding: variables.$spacing-xl;
+      padding: $spacing-xl;
       text-align: center;
     }
 
     .comment-pagination {
-      margin-top: variables.$spacing-lg;
+      margin-top: $spacing-lg;
       text-align: center;
     }
   }

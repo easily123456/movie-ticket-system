@@ -4,6 +4,7 @@
     :type="isFavorited ? 'primary' : 'default'"
     :loading="loading"
     :disabled="!isAuthenticated"
+    :size="props.size"
     @click="handleFavorite"
   >
     <el-icon>
@@ -113,6 +114,11 @@ const handleFavorite = async () => {
 </script>
 <style scoped lang="scss">
 .favorite-button {
+  /* 与页面中其它按钮相同的最小宽度，方便在父组件的 scoped 样式无法作用时仍保持一致 */
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   transition: all 0.3s ease;
 
   &.active {

@@ -209,7 +209,7 @@ export const useCommentStore = defineStore('comment', () => {
     if (index !== -1) {
       comments.value[index] = updatedComment
     }
-    
+
     const userIndex = userComments.value.findIndex(comment => comment.id === updatedComment.id)
     if (userIndex !== -1) {
       userComments.value[userIndex] = updatedComment

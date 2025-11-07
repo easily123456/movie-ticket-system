@@ -34,7 +34,6 @@ public class MovieServiceImpl implements MovieService {
     private final OrderRepository orderRepository;
     private final SessionRepository sessionRepository;
 
-
     // 获取电影列表（带筛选和分页）
     @Transactional(readOnly = true)
     @Override
@@ -132,7 +131,7 @@ public class MovieServiceImpl implements MovieService {
     @Transactional(readOnly = true)
     @Override
     public List<MovieResponse> getNewMovies(int limit) { // 2023-07-01后的电影
-        LocalDate time =   LocalDate.of(2023, 7, 1);
+        LocalDate time = LocalDate.of(2023, 7, 1);
         List<Movie> movies = movieRepository.findByReleaseDateAfterAndStatusOrderByReleaseDateDesc(time, true,
                 PageRequest.of(0, limit));
         return movies.stream()
@@ -201,6 +200,15 @@ public class MovieServiceImpl implements MovieService {
         response.setFormattedRating(formatRating(movie.getRating()));
         response.setIsNew(isNewMovie(movie.getReleaseDate()));
 
+        // 填充基于评论的平均分（只用于展示，不持久化到 movie 实体）
+        try {
+            Double avg = commentRepository.getAverageRatingByMovie(movie.getId());
+            response.setCommentAverageRating(avg != null ? java.math.BigDecimal.valueOf(avg) : null);
+        } catch (Exception e) {
+            // 获取评论平均分为非关键路径，若失败则保持为空
+            response.setCommentAverageRating(null);
+        }
+
         return response;
     }
 
@@ -216,7 +224,6 @@ public class MovieServiceImpl implements MovieService {
             return minutes + "分钟";
         }
     }
-
 
     // 格式化评分
     @Override
@@ -237,11 +244,10 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Optional<Movie> getMovieById(Long id){
+    public Optional<Movie> getMovieById(Long id) {
         return movieRepository.findById(id);
     }
     // ---------- 实体级/管理端需要的方法 (Controller/Service 依赖) ----------
-
 
     @Override
     public void updateMovieRating(Long movieId) {

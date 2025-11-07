@@ -22,6 +22,7 @@ public class MovieController {
     private final MovieService movieService;
     private final GenreService genreService;
 
+    // 获取电影列表
     @GetMapping
     public ResponseEntity<ApiResponse<Page<MovieResponse>>> getMovies(
             MovieQueryRequest request) {
@@ -34,6 +35,7 @@ public class MovieController {
         }
     }
 
+    // 获取热门电影
     @GetMapping("/hot")
     public ResponseEntity<ApiResponse<List<MovieResponse>>> getHotMovies(
             @RequestParam(defaultValue = "8") int limit) {
@@ -45,6 +47,7 @@ public class MovieController {
         }
     }
 
+    // 获取最新电影
     @GetMapping("/new")
     public ResponseEntity<ApiResponse<List<MovieResponse>>> getNewMovies(
             @RequestParam(defaultValue = "8") int limit) {
@@ -56,6 +59,7 @@ public class MovieController {
         }
     }
 
+    // 获取高分电影
     @GetMapping("/top-rated")
     public ResponseEntity<ApiResponse<List<MovieResponse>>> getTopRatedMovies(
             @RequestParam(defaultValue = "8") int limit) {
@@ -67,6 +71,7 @@ public class MovieController {
         }
     }
 
+    // 搜索电影
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<Page<MovieResponse>>> searchMovies(
             @RequestParam String keyword,
@@ -81,6 +86,7 @@ public class MovieController {
         }
     }
 
+    // 获取电影类型下的电影
     @GetMapping("/by-genre/{genreId}")
     public ResponseEntity<ApiResponse<Page<MovieResponse>>> getMoviesByGenre(
             @PathVariable Long genreId,
@@ -102,6 +108,7 @@ public class MovieController {
 
 
 
+    // 获取电影详情
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<MovieResponse>> getMovie(@PathVariable Long id) {
         try {

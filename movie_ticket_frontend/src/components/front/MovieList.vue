@@ -41,8 +41,8 @@
           >
             <MovieCard
               :movie="movie"
-              @book="handleBookMovie"
-              @detail="handleViewDetail"
+              @buy-ticket="handleBookMovie"
+              @favorite="handleViewDetail"
             />
           </div>
         </div>
@@ -180,22 +180,22 @@ watch(
 .movie-list-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: $spacing-lg;
 }
 
 .page-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: $spacing-xl;
 
   .page-title {
     font-size: 32px;
     font-weight: 700;
     color: $text-primary;
-    margin: 0 0 8px 0;
+    margin: 0 0 $spacing-xs 0;
   }
 
   .page-subtitle {
-    font-size: 16px;
+    font-size: $font-size-base;
     color: $text-regular;
     margin: 0;
   }
@@ -204,12 +204,12 @@ watch(
 .page-content {
   display: grid;
   grid-template-columns: 280px 1fr;
-  gap: 24px;
+  gap: $spacing-lg;
 }
 
 .filter-container {
   position: sticky;
-  top: 20px;
+  top: $spacing-lg;
   height: fit-content;
 }
 
@@ -221,25 +221,25 @@ watch(
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding: 16px;
+  margin-bottom: $spacing-lg;
+  padding: $spacing-md;
   background: $bg-white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: $border-radius-base;
+  box-shadow: $shadow-base;
 
   .results-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: $spacing-xs;
 
     .total-count {
-      font-size: 14px;
+      font-size: $font-size-base;
       color: $text-primary;
       font-weight: 500;
     }
 
     .search-keyword {
-      font-size: 12px;
+      font-size: $font-size-small;
       color: $text-regular;
     }
   }
@@ -248,12 +248,12 @@ watch(
 .movies-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-  margin-bottom: 32px;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
 }
 
 .movie-item {
-  transition: transform 0.2s ease;
+  transition: $transition-base;
 
   &:hover {
     transform: translateY(-2px);
@@ -261,29 +261,29 @@ watch(
 }
 
 .loading-container {
-  padding: 40px 0;
+  padding: $spacing-xl 0;
 }
 
 .empty-container {
-  padding: 80px 0;
+  padding: $spacing-xxl 0;
 }
 
 .pagination-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 24px 0;
+  gap: $spacing-md;
+  padding: $spacing-lg 0;
 
   .load-more {
     text-align: center;
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: $breakpoint-lg) {
   .page-content {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: $spacing-md;
   }
 
   .filter-container {
@@ -291,13 +291,13 @@ watch(
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: $breakpoint-sm) {
   .movie-list-page {
-    padding: 16px;
+    padding: $spacing-sm;
   }
 
   .page-header {
-    margin-bottom: 24px;
+    margin-bottom: $spacing-lg;
 
     .page-title {
       font-size: 24px;
@@ -306,17 +306,18 @@ watch(
 
   .movies-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 16px;
+    gap: $spacing-md;
   }
 
   .content-header {
     flex-direction: column;
-    gap: 12px;
+    gap: $spacing-sm;
     align-items: stretch;
+    padding: $spacing-sm;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: $breakpoint-xs) {
   .movies-grid {
     grid-template-columns: 1fr;
   }

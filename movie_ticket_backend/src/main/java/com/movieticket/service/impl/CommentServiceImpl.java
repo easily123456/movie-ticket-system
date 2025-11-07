@@ -48,8 +48,10 @@ public class CommentServiceImpl implements CommentService {
 
         Comment savedComment = commentRepository.save(comment);
 
-        // 更新电影评分
-        movieService.updateMovieRating(movie.getId());
+        // NOTE: 不再在创建评论时自动修改 Movie 实体的评分。
+        // 后端原先会调用 movieService.updateMovieRating(movie.getId())
+        // 导致 movie.rating 与 movie.voteCount 被持久化更新。
+        // 为保持 movie 表中评分不随用户评论自动改变，移除该调用。
 
         return savedComment;
     }
@@ -64,9 +66,7 @@ public class CommentServiceImpl implements CommentService {
 
         Comment savedComment = commentRepository.save(existingComment);
 
-        // 更新电影评分
-        movieService.updateMovieRating(existingComment.getMovie().getId());
-
+        // NOTE: 不在更新评论时更改电影评分（保持 movie 表不被自动修改）。
         return savedComment;
     }
 
@@ -78,8 +78,7 @@ public class CommentServiceImpl implements CommentService {
         Long movieId = comment.getMovie().getId();
         commentRepository.delete(comment);
 
-        // 更新电影评分
-        movieService.updateMovieRating(movieId);
+        // NOTE: 不在删除评论时更新电影评分，以避免修改 movie 表。
     }
 
     @Override
@@ -140,7 +139,7 @@ public class CommentServiceImpl implements CommentService {
     public long getCommentCountByMovie(Long movieId) {
         return commentRepository.countByMovie(movieId);
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public CommentStatsResponse getCommentStatsByMovie(Long movieId) {
@@ -149,17 +148,17 @@ public class CommentServiceImpl implements CommentService {
         stats.setTotalComments(commentRepository.countByMovie(movieId));
         Double averageRating = commentRepository.getAverageRatingByMovie(movieId);
         stats.setAverageRating(averageRating != null ? BigDecimal.valueOf(averageRating) : null);
-        
+
         // 实现星级统计功能 (按评分范围统计)
         stats.setFiveStarCount(commentRepository.countByMovieIdAndFiveStar(movieId));
         stats.setFourStarCount(commentRepository.countByMovieIdAndFourStar(movieId));
         stats.setThreeStarCount(commentRepository.countByMovieIdAndThreeStar(movieId));
         stats.setTwoStarCount(commentRepository.countByMovieIdAndTwoStar(movieId));
         stats.setOneStarCount(commentRepository.countByMovieIdAndOneStar(movieId));
-        
+
         return stats;
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public List<Comment> getLatestCommentsByMovie(Long movieId, int limit) {
