@@ -11,6 +11,8 @@ public class CommentResponse {
     private String username;
     private String avatar;
     private Long movieId;
+    private String movieTitle;
+    private String moviePoster;
     private String content;
     private BigDecimal rating;
     private Integer likeCount;

@@ -26,17 +26,18 @@
           >
             <div class="comment-movie">
               <img
-                :src="getMoviePoster(comment.movieId)"
-                :alt="comment.movieTitle"
+                :src="comment.moviePoster || '/images/default-movie-poster.jpg'"
+                :alt="comment.movieTitle || '电影海报'"
                 class="movie-poster"
                 @click="goToMovieDetail(comment.movieId)"
+                @error="handleImageError"
               />
               <div class="movie-info">
                 <h3
                   class="movie-title"
                   @click="goToMovieDetail(comment.movieId)"
                 >
-                  {{ getMovieTitle(comment.movieId) }}
+                  {{ comment.movieTitle || '未知电影' }}
                 </h3>
                 <div class="comment-rating">
                   <StarRating :value="comment.rating" :max="5" :size="14" />
@@ -85,7 +86,7 @@
           <el-skeleton :rows="3" animated />
         </div>
         <!-- 分页 -->
-        <div class="pagination-container">
+        <div v-if="totalComments > 0" class="pagination-container">
           <el-pagination
             v-model:current-page="currentPage"
             :page-size="pageSize"
@@ -103,7 +104,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCommentStore } from '@/stores/comments'
-import { useMovieStore } from '@/stores/movie'
 import { Star } from '@element-plus/icons-vue'
 import StarRating from '@/components/common/StarRating.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -115,7 +115,6 @@ defineOptions({
 
 const router = useRouter()
 const commentStore = useCommentStore()
-const movieStore = useMovieStore()
 
 const currentPage = ref(1)
 const pageSize = ref(10)
@@ -123,7 +122,7 @@ const pageSize = ref(10)
 // 计算属性
 const userComments = computed(() => commentStore.userComments)
 const loading = computed(() => commentStore.loading)
-const totalComments = computed(() => commentStore.userComments.length)
+const totalComments = computed(() => commentStore.pagination.total || commentStore.userComments.length)
 
 const avgRating = computed(() => {
   if (userComments.value.length === 0) return 0
@@ -149,23 +148,24 @@ const loadUserComments = async () => {
   }
 }
 
-// 获取电影标题
-const getMovieTitle = (movieId) => {
-  // 从电影store中查找对应的电影信息
-  const movie = movieStore.movies.find(m => m.id === movieId)
-  return movie ? movie.title : '未知电影'
-}
-
-// 获取电影海报
-const getMoviePoster = (movieId) => {
-  // 从电影store中查找对应的电影信息
-  const movie = movieStore.movies.find(m => m.id === movieId)
-  return movie ? movie.poster : '/images/default-movie-poster.jpg'
-}
-
 // 跳转到电影详情
 const goToMovieDetail = (movieId) => {
-  router.push(`/movie/${movieId}`)
+  if (!movieId) {
+    ElMessage.warning('电影ID无效')
+    return
+  }
+  router.push({ name: 'movie-detail', params: { id: movieId } }).catch(err => {
+    // 忽略导航重复的错误
+    if (err.name !== 'NavigationDuplicated') {
+      console.error('跳转失败:', err)
+      ElMessage.error('跳转失败，请稍后重试')
+    }
+  })
+}
+
+// 处理图片加载错误
+const handleImageError = (event) => {
+  event.target.src = '/images/default-movie-poster.jpg'
 }
 
 // 处理删除评论

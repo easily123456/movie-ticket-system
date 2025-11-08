@@ -13,8 +13,8 @@
             <el-form-item label="用户名" prop="username">
               <el-input v-model="profileForm.username" placeholder="请输入用户名" />
             </el-form-item>
-            <el-form-item label="邮箱">
-              <el-input v-model="profileForm.email" disabled />
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="profileForm.email" placeholder="请输入邮箱" />
             </el-form-item>
             <el-form-item label="手机号" prop="phone">
               <el-input v-model="profileForm.phone" placeholder="请输入手机号" />
@@ -26,7 +26,10 @@
                 </el-avatar>
                 <el-upload
                   action="/api/upload/avatar"
+                  name="file"
+                  accept="image/*"
                   :show-file-list="false"
+                  :headers="uploadHeaders"
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload"
                 >
@@ -72,12 +75,16 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from '@/stores/auth'
 import { userApi } from '@/api'
 
 const authStore = useAuthStore()
+
+defineOptions({
+  name: 'UserProfile',
+})
 
 // 个人信息
 const saving = ref(false)
@@ -86,13 +93,31 @@ const profileForm = reactive({
   username: '',
   email: '',
   phone: '',
-  avatar: ''
+  avatar: '',
+  avatarRaw: ''
+})
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+
+const normalizeAvatarUrl = (url) => {
+  if (!url) return ''
+  // 如果后端返回相对路径（以 /uploads/ 开头），则加上后端地址
+  if (url.startsWith('/')) return `${API_BASE}${url}`
+  return url
+}
+
+// 上传组件需要单独添加 Authorization header（el-upload 不会使用 axios 实例的拦截器）
+const uploadHeaders = computed(() => {
+  return authStore.token ? { Authorization: `Bearer ${authStore.token}` } : {}
 })
 
 const profileRules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 2, max: 20, message: '用户名长度在 2 到 20 个字符', trigger: 'blur' }
+  ],
+  email: [
+    { required: true, type: 'email', message: '请输入有效的邮箱地址', trigger: 'blur' }
   ],
   phone: [
     { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
@@ -136,16 +161,21 @@ const loadProfile = async () => {
     // 优先从后端获取，兼容已登录本地缓存
     const resp = await userApi.getProfile()
     const data = resp.data || resp
-    profileForm.username = data.username || authStore.user?.username || ''
-    profileForm.email = data.email || authStore.user?.email || ''
-    profileForm.phone = data.phone || authStore.user?.phone || ''
-    profileForm.avatar = data.avatar || authStore.user?.avatar || ''
+  profileForm.username = data.username || authStore.user?.username || ''
+  profileForm.email = data.email || authStore.user?.email || ''
+  profileForm.phone = data.phone || authStore.user?.phone || ''
+  const raw = data.avatar || authStore.user?.avatar || ''
+  profileForm.avatarRaw = raw
+  profileForm.avatar = normalizeAvatarUrl(raw)
   } catch (e) {
     // 回退：若接口异常则从本地缓存填充
-    profileForm.username = authStore.user?.username || ''
-    profileForm.email = authStore.user?.email || ''
-    profileForm.phone = authStore.user?.phone || ''
-    profileForm.avatar = authStore.user?.avatar || ''
+    console.error(e)
+  profileForm.username = authStore.user?.username || ''
+  profileForm.email = authStore.user?.email || ''
+  profileForm.phone = authStore.user?.phone || ''
+  const raw2 = authStore.user?.avatar || ''
+  profileForm.avatarRaw = raw2
+  profileForm.avatar = normalizeAvatarUrl(raw2)
   }
 }
 
@@ -157,20 +187,26 @@ const handleSaveProfile = async () => {
     try {
       await userApi.updateProfile({
         username: profileForm.username,
+        email: profileForm.email,
         phone: profileForm.phone,
-        avatar: profileForm.avatar
+        avatar: profileForm.avatarRaw || profileForm.avatar
       })
       // 同步到本地认证存储
+      const rawAvatar = profileForm.avatarRaw || profileForm.avatar
       const updated = {
         ...(authStore.user || {}),
         username: profileForm.username,
         phone: profileForm.phone,
-        avatar: profileForm.avatar
+        avatar: rawAvatar
       }
+      // 保存原始值到 localStorage（后端/初始化时会统一处理）
       localStorage.setItem('user', JSON.stringify(updated))
-      // 如果 store 暴露 user 可直接赋值
+      // 将 normalized avatar 赋给 store，确保应用中显示即时更新
       if (authStore.user !== undefined) {
-        authStore.user = updated
+        authStore.user = {
+          ...updated,
+          avatar: normalizeAvatarUrl(rawAvatar)
+        }
       }
       ElMessage.success('个人信息更新成功')
     } catch (e) {
@@ -182,9 +218,16 @@ const handleSaveProfile = async () => {
   })
 }
 
-const handleAvatarSuccess = (response) => {
+const handleAvatarSuccess = async (response) => {
   // 后端返回 { url: '...' }
-  profileForm.avatar = response.url || response.data?.url || ''
+  const raw = response?.url || response?.data?.url || ''
+  if (!raw) {
+    ElMessage.error('无法解析上传结果')
+    return
+  }
+
+  profileForm.avatarRaw = raw
+  profileForm.avatar = normalizeAvatarUrl(raw)
   ElMessage.success('头像上传成功')
 }
 

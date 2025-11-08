@@ -3644,3 +3644,626 @@ Caused by: java.io.IOException: 你的主机中的软件中止了一个已建立的连接。
 2025-11-08 20:52:46 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-11-08 20:52:46 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2025-11-08 20:52:46 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-11-08 20:54:21 [main] INFO  c.movieticket.MovieTicketApplication - Starting MovieTicketApplication using Java 17.0.12 with PID 103204 (D:\大学\毕设\movie-ticket-system\movie_ticket_backend\target\classes started by admin in D:\大学\毕设\movie-ticket-system\movie_ticket_backend)
+2025-11-08 20:54:21 [main] DEBUG c.movieticket.MovieTicketApplication - Running with Spring Boot v3.5.6, Spring v6.2.11
+2025-11-08 20:54:21 [main] INFO  c.movieticket.MovieTicketApplication - No active profile set, falling back to 1 default profile: "default"
+2025-11-08 20:54:21 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-08 20:54:21 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 84 ms. Found 10 JPA repository interfaces.
+2025-11-08 20:54:22 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-11-08 20:54:22 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-11-08 20:54:22 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-11-08 20:54:22 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-11-08 20:54:22 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1308 ms
+2025-11-08 20:54:22 [main] DEBUG c.m.security.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-11-08 20:54:22 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-08 20:54:22 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-11-08 20:54:22 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-11-08 20:54:22 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-08 20:54:22 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-11-08 20:54:22 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@70ce2fb2
+2025-11-08 20:54:22 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-11-08 20:54:22 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-08 20:54:22 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-11-08 20:54:22 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-08 20:54:23 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-08 20:54:23 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08 20:54:24 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-08 20:54:25 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-08 20:54:25 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-11-08 20:54:26 [main] DEBUG o.s.s.web.DefaultSecurityFilterChain - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-11-08 20:54:26 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-11-08 20:54:26 [main] INFO  c.movieticket.MovieTicketApplication - Started MovieTicketApplication in 5.642 seconds (process running for 5.934)
+2025-11-08 20:54:29 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-08 20:54:29 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-11-08 20:54:29 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-11-08 20:54:29 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 20:54:29 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 20:54:29 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 20:54:29 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 20:55:18 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/genres
+2025-11-08 20:55:18 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/genres
+2025-11-08 20:55:18 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies?sortBy=createTime&sortOrder=desc&page=0&size=12&status=true
+2025-11-08 20:55:18 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies?sortBy=createTime&sortOrder=desc&page=0&size=12&status=true
+2025-11-08 20:55:18 [http-nio-8080-exec-4] WARN  o.s.d.w.c.SpringDataJacksonConfiguration$PageModule$WarningLoggingModifier - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-11-08 20:55:19 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/news/top
+2025-11-08 20:55:19 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/news/top
+2025-11-08 20:55:19 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/news?page=0&size=10
+2025-11-08 20:55:19 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/news?page=0&size=10
+2025-11-08 20:55:20 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 20:55:20 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 20:55:20 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 20:55:20 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 20:56:10 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/profile
+2025-11-08 20:56:10 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 20:56:10 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 20:56:11 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/orders?page=0&size=10
+2025-11-08 20:56:11 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/orders?page=0&size=10
+2025-11-08 20:56:11 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/orders?page=0&size=10
+2025-11-08 20:56:13 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/comments?page=0&size=10
+2025-11-08 20:56:13 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 20:56:13 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 20:56:22 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 20:56:22 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 20:56:38 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites?page=0&size=10
+2025-11-08 20:56:38 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites?page=0&size=10
+2025-11-08 20:56:38 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites?page=0&size=10
+2025-11-08 20:56:43 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 20:56:43 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 20:56:49 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 20:56:49 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 20:59:51 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 20:59:51 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:07 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-08 21:01:08 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-11-08 21:01:08 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08 21:01:08 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-11-08 21:01:08 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-11-08 21:01:21 [main] INFO  c.movieticket.MovieTicketApplication - Starting MovieTicketApplication using Java 17.0.12 with PID 104632 (D:\大学\毕设\movie-ticket-system\movie_ticket_backend\target\classes started by admin in D:\大学\毕设\movie-ticket-system\movie_ticket_backend)
+2025-11-08 21:01:21 [main] DEBUG c.movieticket.MovieTicketApplication - Running with Spring Boot v3.5.6, Spring v6.2.11
+2025-11-08 21:01:21 [main] INFO  c.movieticket.MovieTicketApplication - No active profile set, falling back to 1 default profile: "default"
+2025-11-08 21:01:22 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-08 21:01:22 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 92 ms. Found 10 JPA repository interfaces.
+2025-11-08 21:01:23 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-11-08 21:01:23 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-11-08 21:01:23 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-11-08 21:01:23 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-11-08 21:01:23 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1677 ms
+2025-11-08 21:01:23 [main] DEBUG c.m.security.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-11-08 21:01:23 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-08 21:01:23 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-11-08 21:01:23 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-11-08 21:01:23 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-08 21:01:23 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-11-08 21:01:23 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@74231642
+2025-11-08 21:01:23 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-11-08 21:01:23 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-08 21:01:23 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-11-08 21:01:23 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-08 21:01:24 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-08 21:01:24 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08 21:01:25 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-08 21:01:27 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-08 21:01:27 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-11-08 21:01:27 [main] DEBUG o.s.s.web.DefaultSecurityFilterChain - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-11-08 21:01:28 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-11-08 21:01:28 [main] INFO  c.movieticket.MovieTicketApplication - Started MovieTicketApplication in 7.362 seconds (process running for 7.657)
+2025-11-08 21:01:28 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-08 21:01:28 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-11-08 21:01:28 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-11-08 21:01:28 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/movies/new?limit=4
+2025-11-08 21:01:28 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/movies/hot?limit=4
+2025-11-08 21:01:28 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 21:01:28 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 21:01:28 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 21:01:28 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 21:01:30 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/profile
+2025-11-08 21:01:30 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:01:30 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:01:31 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/orders?page=0&size=10
+2025-11-08 21:01:31 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/orders?page=0&size=10
+2025-11-08 21:01:31 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/orders?page=0&size=10
+2025-11-08 21:01:31 [http-nio-8080-exec-2] WARN  o.s.d.w.c.SpringDataJacksonConfiguration$PageModule$WarningLoggingModifier - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-11-08 21:01:32 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/comments?page=0&size=10
+2025-11-08 21:01:32 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:32 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:36 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:36 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:38 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:38 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:39 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:39 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:44 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:44 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:47 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:47 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:54 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:54 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:56 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:56 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:59 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:01:59 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:02:02 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:02:02 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:23 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:23 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:35 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:35 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:50 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:50 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:52 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/comments/movie/2?page=0&size=10&sort=createTime,desc
+2025-11-08 21:03:52 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/comments/movie/2/stats
+2025-11-08 21:03:52 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites/check/movie/2
+2025-11-08 21:03:52 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites/count/movie/2
+2025-11-08 21:03:52 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/movies/2
+2025-11-08 21:03:52 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/2?page=0&size=10&sort=createTime,desc
+2025-11-08 21:03:52 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/2/stats
+2025-11-08 21:03:52 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/count/movie/2
+2025-11-08 21:03:52 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/check/movie/2
+2025-11-08 21:03:52 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/2
+2025-11-08 21:03:52 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/check/movie/2
+2025-11-08 21:03:52 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/2/stats
+2025-11-08 21:03:52 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/count/movie/2
+2025-11-08 21:03:52 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/2?page=0&size=10&sort=createTime,desc
+2025-11-08 21:03:52 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/2
+2025-11-08 21:03:53 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:53 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:56 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/comments/movie/12?page=0&size=10&sort=createTime,desc
+2025-11-08 21:03:56 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/comments/movie/12/stats
+2025-11-08 21:03:56 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites/check/movie/12
+2025-11-08 21:03:56 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites/count/movie/12
+2025-11-08 21:03:56 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/movies/12
+2025-11-08 21:03:56 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/count/movie/12
+2025-11-08 21:03:56 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/12
+2025-11-08 21:03:56 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/12/stats
+2025-11-08 21:03:56 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/check/movie/12
+2025-11-08 21:03:56 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/12?page=0&size=10&sort=createTime,desc
+2025-11-08 21:03:56 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/12
+2025-11-08 21:03:56 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/12/stats
+2025-11-08 21:03:56 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/check/movie/12
+2025-11-08 21:03:56 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/count/movie/12
+2025-11-08 21:03:56 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/12?page=0&size=10&sort=createTime,desc
+2025-11-08 21:03:56 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:56 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:03:59 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/comments/movie/15?page=0&size=10&sort=createTime,desc
+2025-11-08 21:03:59 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/comments/movie/15/stats
+2025-11-08 21:03:59 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites/check/movie/15
+2025-11-08 21:03:59 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites/count/movie/15
+2025-11-08 21:03:59 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/movies/15
+2025-11-08 21:03:59 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/15/stats
+2025-11-08 21:03:59 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/15?page=0&size=10&sort=createTime,desc
+2025-11-08 21:03:59 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/check/movie/15
+2025-11-08 21:03:59 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/count/movie/15
+2025-11-08 21:03:59 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/15
+2025-11-08 21:03:59 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/15/stats
+2025-11-08 21:03:59 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/check/movie/15
+2025-11-08 21:03:59 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/15?page=0&size=10&sort=createTime,desc
+2025-11-08 21:03:59 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/15
+2025-11-08 21:03:59 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/count/movie/15
+2025-11-08 21:04:00 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:04:00 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:04:24 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:04:24 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:04:39 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:04:39 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:06:06 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:06:06 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:09:59 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/orders?page=0&size=10
+2025-11-08 21:09:59 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/orders?page=0&size=10
+2025-11-08 21:09:59 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/orders?page=0&size=10
+2025-11-08 21:10:05 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites?page=0&size=10
+2025-11-08 21:10:05 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites?page=0&size=10
+2025-11-08 21:10:05 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites?page=0&size=10
+2025-11-08 21:10:07 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:10:07 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:10:07 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites?page=0&size=10
+2025-11-08 21:10:07 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites?page=0&size=10
+2025-11-08 21:10:07 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/orders?page=0&size=10
+2025-11-08 21:10:07 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/orders?page=0&size=10
+2025-11-08 21:10:08 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:10:08 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:10:11 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/comments?page=0&size=10
+2025-11-08 21:10:11 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/comments?page=0&size=10
+2025-11-08 21:10:12 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites?page=0&size=10
+2025-11-08 21:10:12 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites?page=0&size=10
+2025-11-08 21:10:14 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/orders?page=0&size=10
+2025-11-08 21:10:14 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/orders?page=0&size=10
+2025-11-08 21:10:15 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:10:15 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:10:23 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/upload/avatar
+2025-11-08 21:10:23 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:10:37 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/upload/avatar
+2025-11-08 21:10:37 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:11:11 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:11:11 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:11:13 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:11:13 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:11:15 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:11:15 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:11:27 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:11:27 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:12:07 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:12:07 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:13:03 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/profile
+2025-11-08 21:13:03 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/user/profile
+2025-11-08 21:13:03 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/user/profile
+2025-11-08 21:13:03 [http-nio-8080-exec-1] WARN  c.m.exception.GlobalExceptionHandler - 参数验证异常: {email=邮箱不能为空}
+2025-11-08 21:13:29 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-08 21:13:30 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-11-08 21:13:30 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08 21:13:30 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-11-08 21:13:30 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-11-08 21:27:38 [main] INFO  c.movieticket.MovieTicketApplication - Starting MovieTicketApplication using Java 17.0.12 with PID 105136 (D:\大学\毕设\movie-ticket-system\movie_ticket_backend\target\classes started by admin in D:\大学\毕设\movie-ticket-system\movie_ticket_backend)
+2025-11-08 21:27:38 [main] DEBUG c.movieticket.MovieTicketApplication - Running with Spring Boot v3.5.6, Spring v6.2.11
+2025-11-08 21:27:38 [main] INFO  c.movieticket.MovieTicketApplication - No active profile set, falling back to 1 default profile: "default"
+2025-11-08 21:27:38 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-08 21:27:38 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 79 ms. Found 10 JPA repository interfaces.
+2025-11-08 21:27:39 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-11-08 21:27:39 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-11-08 21:27:39 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-11-08 21:27:39 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-11-08 21:27:39 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1635 ms
+2025-11-08 21:27:39 [main] DEBUG c.m.security.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-11-08 21:27:39 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-08 21:27:39 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-11-08 21:27:40 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-11-08 21:27:40 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-08 21:27:40 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-11-08 21:27:40 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4a6facb0
+2025-11-08 21:27:40 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-11-08 21:27:40 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-08 21:27:40 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-11-08 21:27:40 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-08 21:27:41 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-08 21:27:41 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08 21:27:41 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-08 21:27:43 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-08 21:27:43 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-11-08 21:27:44 [main] DEBUG o.s.s.web.DefaultSecurityFilterChain - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-11-08 21:27:44 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-11-08 21:27:44 [main] INFO  c.movieticket.MovieTicketApplication - Started MovieTicketApplication in 6.749 seconds (process running for 7.068)
+2025-11-08 21:27:50 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-08 21:27:50 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-11-08 21:27:50 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-11-08 21:27:50 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/movies/new?limit=4
+2025-11-08 21:27:50 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/movies/hot?limit=4
+2025-11-08 21:27:50 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 21:27:50 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 21:27:50 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 21:27:50 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 21:27:51 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/profile
+2025-11-08 21:27:51 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:27:51 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:27:55 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/upload/avatar
+2025-11-08 21:27:55 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/upload/avatar
+2025-11-08 21:27:55 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/profile
+2025-11-08 21:27:55 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/user/profile
+2025-11-08 21:27:55 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/user/profile
+2025-11-08 21:27:56 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/user/profile
+2025-11-08 21:27:56 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/user/profile
+2025-11-08 21:27:56 [http-nio-8080-exec-1] WARN  c.m.exception.GlobalExceptionHandler - 参数验证异常: {email=邮箱不能为空}
+2025-11-08 21:28:08 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:28:08 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:28:09 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:28:09 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:28:11 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:28:11 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:28:12 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:28:12 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:28:12 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:28:12 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:28:14 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:28:14 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:28:18 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/upload/avatar
+2025-11-08 21:28:18 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/upload/avatar
+2025-11-08 21:28:18 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/user/profile
+2025-11-08 21:28:18 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/user/profile
+2025-11-08 21:28:20 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/user/profile
+2025-11-08 21:28:20 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/user/profile
+2025-11-08 21:28:20 [http-nio-8080-exec-2] WARN  c.m.exception.GlobalExceptionHandler - 参数验证异常: {email=邮箱不能为空}
+2025-11-08 21:29:40 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:29:40 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:30:34 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-08 21:30:34 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-11-08 21:30:34 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08 21:30:34 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-11-08 21:30:34 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-11-08 21:30:42 [main] INFO  c.movieticket.MovieTicketApplication - Starting MovieTicketApplication using Java 17.0.12 with PID 94176 (D:\大学\毕设\movie-ticket-system\movie_ticket_backend\target\classes started by admin in D:\大学\毕设\movie-ticket-system\movie_ticket_backend)
+2025-11-08 21:30:42 [main] DEBUG c.movieticket.MovieTicketApplication - Running with Spring Boot v3.5.6, Spring v6.2.11
+2025-11-08 21:30:42 [main] INFO  c.movieticket.MovieTicketApplication - No active profile set, falling back to 1 default profile: "default"
+2025-11-08 21:30:43 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-08 21:30:43 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 88 ms. Found 10 JPA repository interfaces.
+2025-11-08 21:30:44 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-11-08 21:30:44 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-11-08 21:30:44 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-11-08 21:30:44 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-11-08 21:30:44 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1495 ms
+2025-11-08 21:30:44 [main] DEBUG c.m.security.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-11-08 21:30:44 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-08 21:30:44 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-11-08 21:30:44 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-11-08 21:30:44 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-08 21:30:44 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-11-08 21:30:44 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2a510e0e
+2025-11-08 21:30:44 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-11-08 21:30:44 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-08 21:30:44 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-11-08 21:30:44 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-08 21:30:45 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-08 21:30:45 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08 21:30:46 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-08 21:30:47 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-08 21:30:48 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-11-08 21:30:48 [main] DEBUG o.s.s.web.DefaultSecurityFilterChain - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-11-08 21:30:48 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-11-08 21:30:48 [main] INFO  c.movieticket.MovieTicketApplication - Started MovieTicketApplication in 6.141 seconds (process running for 6.381)
+2025-11-08 21:30:50 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-08 21:30:50 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-11-08 21:30:50 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 6 ms
+2025-11-08 21:30:50 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:30:50 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:30:54 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/upload/avatar
+2025-11-08 21:30:54 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/upload/avatar
+2025-11-08 21:30:59 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/user/profile
+2025-11-08 21:30:59 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/user/profile
+2025-11-08 21:31:01 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:31:01 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:32:31 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:32:31 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:32:54 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:32:54 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:33:01 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/upload/avatar
+2025-11-08 21:33:01 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/upload/avatar
+2025-11-08 21:33:02 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/user/profile
+2025-11-08 21:33:02 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/user/profile
+2025-11-08 21:33:04 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:33:04 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:33:04 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:33:04 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:33:04 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:33:04 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:34:18 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-08 21:34:18 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-11-08 21:34:18 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08 21:34:18 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-11-08 21:34:18 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-11-08 21:36:52 [main] INFO  c.movieticket.MovieTicketApplication - Starting MovieTicketApplication using Java 17.0.12 with PID 103952 (D:\大学\毕设\movie-ticket-system\movie_ticket_backend\target\classes started by admin in D:\大学\毕设\movie-ticket-system\movie_ticket_backend)
+2025-11-08 21:36:52 [main] DEBUG c.movieticket.MovieTicketApplication - Running with Spring Boot v3.5.6, Spring v6.2.11
+2025-11-08 21:36:52 [main] INFO  c.movieticket.MovieTicketApplication - No active profile set, falling back to 1 default profile: "default"
+2025-11-08 21:36:53 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-08 21:36:53 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 88 ms. Found 10 JPA repository interfaces.
+2025-11-08 21:36:54 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-11-08 21:36:54 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-11-08 21:36:54 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-11-08 21:36:54 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-11-08 21:36:54 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1552 ms
+2025-11-08 21:36:54 [main] DEBUG c.m.security.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-11-08 21:36:54 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-08 21:36:54 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-11-08 21:36:54 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-11-08 21:36:54 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-08 21:36:54 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-11-08 21:36:55 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@57b3d869
+2025-11-08 21:36:55 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-11-08 21:36:55 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-08 21:36:55 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-11-08 21:36:55 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-08 21:36:56 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-08 21:36:56 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08 21:36:56 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-08 21:36:58 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-08 21:36:58 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-11-08 21:36:58 [main] DEBUG o.s.s.web.DefaultSecurityFilterChain - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-11-08 21:36:59 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-11-08 21:36:59 [main] INFO  c.movieticket.MovieTicketApplication - Started MovieTicketApplication in 6.872 seconds (process running for 7.162)
+2025-11-08 21:37:02 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-08 21:37:02 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-11-08 21:37:02 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-11-08 21:37:02 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /uploads/avatars/fdaad9ec-4447-41a3-9df5-bf3d6f004b0d.jpg
+2025-11-08 21:37:02 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:37:02 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /uploads/avatars/fdaad9ec-4447-41a3-9df5-bf3d6f004b0d.jpg
+2025-11-08 21:37:02 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:37:02 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:37:02 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /uploads/avatars/fdaad9ec-4447-41a3-9df5-bf3d6f004b0d.jpg
+2025-11-08 21:37:02 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:37:02 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /uploads/avatars/fdaad9ec-4447-41a3-9df5-bf3d6f004b0d.jpg
+2025-11-08 21:37:13 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 21:37:13 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:37:13 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 21:37:13 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 21:37:13 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:37:13 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 21:37:19 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/login
+2025-11-08 21:37:19 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/auth/login
+2025-11-08 21:37:19 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:37:19 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/auth/login
+2025-11-08 21:37:19 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 21:37:19 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 21:37:19 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 21:37:19 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 21:37:21 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:37:21 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:37:21 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /avatars/user2.jpg
+2025-11-08 21:37:21 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:37:25 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/upload/avatar
+2025-11-08 21:37:25 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/upload/avatar
+2025-11-08 21:37:25 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /uploads/avatars/f12839ec-6159-498d-a876-d4d08708dcd7.jpg
+2025-11-08 21:37:25 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:37:25 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /uploads/avatars/f12839ec-6159-498d-a876-d4d08708dcd7.jpg
+2025-11-08 21:37:30 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/user/profile
+2025-11-08 21:37:30 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/user/profile
+2025-11-08 21:37:30 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /uploads/avatars/f12839ec-6159-498d-a876-d4d08708dcd7.jpg
+2025-11-08 21:37:30 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:37:30 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /uploads/avatars/f12839ec-6159-498d-a876-d4d08708dcd7.jpg
+2025-11-08 21:37:34 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 21:37:34 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 21:37:34 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 21:37:34 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 21:38:12 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/auth/login
+2025-11-08 21:38:12 [http-nio-8080-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:38:12 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/auth/login
+2025-11-08 21:38:15 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/auth/login
+2025-11-08 21:38:15 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:38:15 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/auth/login
+2025-11-08 21:38:15 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 21:38:15 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 21:38:15 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 21:38:15 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 21:38:17 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/comments/movie/13?page=0&size=10&sort=createTime,desc
+2025-11-08 21:38:17 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/comments/movie/13/stats
+2025-11-08 21:38:17 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites/check/movie/13
+2025-11-08 21:38:17 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites/count/movie/13
+2025-11-08 21:38:17 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/movies/13
+2025-11-08 21:38:17 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/13?page=0&size=10&sort=createTime,desc
+2025-11-08 21:38:17 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/13/stats
+2025-11-08 21:38:17 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/check/movie/13
+2025-11-08 21:38:17 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/count/movie/13
+2025-11-08 21:38:17 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/13
+2025-11-08 21:38:17 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/count/movie/13
+2025-11-08 21:38:17 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/13?page=0&size=10&sort=createTime,desc
+2025-11-08 21:38:17 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/13
+2025-11-08 21:38:17 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/13/stats
+2025-11-08 21:38:17 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/check/movie/13
+2025-11-08 21:38:17 [http-nio-8080-exec-3] WARN  o.s.d.w.c.SpringDataJacksonConfiguration$PageModule$WarningLoggingModifier - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-11-08 21:38:19 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 21:38:19 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 21:38:19 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 21:38:19 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 21:38:21 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/check/movie/13
+2025-11-08 21:38:21 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/13?page=0&size=10&sort=createTime,desc
+2025-11-08 21:38:21 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/count/movie/13
+2025-11-08 21:38:21 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/13/stats
+2025-11-08 21:38:21 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/13
+2025-11-08 21:38:21 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/check/movie/13
+2025-11-08 21:38:21 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/count/movie/13
+2025-11-08 21:38:21 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/13
+2025-11-08 21:38:21 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/13?page=0&size=10&sort=createTime,desc
+2025-11-08 21:38:21 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/13/stats
+2025-11-08 21:38:21 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 21:38:21 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 21:38:21 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 21:38:21 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 21:38:25 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites/count/movie/1
+2025-11-08 21:38:25 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/comments/movie/1/stats
+2025-11-08 21:38:25 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/comments/movie/1?page=0&size=10&sort=createTime,desc
+2025-11-08 21:38:25 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/movies/1
+2025-11-08 21:38:25 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/favorites/check/movie/1
+2025-11-08 21:38:25 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/count/movie/1
+2025-11-08 21:38:25 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/1
+2025-11-08 21:38:25 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/1/stats
+2025-11-08 21:38:25 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/comments/movie/1?page=0&size=10&sort=createTime,desc
+2025-11-08 21:38:25 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/favorites/check/movie/1
+2025-11-08 21:38:25 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/count/movie/1
+2025-11-08 21:38:25 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/1
+2025-11-08 21:38:25 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/1/stats
+2025-11-08 21:38:25 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/comments/movie/1?page=0&size=10&sort=createTime,desc
+2025-11-08 21:38:25 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/favorites/check/movie/1
+2025-11-08 21:38:26 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/1
+2025-11-08 21:38:26 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/1
+2025-11-08 21:38:26 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/movie/1
+2025-11-08 21:38:26 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/sessions/movie/1
+2025-11-08 21:38:27 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/sessions/movie/1
+2025-11-08 21:38:28 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/59/detail
+2025-11-08 21:38:28 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/sessions/59/detail
+2025-11-08 21:38:28 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/sessions/59/detail
+2025-11-08 21:38:28 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/1
+2025-11-08 21:38:28 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/1
+2025-11-08 21:38:29 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/1
+2025-11-08 21:38:29 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/1
+2025-11-08 21:38:29 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/sessions/movie/1
+2025-11-08 21:38:29 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/sessions/movie/1
+2025-11-08 21:38:31 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/22/detail
+2025-11-08 21:38:31 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/sessions/22/detail
+2025-11-08 21:38:31 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/sessions/22/detail
+2025-11-08 21:38:31 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/1
+2025-11-08 21:38:31 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/1
+2025-11-08 21:38:35 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/orders
+2025-11-08 21:38:35 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/orders
+2025-11-08 21:38:35 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/orders
+2025-11-08 21:38:35 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/orders/39
+2025-11-08 21:38:35 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/orders/39
+2025-11-08 21:38:35 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/orders/39
+2025-11-08 21:38:38 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 21:38:38 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 21:38:38 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 21:38:38 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 21:38:40 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/user/orders?page=0&size=10
+2025-11-08 21:38:40 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/orders?page=0&size=10
+2025-11-08 21:38:40 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/orders?page=0&size=10
+2025-11-08 21:38:42 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/orders/39/pay
+2025-11-08 21:38:42 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/orders/39/pay
+2025-11-08 21:38:42 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/orders/39/pay
+2025-11-08 21:38:42 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/orders?page=0&size=10
+2025-11-08 21:38:42 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/orders?page=0&size=10
+2025-11-08 21:38:45 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/genres
+2025-11-08 21:38:45 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/genres
+2025-11-08 21:38:45 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/genres
+2025-11-08 21:38:45 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/movies?sortBy=createTime&sortOrder=desc&page=0&size=12&status=true
+2025-11-08 21:38:45 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies?sortBy=createTime&sortOrder=desc&page=0&size=12&status=true
+2025-11-08 21:38:45 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies?sortBy=createTime&sortOrder=desc&page=0&size=12&status=true
+2025-11-08 21:38:46 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/hot?limit=4
+2025-11-08 21:38:46 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/movies/new?limit=4
+2025-11-08 21:38:46 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/hot?limit=4
+2025-11-08 21:38:46 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/movies/new?limit=4
+2025-11-08 21:38:47 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/user/profile
+2025-11-08 21:38:47 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/user/profile
+2025-11-08 21:38:47 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /avatars/user4.jpg
+2025-11-08 21:38:47 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:38:51 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/upload/avatar
+2025-11-08 21:38:51 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/upload/avatar
+2025-11-08 21:38:51 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /uploads/avatars/27f6c6c2-c8fa-4913-a513-46582bd1c322.jpg
+2025-11-08 21:38:51 [http-nio-8080-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:38:51 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /uploads/avatars/27f6c6c2-c8fa-4913-a513-46582bd1c322.jpg
+2025-11-08 21:38:52 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/user/profile
+2025-11-08 21:38:52 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/user/profile
+2025-11-08 21:38:52 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /uploads/avatars/27f6c6c2-c8fa-4913-a513-46582bd1c322.jpg
+2025-11-08 21:38:52 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-11-08 21:38:52 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /uploads/avatars/27f6c6c2-c8fa-4913-a513-46582bd1c322.jpg
+2025-11-08 21:39:35 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-08 21:39:35 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-11-08 21:39:35 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08 21:39:35 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-11-08 21:39:35 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

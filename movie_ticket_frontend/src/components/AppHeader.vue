@@ -147,9 +147,9 @@ const showSearchSuggestions = ref(false) // 定义响应式变量showSearchSugge
 const navItems = computed(() => [ //不接受对象参数，返回一个数组，[]用于构建数组
   { name: '首页', path: '/' },
   { name: '电影', path: '/movies' },
-  { name: '影院', path: '/cinemas' },
-  { name: '榜单', path: '/rankings' },
-  { name: '热点', path: '/news' }
+  //{ name: '影院', path: '/cinemas' },
+  //{ name: '榜单', path: '/rankings' },
+  { name: '资讯', path: '/news' }
 ])
 
 const handleSearch = () => {
@@ -286,8 +286,8 @@ const handleUserCommand = async (command) => {
     border-radius: $border-radius-base; /* 设置边框圆角 */
     transition: $transition-base; /* 设置过渡效果 */
     white-space: nowrap; /* 防止文本换行 */
-    //margin: 0 $spacing-xl; /* 增加导航项之间的间距 */
-    margin: 0 $spacing-lg;
+    margin: 0 $spacing-xxl; /* 增加导航项之间的间距 */
+    //margin: 0 $spacing-lg;
 
     &:hover {
       color: $primary-color; /* 设置鼠标悬停时的颜色 */

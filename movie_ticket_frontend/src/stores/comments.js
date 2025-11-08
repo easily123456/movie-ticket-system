@@ -95,10 +95,19 @@ export const useCommentStore = defineStore('comment', () => {
     try {
       const response = await commentApi.getUserComments({
         ...params,
-        page: pagination.value.page - 1,
-        size: pagination.value.size
+        page: params.page !== undefined ? params.page : pagination.value.page - 1,
+        size: params.size !== undefined ? params.size : pagination.value.size
       })
       userComments.value = response.data.content || response.data
+      // 更新分页信息
+      if (response.data.totalElements !== undefined) {
+        pagination.value = {
+          page: response.data.number + 1 || 1,
+          size: response.data.size || pagination.value.size,
+          total: response.data.totalElements || 0,
+          totalPages: response.data.totalPages || 1
+        }
+      }
       return response
     } catch (error) {
       console.error('获取用户评论失败:', error)

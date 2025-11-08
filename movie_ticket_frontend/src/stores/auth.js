@@ -2,6 +2,14 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { authApi } from '@/api/auth'
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+
+function normalizeAvatar(url) {
+  if (!url) return ''
+  if (url.startsWith('/')) return API_BASE + url
+  return url
+}
+
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
   const token = ref(localStorage.getItem('token'))
@@ -125,7 +133,15 @@ export const useAuthStore = defineStore('auth', () => {
 
     if (savedToken && savedUser) {
       token.value = savedToken
-      user.value = JSON.parse(savedUser)
+      try {
+        const u = JSON.parse(savedUser)
+        if (u && u.avatar) {
+          u.avatar = normalizeAvatar(u.avatar)
+        }
+        user.value = u
+      } catch {
+        user.value = JSON.parse(savedUser)
+      }
     }
   }
 

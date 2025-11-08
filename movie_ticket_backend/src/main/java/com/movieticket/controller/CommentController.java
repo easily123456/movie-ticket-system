@@ -287,6 +287,8 @@ public class CommentController {
         response.setUsername(comment.getUser().getUsername());
         response.setAvatar(comment.getUser().getAvatar());
         response.setMovieId(comment.getMovie().getId());
+        response.setMovieTitle(comment.getMovie().getTitle());
+        response.setMoviePoster(comment.getMovie().getPosterUrl());
         response.setContent(comment.getContent());
         response.setRating(comment.getRating());
         response.setLikeCount(comment.getLikeCount());

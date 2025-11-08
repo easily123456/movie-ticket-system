@@ -37,10 +37,10 @@
               <el-icon><ChatDotRound /></el-icon>
               <span>我的评论</span>
             </el-menu-item>
-            <el-menu-item index="security">
+            <!-- <el-menu-item index="security">
               <el-icon><Lock /></el-icon>
               <span>安全设置</span>
-            </el-menu-item>
+            </el-menu-item> -->
           </el-menu>
         </aside>
         <!-- 主内容区 -->
@@ -53,13 +53,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { User, Document, Star, ChatDotRound, Lock } from '@element-plus/icons-vue'
+import { ref, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { User, Document, Star, ChatDotRound } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 // import { formatDate } from '@/utils'
 
 const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 
 // 用户信息
@@ -68,15 +69,13 @@ const userInfo = ref({})
 // 根据当前路由激活菜单项
 const activeMenu = ref('profile')
 
-onMounted(() => {
-  loadUserInfo()
-  updateActiveMenu()
-})
-
+// 加载用户信息
 const loadUserInfo = () => {
-  userInfo.value = authStore.userInfo || {}
+  // 从 authStore 获取用户信息
+  userInfo.value = authStore.user || {}
 }
 
+// 更新激活的菜单项
 const updateActiveMenu = () => {
   // 根据当前路由路径确定应该激活哪个菜单项
   const path = route.path
@@ -86,32 +85,67 @@ const updateActiveMenu = () => {
     activeMenu.value = 'favorites'
   } else if (path.includes('/user/comments')) {
     activeMenu.value = 'comments'
-  } else {
+  } else if (path.includes('/user/profile') || path === '/user') {
     activeMenu.value = 'profile'
   }
 }
 
+// 处理菜单选择
 const handleMenuSelect = (index) => {
-  activeMenu.value = index
   // 根据选择的菜单项导航到相应路由
   switch (index) {
     case 'profile':
-      window.location.hash = '#/user'
+      router.push({ name: 'UserProfile' }).catch(err => {
+        if (err.name !== 'NavigationDuplicated') {
+          console.error('导航失败:', err)
+        }
+      })
       break
     case 'orders':
-      window.location.hash = '#/user/orders'
+      router.push({ name: 'OrderList' }).catch(err => {
+        if (err.name !== 'NavigationDuplicated') {
+          console.error('导航失败:', err)
+        }
+      })
       break
     case 'favorites':
-      window.location.hash = '#/user/favorites'
+      router.push({ name: 'UserFavorites' }).catch(err => {
+        if (err.name !== 'NavigationDuplicated') {
+          console.error('导航失败:', err)
+        }
+      })
       break
     case 'comments':
-      window.location.hash = '#/user/comments'
+      router.push({ name: 'UserComments' }).catch(err => {
+        if (err.name !== 'NavigationDuplicated') {
+          console.error('导航失败:', err)
+        }
+      })
       break
     case 'security':
       // 安全设置保留在当前页面
       break
+    default:
+      break
   }
 }
+
+// 监听路由变化，更新激活的菜单项
+watch(() => route.path, () => {
+  updateActiveMenu()
+}, { immediate: true })
+
+// 监听用户信息变化
+watch(() => authStore.user, (newUser) => {
+  if (newUser) {
+    userInfo.value = newUser
+  }
+}, { immediate: true })
+
+onMounted(() => {
+  loadUserInfo()
+  updateActiveMenu()
+})
 </script>
 
 <style scoped lang="scss">
