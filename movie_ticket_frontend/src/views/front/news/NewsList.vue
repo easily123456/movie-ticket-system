@@ -107,14 +107,15 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, reactive, onMounted, watch, nextTick } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Bell, Document, Picture } from '@element-plus/icons-vue'
 import { newsApi } from '@/api'
 import { formatDateTime } from '@/utils'
 
 const router = useRouter()
+const route = useRoute()
 
 // 响应式数据
 const loading = ref(false)
@@ -128,8 +129,24 @@ const pagination = reactive({
 
 // 初始化数据
 onMounted(async () => {
+  // 如果路由上有 page 查询参数，使用它作为初始页码
+  const pageFromQuery = Number(route.query.page) || 1
+  pagination.page = pageFromQuery
+
   await loadTopNews()
   await loadNews()
+  // 尝试恢复之前保存的滚动位置（若页码匹配）
+  restoreScroll()
+})
+
+// 当用户通过浏览器后退/前进返回到带 ?page= 的新闻列表时，保持组件页码与路由一致
+watch(() => route.query.page, async (newPage) => {
+  const pageNum = Number(newPage) || 1
+  if (pageNum !== pagination.page) {
+    pagination.page = pageNum
+    await loadNews()
+    restoreScroll()
+  }
 })
 
 // 加载置顶资讯
@@ -151,7 +168,7 @@ const loadNews = async () => {
       page: pagination.page - 1,
       size: pagination.size
     }
-    
+
     const response = await newsApi.getNewsList(params)
     const data = response.data
     newsList.value = data.content || data || []
@@ -176,18 +193,52 @@ const getExcerpt = (content, length = 100) => {
 const handleSizeChange = (size) => {
   pagination.size = size
   pagination.page = 1
+  // 同步到路由，但不新增历史记录（replace），以便浏览器返回行为更可预测
+  router.replace({ path: '/news', query: { page: pagination.page } })
   loadNews()
 }
 
 // 当前页变化
 const handleCurrentChange = (page) => {
   pagination.page = page
+  // 更新 URL 查询参数以保存当前页状态
+  router.replace({ path: '/news', query: { page: pagination.page } })
   loadNews()
 }
 
 // 跳转到资讯详情
 const goToNewsDetail = (newsId) => {
-  router.push(`/news/${newsId}`)
+  // 保存当前分页和滚动位置，以便返回时恢复
+  try {
+    const state = {
+      page: pagination.page,
+      scroll: window.scrollY || window.pageYOffset || 0
+    }
+    sessionStorage.setItem('news:list:scroll', JSON.stringify(state))
+  } catch {
+    // ignore
+  }
+
+  // 在跳转到详情页时把当前页写入 query，这样回退或从详情返回时能恢复到该页
+  router.push({ path: `/news/${newsId}`, query: { page: pagination.page } })
+}
+
+// 从 sessionStorage 恢复列表的滚动位置（如果之前跳转到详情页时保存了）
+const restoreScroll = () => {
+  try {
+    const raw = sessionStorage.getItem('news:list:scroll')
+    if (!raw) return
+    const obj = JSON.parse(raw)
+    if (obj && Number(obj.page) === Number(pagination.page)) {
+      nextTick(() => {
+        const top = Number(obj.scroll) || 0
+        window.scrollTo({ top, left: 0 })
+        sessionStorage.removeItem('news:list:scroll')
+      })
+    }
+  } catch {
+    // ignore parse error
+  }
 }
 </script>
 
@@ -249,13 +300,16 @@ const goToNewsDetail = (newsId) => {
       border-radius: $border-radius-small;
     }
 
-    .news-content {
+        .news-content {
       .news-title {
         font-size: 16px;
         font-weight: 600;
         color: $text-primary;
         margin: 0 0 $spacing-xs 0;
-        @include text-ellipsis;
+        /* single-line ellipsis fallback (replaced missing mixin) */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .news-meta {
@@ -342,7 +396,12 @@ const goToNewsDetail = (newsId) => {
         font-weight: 600;
         color: $text-primary;
         margin: 0 0 $spacing-sm 0;
-        @include text-ellipsis-multi(2);
+        /* multi-line ellipsis (2 lines) fallback */
+        display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
 
       .news-excerpt {
@@ -350,7 +409,12 @@ const goToNewsDetail = (newsId) => {
         font-size: $font-size-base;
         line-height: 1.5;
         margin-bottom: $spacing-sm;
-        @include text-ellipsis-multi(3);
+        /* multi-line ellipsis (3 lines) fallback */
+        display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
 
       .news-meta {

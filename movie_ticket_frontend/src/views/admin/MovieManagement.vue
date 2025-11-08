@@ -860,7 +860,10 @@ const handleFormSubmit = async () => {
       span {
         font-weight: 600;
         color: $text-primary;
-        @include text-ellipsis;
+  /* single-line ellipsis fallback */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
       }
     }
 
@@ -868,7 +871,10 @@ const handleFormSubmit = async () => {
       color: $text-secondary;
       font-size: $font-size-small;
       margin-bottom: $spacing-xs;
-      @include text-ellipsis;
+  /* single-line ellipsis fallback */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
     }
 
     .movie-meta {

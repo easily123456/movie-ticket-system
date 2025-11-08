@@ -10,7 +10,9 @@ public class MovieQueryRequest {
     private String keyword;
     private Long genreId;
     private Boolean isHot;
-    private Boolean status = true;
+    private Boolean status;
+    // 兼容旧前端参数：upcoming=true 表示查询即将上映的电影（releaseDate 在未来）
+    private Boolean upcoming;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDateStart;
@@ -26,7 +28,7 @@ public class MovieQueryRequest {
 
     private Integer page = 0;
     private Integer size = 12;
-    
+
     // 添加排序字段，用于接收Spring Data REST风格的排序参数
     private String sort;
 }

@@ -50,9 +50,15 @@ public class MovieServiceImpl implements MovieService {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // 状态筛选（默认只查询上架电影）
-            if (request.getStatus() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
+            // 状态筛选（默认只查询上架电影）。
+            // 如果前端请求了 releaseDateStart 或 upcoming=true，则不默认强制 status=true，保持查询灵活性。
+            Boolean status = request.getStatus();
+            Boolean upcoming = request.getUpcoming();
+            if (status == null && request.getReleaseDateStart() == null && (upcoming == null || !upcoming)) {
+                status = true;
+            }
+            if (status != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), status));
             }
 
             // 关键词搜索（标题、导演、演员）
@@ -78,6 +84,10 @@ public class MovieServiceImpl implements MovieService {
             if (request.getReleaseDateStart() != null) {
                 predicates.add(
                         criteriaBuilder.greaterThanOrEqualTo(root.get("releaseDate"), request.getReleaseDateStart()));
+            } else if (upcoming != null && upcoming) {
+                // 如果传入 upcoming=true，默认查询 releaseDate 大于或等于今天的电影（即将上映）
+                predicates.add(
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("releaseDate"), LocalDate.now()));
             }
             if (request.getReleaseDateEnd() != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("releaseDate"), request.getReleaseDateEnd()));
@@ -130,10 +140,12 @@ public class MovieServiceImpl implements MovieService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<MovieResponse> getNewMovies(int limit) { // 2023-07-01后的电影
-        LocalDate time = LocalDate.of(2023, 7, 1);
-        List<Movie> movies = movieRepository.findByReleaseDateAfterAndStatusOrderByReleaseDateDesc(time, true,
+    public List<MovieResponse> getNewMovies(int limit) { // 2022-07-01后的电影
+        LocalDate time = LocalDate.of(2022, 7, 1);
+        List<Movie> movies = movieRepository.findByReleaseDateAfterAndStatusAndIsHotOrderByReleaseDateDesc(time, true,
+                false,
                 PageRequest.of(0, limit));
+        // 返回2022年7月1日之后的电影
         return movies.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());

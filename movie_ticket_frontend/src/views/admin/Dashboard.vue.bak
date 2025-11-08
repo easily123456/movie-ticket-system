@@ -695,7 +695,10 @@ const getOrderStatusText = (status) => {
       font-weight: 500;
       color: $text-primary;
       margin-bottom: $spacing-xs;
-      @include text-ellipsis;
+  /* single-line ellipsis fallback */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
     }
 
     .movie-meta {

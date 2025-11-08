@@ -6,6 +6,7 @@ export const useMovieStore = defineStore('movie', () => {
   const movies = ref([])
   const hotMovies = ref([])
   const newMovies = ref([])
+  const searchResults = ref([])
   const topRatedMovies = ref([])
   const currentMovie = ref(null)
   const loading = ref(false)
@@ -77,6 +78,11 @@ export const useMovieStore = defineStore('movie', () => {
     }
   }
 
+  // 兼容旧 API 名称：fetchMovies -> getMovies
+  const fetchMovies = async (params = {}) => {
+    return await getMovies(params)
+  }
+
   // 获取热门电影
   const getHotMovies = async (limit = 8) => {
     try {
@@ -118,6 +124,8 @@ export const useMovieStore = defineStore('movie', () => {
     searchLoading.value = true
     try {
       const response = await movieApi.searchMovies(keyword, page, size)
+      // 将结果保存到 searchResults，以便组件按旧接口读取
+      searchResults.value = response.data.content || response.data
       return response
     } catch (error) {
       console.error('搜索电影失败:', error)
@@ -226,6 +234,9 @@ export const useMovieStore = defineStore('movie', () => {
   return {
     // 状态
     movies,
+    // 兼容命名
+    movieList: movies,
+    searchResults,
     hotMovies,
     newMovies,
     topRatedMovies,
@@ -244,7 +255,8 @@ export const useMovieStore = defineStore('movie', () => {
     getHotMovies,
     getNewMovies,
     getTopRatedMovies,
-    searchMovies,
+  searchMovies,
+  fetchMovies,
     getMoviesByGenre,
     getMovieDetail,
     getMovieGenres,

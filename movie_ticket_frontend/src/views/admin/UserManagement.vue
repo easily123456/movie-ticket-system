@@ -618,13 +618,19 @@ const handleBatchEnable = async () => {
       font-weight: 600;
       color: $text-primary;
       margin-bottom: $spacing-xs;
-      @include text-ellipsis;
+  /* single-line ellipsis fallback */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
     }
 
     .user-email {
       color: $text-secondary;
       font-size: $font-size-small;
-      @include text-ellipsis;
+  /* single-line ellipsis fallback */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
     }
   }
 }

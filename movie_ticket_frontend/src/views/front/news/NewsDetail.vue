@@ -12,7 +12,7 @@
       <div v-if="loading" class="loading-container">
         <el-skeleton :rows="10" animated />
       </div>
-      
+
       <div v-else-if="news" class="news-content">
         <!-- 资讯标题区域 -->
         <div class="news-header">
@@ -104,7 +104,9 @@ const loadNewsDetail = async () => {
 
 // 返回资讯列表
 const goBack = () => {
-  router.push('/news')
+  // 若详情页的路由携带 page 查询参数，则返回时保留该页
+  const page = Number(route.query.page) || 1
+  router.push({ path: '/news', query: { page } })
 }
 </script>
 
@@ -196,7 +198,8 @@ const goBack = () => {
     line-height: 1.8;
     color: $text-regular;
     font-size: 16px;
-    
+    text-indent: 2em;
+
     // 处理富文本内容样式
     :deep(img) {
       max-width: 100%;

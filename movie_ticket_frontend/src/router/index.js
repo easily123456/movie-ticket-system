@@ -56,6 +56,20 @@ const routes = [
     component: () => import('@/views/front/movies/MovieSessions.vue')
   },
 
+  // 资讯/热点路由
+  {
+    path: '/news',
+    name: 'NewsList',
+    component: () => import('@/views/front/news/NewsList.vue'),
+    meta: { title: '热点' }
+  },
+  {
+    path: '/news/:id',
+    name: 'NewsDetail',
+    component: () => import('@/views/front/news/NewsDetail.vue'),
+    meta: { title: '资讯详情' }
+  },
+
   // 用户中心路由
   {
     // 定义路由访问路径，当用户访问 '/user' 时会匹配此路由

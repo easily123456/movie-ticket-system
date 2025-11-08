@@ -30,7 +30,7 @@ export default defineConfig({ // 导出默认配置对象
   css: { // CSS 相关配置
     preprocessorOptions: { // 预处理器选项
       scss: { // SCSS 预处理器配置
-        additionalData: `@use "@/assets/styles/variables.scss" as *;` // 为每个 SCSS 文件注入变量文件
+        additionalData: `@use "@/assets/styles/variables.scss" as *;`
       }
     }
   },

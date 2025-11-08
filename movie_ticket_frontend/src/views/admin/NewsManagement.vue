@@ -869,7 +869,10 @@ const handleFormSubmit = async () => {
       .title-text {
         font-weight: 600;
         color: $text-primary;
-        @include text-ellipsis;
+  /* single-line ellipsis fallback */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
       }
 
       .el-tag {
@@ -893,7 +896,10 @@ const handleFormSubmit = async () => {
       color: $text-regular;
       font-size: $font-size-small;
       line-height: 1.4;
-      @include text-ellipsis;
+  /* single-line ellipsis fallback */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
     }
   }
 }

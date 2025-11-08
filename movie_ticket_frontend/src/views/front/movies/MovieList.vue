@@ -4,22 +4,6 @@
       <!-- 页面标题和搜索 -->
       <div class="page-header">
         <h1 class="page-title">电影列表</h1>
-        <div class="search-box">
-          <el-input
-            v-model="searchKeyword"
-            placeholder="搜索电影、演员、导演..."
-            size="large"
-            @keyup.enter="handleSearch"
-            clearable
-          >
-            <template #prefix>
-              <el-icon><Search /></el-icon>
-            </template>
-            <template #append>
-              <el-button :icon="Search" @click="handleSearch" />
-            </template>
-          </el-input>
-        </div>
       </div>
       <!-- 筛选条件 -->
       <div class="filter-section">
@@ -88,7 +72,7 @@
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Search } from '@element-plus/icons-vue'
+// import { Search } from '@element-plus/icons-vue'
 import { useMovieStore } from '@/stores/movie'
 import { useGenreStore } from '@/stores/genre'
 import MovieCard from '@/components/front/MovieCard.vue'
@@ -119,13 +103,7 @@ const pagination = ref({
 // 计算属性
 const genres = ref([])
 
-// 监听路由参数变化
-watch(() => route.query, (newQuery) => {
-  if (newQuery.search) {
-    searchKeyword.value = newQuery.search
-    handleSearch()
-  }
-}, { immediate: true })
+// 监听路由参数变化（将在文件下方，确保 loadMovies 已声明）
 
 onMounted(async () => {
   await loadInitialData()
@@ -142,40 +120,67 @@ const loadInitialData = async () => {
 }
 
 const loadMovies = async () => {
-  loading.value = true
+  loading.value = true //表示开始加载电影数据
   try {
     const params = {
-      page: pagination.value.page - 1,
-      size: pagination.value.size
+      page: pagination.value.page - 1,// 后端页面从0开始
+      size: pagination.value.size, // 后端大小
+      status: true // 默认只显示已上架电影
     }
 
     // 处理筛选条件
     if (filters.genreId) {
-      params.genreId = filters.genreId
+      params.genreId = filters.genreId // 电影类型过滤
     }
     if (filters.status === 'hot') {
+      // 仅设置 isHot（Boolean），不要设置 status=hot（会导致后端 Boolean 绑定失败）
       params.isHot = true
     } else if (filters.status === 'upcoming') {
-      params.upcoming = true
+      // 使用后端提供的 /api/movies/new 接口获取“即将/最新”电影列表
+      // 这里直接调用 store 的 getNewMovies 方法，避免重写过滤逻辑。
+      // 注意：后端返回的是 List 而非分页数据，所以我们将结果映射为组件需要的 movies 和分页信息。
+      try {
+        const limit = pagination.value.size || 12
+        await movieStore.getNewMovies(limit)
+        movies.value = movieStore.newMovies || []
+        // 设置分页信息（newMovies 返回非分页列表）
+        pagination.value = {
+          page: 1,
+          size: limit,
+          total: movies.value.length,
+          pages: 1
+        }
+        // 早退出，避免后面再次调用 fetch
+        loading.value = false
+        return
+      } catch (err) {
+        console.error('获取最新/即将上映电影失败:', err)
+        // 继续走普通的 params 路径作为回退
+      }
     }
 
-    // 处理排序
-    if (filters.sort) {
+    // 处理排序（使用 sortBy/sortOrder 与 store 统一，避免发送重复字段导致后端验证失败）
+    if (filters.sort && params.sortBy === undefined) {
       const [sortField, sortDirection] = filters.sort.split(',')
-      params.sort = sortField
-      params.direction = sortDirection
+      params.sortBy = sortField
+      params.sortOrder = sortDirection
     }
 
-    // 处理搜索
+    // 处理搜索：searchMovies 接口签名为 (keyword, page, size)
     if (searchKeyword.value) {
-      await movieStore.searchMovies(searchKeyword.value, params)
+      const pageIndex = pagination.value.page - 1
+      await movieStore.searchMovies(searchKeyword.value, pageIndex, pagination.value.size)
       movies.value = movieStore.searchResults
+      // 更新分页信息（search 结果可能不同）
+      pagination.value = { ...movieStore.pagination }
     } else {
+      // 使用 fetchMovies 兼容旧调用，内部会调用 getMovies
       await movieStore.fetchMovies(params)
+      // movieList 在 store 中已映射到 movies
       movies.value = movieStore.movieList
+      // 若 store 返回了分页信息则合并
+      pagination.value = { ...movieStore.pagination }
     }
-
-    pagination.value = { ...movieStore.pagination }
   } catch (error) {
     ElMessage.error('加载电影列表失败')
     console.error('加载电影列表失败:', error)
@@ -183,6 +188,37 @@ const loadMovies = async () => {
     loading.value = false
   }
 }
+
+// 监听路由参数变化（支持 ?search=, ?type=hot|upcoming, ?genreId= 等）
+watch(() => route.query, (newQuery) => {
+  if (newQuery.search) {
+    searchKeyword.value = newQuery.search
+    pagination.value.page = Number(newQuery.page) || 1
+    handleSearch()
+    return
+  }
+
+  // 支持从 Home 或其他页面传 type=hot 或 type=upcoming 的跳转
+  if (newQuery.type) {
+    if (newQuery.type === 'hot') {
+      filters.status = 'hot'
+    } else if (newQuery.type === 'upcoming') {
+      filters.status = 'upcoming'
+    } else {
+      filters.status = null
+    }
+  }
+
+  // 支持通过路由设置类型过滤（genreId）
+  if (newQuery.genreId) {
+    // 路由参数为字符串，转换为数字或保留字符串ID
+    const gid = isNaN(Number(newQuery.genreId)) ? newQuery.genreId : Number(newQuery.genreId)
+    filters.genreId = gid
+  }
+
+  // 触发加载
+  loadMovies()
+}, { immediate: false })
 
 const handleSearch = () => {
   pagination.value.page = 1

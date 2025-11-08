@@ -713,7 +713,12 @@ const handleSubmit = async () => {
   color: $text-regular;
   line-height: 1.4;
 
-  @include text-ellipsis-multi(2);
+  /* multi-line ellipsis (2 lines) fallback */
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .count {

@@ -7,7 +7,7 @@
         <div class="stats-summary">
           <div class="average-rating">
             <span class="rating-score">{{ stats.averageRating?.toFixed(1) || '0.0' }}</span>
-            <StarRating :value="stats.averageRating" :max="5" size="18" />
+            <StarRating :value="stats.averageRating" :max="5" :size="18" />
             <span class="rating-count">{{ stats.totalComments }}条评价</span>
           </div>
         </div>
@@ -65,7 +65,7 @@
           <div class="comment-header">
             <div class="user-info">
               <span class="username">{{ comment.username }}</span>
-              <StarRating :value="comment.rating" :max="5" size="14" />
+              <StarRating :value="comment.rating" :max="5" :size="14" />
             </div>
             <div class="comment-time">
               {{ formatDate(comment.createTime) }}

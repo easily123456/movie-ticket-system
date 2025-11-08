@@ -66,14 +66,14 @@ const sessionData = ref([])
 // 计算可用日期
 const availableDates = computed(() => {
   const dates = []
-  const today = new Date()
+  // 使用固定基准日期：2025年11月10日，后续天数按 +i 递增
+  const base = new Date(2025, 10, 10) // 月份从0开始，10表示11月
 
-  // 添加今天和未来几天的选项
   for (let i = 0; i < 7; i++) {
-    const date = new Date(today)
-    date.setDate(today.getDate() + i)
+    const date = new Date(base)
+    date.setDate(base.getDate() + i)
     const dateStr = formatDate(date)
-    const label = i === 0 ? '今天' : `${date.getMonth() + 1}月${date.getDate()}日`
+    const label = `${date.getMonth() + 1}月${date.getDate()}日`
 
     dates.push({
       value: dateStr,
@@ -130,6 +130,7 @@ const selectSession = (session) => {
 </script>
 
 <style scoped lang="scss">
+@use 'sass:color';
 .session-selector {
   background: $bg-white;
   border-radius: $border-radius-base;

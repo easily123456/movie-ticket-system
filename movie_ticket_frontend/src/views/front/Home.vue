@@ -139,12 +139,17 @@ onMounted(() => {
 const loadHomeData = async () => {
   try {
     const [hotRes, upcomingRes] = await Promise.all([
-      movieApi.getHotMovies(8),
-      movieApi.getMovies({ upcoming: true, page: 0, size: 8, sort: 'releaseDate', direction: 'asc' })
+      movieApi.getHotMovies(4),
+      movieApi.getNewMovies(4)
     ])
-    hotMovies.value = hotRes.data || []
-    // 支持分页或非分页两种返回结构
-    upcomingMovies.value = (upcomingRes.data && (upcomingRes.data.content || upcomingRes.data)) || []
+  hotMovies.value = hotRes.data || []
+  upcomingMovies.value = (upcomingRes.data && (upcomingRes.data.content || upcomingRes.data)) || []
+
+  // 支持分页或非分页两种返回结构
+  // const upcoming = (upcomingRes.data && (upcomingRes.data.content || upcomingRes.data)) || []
+  // // 过滤掉已在 hotMovies 中的电影，防止重复显示
+  // const hotIds = new Set(hotMovies.value.map(m => m.id))
+  // upcomingMovies.value = upcoming.filter(m => !hotIds.has(m.id))
   } catch (error) {
     console.error('加载首页数据失败:', error)
     ElMessage.error('数据加载失败')

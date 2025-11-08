@@ -57,6 +57,11 @@ public interface MovieRepository extends JpaRepository<Movie, Long>, JpaSpecific
     // 最新上映电影
     List<Movie> findByReleaseDateAfterAndStatusOrderByReleaseDateDesc(LocalDate releaseDate, Boolean status, Pageable pageable);
 
+    // 最新电影且非Hot
+
+    List<Movie> findByReleaseDateAfterAndStatusAndIsHotOrderByReleaseDateDesc(LocalDate date, boolean status, boolean isHot, Pageable pageable);
+
+
     // 高分电影
     List<Movie> findByStatusAndRatingGreaterThanEqualOrderByRatingDesc(Boolean status, BigDecimal minRating, Pageable pageable);
 

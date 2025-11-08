@@ -797,7 +797,10 @@ const handleBatchComplete = async () => {
         font-weight: 600;
         color: $text-primary;
         margin-bottom: $spacing-xs;
-        @include text-ellipsis;
+  /* single-line ellipsis fallback */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
       }
 
       .session-info {

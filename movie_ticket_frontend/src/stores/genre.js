@@ -25,6 +25,11 @@ export const useGenreStore = defineStore('genre', () => {
     }
   }
 
+  // 兼容旧 API 名称：fetchGenres -> getGenres
+  const fetchGenres = async () => {
+    return await getGenres()
+  }
+
   // 根据ID获取类型名称
   const getGenreName = (genreId) => {
     const genre = genres.value.find(g => g.id === genreId)
@@ -35,6 +40,8 @@ export const useGenreStore = defineStore('genre', () => {
     genres,
     loading,
     getGenres,
+    // 兼容命名
+    fetchGenres,
     getGenreName
   }
 })
