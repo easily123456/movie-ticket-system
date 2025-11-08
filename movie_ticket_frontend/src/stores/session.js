@@ -14,7 +14,9 @@ export const useSessionStore = defineStore('session', () => {
   const getSessionsByMovie = async (movieId) => {
     loading.value = true
     try {
-      const sessionList = await sessionApi.getSessionsByMovie(movieId)
+      const response = await sessionApi.getSessionsByMovie(movieId)
+      // request 接口返回的 ApiResponse 包含 data 字段
+      const sessionList = response && response.data ? response.data : response
       sessions.value = sessionList
       return sessionList
     } catch (error) {
@@ -28,7 +30,8 @@ export const useSessionStore = defineStore('session', () => {
   const getSessionDetail = async (id) => {
     loading.value = true
     try {
-      const session = await sessionApi.getSessionDetail(id)
+      const response = await sessionApi.getSessionDetail(id)
+      const session = response && response.data ? response.data : response
       currentSession.value = session
       return session
     } catch (error) {
@@ -42,7 +45,8 @@ export const useSessionStore = defineStore('session', () => {
   const getSessionsByDate = async (date) => {
     loading.value = true
     try {
-      const sessionList = await sessionApi.getSessionsByDate(date)
+      const response = await sessionApi.getSessionsByDate(date)
+      const sessionList = response && response.data ? response.data : response
       sessions.value = sessionList
       return sessionList
     } catch (error) {

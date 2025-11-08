@@ -27,7 +27,11 @@
         <div class="status-steps">
           <el-steps :active="getStepActive(order.status)" align-center>
             <el-step title="待支付" :description="formatTime(order.createTime)" />
-            <el-step title="已支付" :description="formatTime(order.payTime)" />
+            <el-step
+              title="已支付"
+              :description="formatTime(order.payTime)"
+              :class="{ 'step-like-pending': order.status === 'PAID' }"
+            />
             <el-step title="已完成" />
           </el-steps>
         </div>
@@ -102,15 +106,21 @@
         </div>
       </div>
     </div>
+    <!-- 返回主页按钮 -->
+    <div class="back-home">
+      <el-button type="primary" @click="handleGoHome">返回主页</el-button>
+    </div>
   </div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useOrderStore } from '@/stores/order'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const route = useRoute()
+const router = useRouter()
 // const router = useRouter()
 const orderStore = useOrderStore()
 
@@ -241,6 +251,11 @@ const handlePayOrder = async () => {
     ElMessage.error(error.message || '支付失败')
   }
 }
+
+// 返回主页
+const handleGoHome = () => {
+  router.push('/')
+}
 </script>
 <style scoped lang="scss">
 .order-detail-page {
@@ -274,6 +289,12 @@ const handlePayOrder = async () => {
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-home {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
 }
 
 .order-status-card {
@@ -373,6 +394,30 @@ const handlePayOrder = async () => {
     justify-content: flex-end;
     gap: 12px;
   }
+}
+
+/* 当订单已支付时，让“已支付”步骤样式与“待支付”一致（主色调） */
+.step-like-pending ::v-deep .el-step__head.is-process .el-step__icon,
+.step-like-pending ::v-deep .el-step__head.is-process .el-step__icon.is-text {
+  background-color: $primary-color !important;
+  border-color: $primary-color !important;
+}
+.step-like-pending ::v-deep .el-step__head.is-process .el-step__icon-inner,
+.step-like-pending ::v-deep .el-step__head.is-process .el-step__icon.is-text .el-step__icon-inner {
+  color: #fff !important;
+  background-color: $primary-color !important;
+}
+.step-like-pending ::v-deep .el-step__title.is-process,
+.step-like-pending ::v-deep .el-step__title {
+  color: $primary-color !important;
+  font-weight: 600 !important;
+}
+.step-like-pending ::v-deep .el-step__description {
+  color: $text-secondary !important;
+}
+/* 连接线颜色 */
+.step-like-pending ::v-deep .el-step__head.is-process .el-step__line-inner {
+  background-color: $primary-color !important;
 }
 
 @media (max-width: 768px) {

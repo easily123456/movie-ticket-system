@@ -13,8 +13,8 @@
       <div class="movie-info-card">
         <div class="movie-poster">
           <img
-            v-if="movie.poster"
-            :src="movie.poster"
+            v-if="movie.posterUrl || movie.poster"
+            :src="movie.posterUrl || movie.poster"
             :alt="movie.title"
             class="poster-image"
           />
@@ -179,9 +179,10 @@ const loadSessionDetail = async () => {
     const sessionDetail = await sessionStore.getSessionDetail(sessionId)
     session.value = sessionDetail
 
-    // 获取电影信息
-    const movieDetail = await movieStore.fetchMovieDetail(sessionDetail.movieId)
-    movie.value = movieDetail
+    // 获取电影信息（movie store 暴露 getMovieDetail）
+    const response = await movieStore.getMovieDetail(sessionDetail.movieId)
+    // movieStore.getMovieDetail 会把当前电影保存到 currentMovie
+    movie.value = movieStore.currentMovie || (response && response.data ? response.data : response)
   } catch (error) {
     ElMessage.error('加载场次信息失败')
     console.error('加载场次信息失败:', error)
@@ -282,11 +283,11 @@ const handleCreateOrder = async () => {
       seatNumbers: seatNumbers
     }
 
-    const response = await orderStore.createOrder(orderData)
-    ElMessage.success('订单创建成功')
+  const created = await orderStore.createOrder(orderData)
+  ElMessage.success('订单创建成功')
 
-    // 跳转到订单确认页面
-    router.push(`/order/${response.data.id}`)
+  // 跳转到订单确认页面（orderStore.createOrder 返回已创建订单对象）
+  router.push(`/order/${created.id}`)
   } catch (error) {
     console.error('创建订单失败:', error)
     ElMessage.error('创建订单失败')

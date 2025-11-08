@@ -258,11 +258,13 @@ const handleUserCommand = async (command) => {
   }
 
   .logo-icon {
-    font-size: 24px; /* 设置图标大小 */
+    //font-size: 28px; /* 设置图标大小 */
+    font-size: 24px;
   }
 
   .logo-text {
-    font-size: 20px; /* 设置文字大小 */
+    //font-size: 28px; /* 设置文字大小 */
+    font-size: 24px;
     font-weight: 700; /* 加粗 */
     color: $primary-color; /* 主题色 */
     letter-spacing: 1px; /* 设置字母间距，使文字更具辨识度 */
@@ -278,10 +280,14 @@ const handleUserCommand = async (command) => {
   .nav-item {
     padding: $spacing-sm $spacing-md; /* 设置内边距 */
     color: $text-regular; /* 设置文字颜色 */
-    font-weight: 500; /* 设置字体粗细 */
+    font-weight: 600; /* 设置字体粗细 */
+    //font-size: 22px; /* 增大字体大小 */
+    font-size: 18px;
     border-radius: $border-radius-base; /* 设置边框圆角 */
     transition: $transition-base; /* 设置过渡效果 */
     white-space: nowrap; /* 防止文本换行 */
+    //margin: 0 $spacing-xl; /* 增加导航项之间的间距 */
+    margin: 0 $spacing-lg;
 
     &:hover {
       color: $primary-color; /* 设置鼠标悬停时的颜色 */

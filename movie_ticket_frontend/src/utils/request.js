@@ -47,6 +47,9 @@ request.interceptors.response.use(
     if (response) {
       const { status, data } = response
 
+      // 允许通过请求 config 控制是否在全局拦截器中显示错误提示
+      const showGlobal = response.config?.showGlobalMessage !== false
+
       switch (status) {
         case 401:
           // 未授权，清除token并跳转到登录页
@@ -57,7 +60,7 @@ request.interceptors.response.use(
           break
 
         case 403:
-          ElMessage.error('权限不足，无法访问该资源')
+          if (showGlobal) ElMessage.error('权限不足，无法访问该资源')
           break
 
         case 400:
@@ -67,26 +70,29 @@ request.interceptors.response.use(
             break;
           }
           // 其他400错误显示具体消息
-          if (data && data.message) {
-            ElMessage.error(data.message) //弹出后端返回的错误信息
-
-          } else {
-            ElMessage.error('网络错误，请稍后重试')
+          if (showGlobal) {
+            if (data && data.message) {
+              ElMessage.error(data.message) //弹出后端返回的错误信息
+            } else {
+              ElMessage.error('网络错误，请稍后重试')
+            }
           }
           break
         case 404:
-          ElMessage.error('请求的资源不存在')
+          if (showGlobal) ElMessage.error('请求的资源不存在')
           break
 
         case 500:
-          ElMessage.error('服务器内部错误，请稍后重试')
+          if (showGlobal) ElMessage.error('服务器内部错误，请稍后重试')
           break
 
         default:
-          if (data && data.message) {
-            ElMessage.error(data.message)
-          } else {
-            ElMessage.error('网络错误，请稍后重试')
+          if (showGlobal) {
+            if (data && data.message) {
+              ElMessage.error(data.message)
+            } else {
+              ElMessage.error('网络错误，请稍后重试')
+            }
           }
       }
     } else {

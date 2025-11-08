@@ -20,89 +20,92 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
-    // 根据状态统计订单数量
-    Long countByStatus(Order.OrderStatus status);
+        // 根据状态统计订单数量
+        Long countByStatus(Order.OrderStatus status);
 
-    // 根据状态和时间范围统计订单数量
-    Long countByStatusAndCreateTimeBetween(Order.OrderStatus status, LocalDateTime start, LocalDateTime end);
+        // 根据状态和时间范围统计订单数量
+        Long countByStatusAndCreateTimeBetween(Order.OrderStatus status, LocalDateTime start, LocalDateTime end);
 
-    // 根据状态统计营收
-    @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.status = :status")
-    Optional<BigDecimal> sumRevenueByStatus(@Param("status") Order.OrderStatus status);
+        // 根据状态统计营收
+        @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.status = :status")
+        Optional<BigDecimal> sumRevenueByStatus(@Param("status") Order.OrderStatus status);
 
-    // 根据状态和时间范围统计营收
-    @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.status = :status AND o.createTime BETWEEN :start AND :end")
-    Optional<BigDecimal> sumRevenueByStatusAndTimeRange(
-            @Param("status") Order.OrderStatus status,
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end);
+        // 根据状态和时间范围统计营收
+        @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.status = :status AND o.createTime BETWEEN :start AND :end")
+        Optional<BigDecimal> sumRevenueByStatusAndTimeRange(
+                        @Param("status") Order.OrderStatus status,
+                        @Param("start") LocalDateTime start,
+                        @Param("end") LocalDateTime end);
 
-    // 获取热门电影统计
-    @Query("SELECT o.session.movie.id, o.session.movie.title, COUNT(o), SUM(o.totalPrice), " +
-           "(SELECT COUNT(f) FROM Favorite f WHERE f.movie.id = o.session.movie.id), " +
-           "o.session.movie.rating " +
-           "FROM Order o WHERE o.status = 'PAID' " +
-           "GROUP BY o.session.movie.id, o.session.movie.title, o.session.movie.rating " +
-           "ORDER BY COUNT(o) DESC")
-    List<Object[]> findPopularMoviesStats(@Param("limit") int limit);
+        // 获取热门电影统计
+        @Query("SELECT o.session.movie.id, o.session.movie.title, COUNT(o), SUM(o.totalPrice), " +
+                        "(SELECT COUNT(f) FROM Favorite f WHERE f.movie.id = o.session.movie.id), " +
+                        "o.session.movie.rating " +
+                        "FROM Order o WHERE o.status = 'PAID' " +
+                        "GROUP BY o.session.movie.id, o.session.movie.title, o.session.movie.rating " +
+                        "ORDER BY COUNT(o) DESC")
+        List<Object[]> findPopularMoviesStats(@Param("limit") int limit);
 
-    // 保留原有方法以确保向后兼容
-    List<Order> findByUserAndStatusOrderByCreateTimeDesc(User user, OrderStatus status);
+        // 保留原有方法以确保向后兼容
+        List<Order> findByUserAndStatusOrderByCreateTimeDesc(User user, OrderStatus status);
 
-    Page<Order> findByUserOrderByCreateTimeDesc(User user, Pageable pageable);
+        Page<Order> findByUserAndStatusOrderByCreateTimeDesc(User user, OrderStatus status, Pageable pageable);
 
-    @Query("SELECT o FROM Order o WHERE o.user.username LIKE %:keyword% OR o.orderNo LIKE %:keyword%")
-    Page<Order> searchOrders(String keyword, Pageable pageable);
+        Page<Order> findByUserOrderByCreateTimeDesc(User user, Pageable pageable);
 
-    @Query("SELECT o FROM Order o WHERE o.createTime < :expireTime AND o.status = 'PENDING'")
-    List<Order> findExpiredOrders(@Param("expireTime") LocalDateTime expireTime);
+        @Query("SELECT o FROM Order o WHERE o.user.username LIKE %:keyword% OR o.orderNo LIKE %:keyword%")
+        Page<Order> searchOrders(String keyword, Pageable pageable);
 
-    @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.status = 'PAID' AND o.createTime BETWEEN :start AND :end")
-    BigDecimal getRevenueBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
-    
-    @Query("SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o WHERE o.status = 'PAID' AND o.createTime BETWEEN :start AND :end")
-    BigDecimal findRevenueBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
-    
-    long count();
-    
-    // 用户订单统计相关方法
-    long countByUser(User user);
-    
-    long countByUserAndStatus(User user, OrderStatus status);
-    
-    @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.user = :user AND o.status = 'PAID'")
-    BigDecimal sumTotalPriceByUserAndStatus(@Param("user") User user, OrderStatus status);
-    
-    @Query("SELECT COUNT(o) FROM Order o WHERE o.session.movie.id = :movieId")
-    long countByMovieId(@Param("movieId") Long movieId);
+        @Query("SELECT o FROM Order o WHERE o.createTime < :expireTime AND o.status = 'PENDING'")
+        List<Order> findExpiredOrders(@Param("expireTime") LocalDateTime expireTime);
 
-    // 管理端查询方法
-    Page<Order> findByOrderNoContainingIgnoreCase(String orderNo, Pageable pageable);
+        @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.status = 'PAID' AND o.createTime BETWEEN :start AND :end")
+        BigDecimal getRevenueBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
-    Page<Order> findByUserUsernameContainingIgnoreCase(String username, Pageable pageable);
+        @Query("SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o WHERE o.status = 'PAID' AND o.createTime BETWEEN :start AND :end")
+        BigDecimal findRevenueBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
-    Page<Order> findBySessionMovieTitleContainingIgnoreCase(String movieTitle, Pageable pageable);
+        long count();
 
-    Page<Order> findByStatus(Order.OrderStatus status, Pageable pageable);
+        // 用户订单统计相关方法
+        long countByUser(User user);
 
-    Page<Order> findByCreateTimeBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
+        long countByUserAndStatus(User user, OrderStatus status);
 
-    @Query("SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o WHERE o.status = :status")
-    Double sumTotalPriceByStatus(@Param("status") Order.OrderStatus status);
+        @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.user = :user AND o.status = 'PAID'")
+        BigDecimal sumTotalPriceByUserAndStatus(@Param("user") User user, OrderStatus status);
 
-    @Query("SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o WHERE o.status = :status AND o.createTime BETWEEN :start AND :end")
-    Double sumTotalPriceByStatusAndCreateTimeBetween(
-            @Param("status") Order.OrderStatus status,
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end);
-            
-    Long countByCreateTimeBetween(LocalDateTime start, LocalDateTime end);
+        @Query("SELECT COUNT(o) FROM Order o WHERE o.session.movie.id = :movieId")
+        long countByMovieId(@Param("movieId") Long movieId);
 
-    Optional<Order> findByOrderNo(String orderNo);
+        // 管理端查询方法
+        Page<Order> findByOrderNoContainingIgnoreCase(String orderNo, Pageable pageable);
 
-    List<Order> findBySessionIdAndStatus(Long sessionId, Order.OrderStatus orderStatus);
+        Page<Order> findByUserUsernameContainingIgnoreCase(String username, Pageable pageable);
 
-    List<Order> findBySessionIdAndStatusAndCreateTimeAfter(Long sessionId, Order.OrderStatus orderStatus , LocalDateTime fifteenMinutesAgo);
+        Page<Order> findBySessionMovieTitleContainingIgnoreCase(String movieTitle, Pageable pageable);
 
-    List<Order> findByStatusAndCreateTimeBefore(Order.OrderStatus orderStatus, LocalDateTime fifteenMinutesAgo);
+        Page<Order> findByStatus(Order.OrderStatus status, Pageable pageable);
+
+        Page<Order> findByCreateTimeBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+        @Query("SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o WHERE o.status = :status")
+        Double sumTotalPriceByStatus(@Param("status") Order.OrderStatus status);
+
+        @Query("SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o WHERE o.status = :status AND o.createTime BETWEEN :start AND :end")
+        Double sumTotalPriceByStatusAndCreateTimeBetween(
+                        @Param("status") Order.OrderStatus status,
+                        @Param("start") LocalDateTime start,
+                        @Param("end") LocalDateTime end);
+
+        Long countByCreateTimeBetween(LocalDateTime start, LocalDateTime end);
+
+        Optional<Order> findByOrderNo(String orderNo);
+
+        List<Order> findBySessionIdAndStatus(Long sessionId, Order.OrderStatus orderStatus);
+
+        List<Order> findBySessionIdAndStatusAndCreateTimeAfter(Long sessionId, Order.OrderStatus orderStatus,
+                        LocalDateTime fifteenMinutesAgo);
+
+        List<Order> findByStatusAndCreateTimeBefore(Order.OrderStatus orderStatus, LocalDateTime fifteenMinutesAgo);
 }

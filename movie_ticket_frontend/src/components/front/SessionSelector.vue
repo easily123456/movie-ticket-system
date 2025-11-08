@@ -63,16 +63,18 @@ const emit = defineEmits(['select'])
 const activeDate = ref('')
 const sessionData = ref([])
 
-// 计算可用日期
+// 计算可用日期（使用固定基准：2025-11-10 -> 显示 11月20日 - 11月26日）
 const availableDates = computed(() => {
   const dates = []
-  // 使用固定基准日期：2025年11月10日，后续天数按 +i 递增
-  const base = new Date(2025, 10, 10) // 月份从0开始，10表示11月
+  // 固定基准日期：2025年11月10日（注意月份从0开始，10表示11月）
+  const base = new Date(2025, 10, 10)
 
+  // 生成 7 天：基准日 + 10 .. +16 => 11月20日 - 11月26日
   for (let i = 0; i < 7; i++) {
     const date = new Date(base)
-    date.setDate(base.getDate() + i)
+    date.setDate(base.getDate() + 10 + i)
     const dateStr = formatDate(date)
+    // getMonth() 返回 0-11，需要 +1
     const label = `${date.getMonth() + 1}月${date.getDate()}日`
 
     dates.push({

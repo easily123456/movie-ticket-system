@@ -166,8 +166,6 @@ public class SessionServiceImpl implements SessionService {
         return sessionRepository.countUpcomingSessions(LocalDateTime.now());
     }
 
-
-
     @Override
     @Transactional(readOnly = true)
     public Page<Session> searchSessionsByMovie(String movieKeyword, Pageable pageable) {
@@ -194,7 +192,6 @@ public class SessionServiceImpl implements SessionService {
         return sessionRepository.findByStatus(status, pageable);
     }
 
-
     @Override
     public void batchDeleteSessions(List<Long> sessionIds) {
         for (Long id : sessionIds) {
@@ -215,10 +212,6 @@ public class SessionServiceImpl implements SessionService {
         }
         sessionRepository.saveAll(sessions);
     }
-
-
-
-
 
     // 获取场次详情（包含座位信息）
     @Transactional(readOnly = true)
@@ -252,8 +245,7 @@ public class SessionServiceImpl implements SessionService {
         try {
             Map<String, Object> seatLayout = objectMapper.readValue(
                     session.getHall().getSeatLayout(),
-                    Map.class
-            );
+                    Map.class);
             response.setSeatLayout(seatLayout);
         } catch (Exception e) {
             log.error("解析座位布局失败", e);
@@ -281,8 +273,8 @@ public class SessionServiceImpl implements SessionService {
                     try {
                         List<String> seats = objectMapper.readValue(
                                 order.getSeatNumbers(),
-                                new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {}
-                        );
+                                new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {
+                                });
                         return seats.stream();
                     } catch (Exception e) {
                         log.error("解析座位号失败: {}", order.getSeatNumbers(), e);
@@ -305,8 +297,8 @@ public class SessionServiceImpl implements SessionService {
                     try {
                         List<String> seats = objectMapper.readValue(
                                 order.getSeatNumbers(),
-                                new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {}
-                        );
+                                new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {
+                                });
                         return seats.stream();
                     } catch (Exception e) {
                         log.error("解析座位号失败: {}", order.getSeatNumbers(), e);
@@ -335,6 +327,46 @@ public class SessionServiceImpl implements SessionService {
         return true;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public boolean checkSeatAvailability(Long sessionId, List<String> seatNumbers, Long excludePendingOrderId) {
+        // 获取已预订座位
+        List<String> bookedSeats = getBookedSeatsForSession(sessionId);
+
+        // 获取锁定座位（排除指定的待支付订单）
+        LocalDateTime fifteenMinutesAgo = LocalDateTime.now().minusMinutes(15);
+        List<Order> pendingOrders = orderRepository.findBySessionIdAndStatusAndCreateTimeAfter(
+                sessionId, Order.OrderStatus.PENDING, fifteenMinutesAgo);
+
+        List<String> lockedSeats = pendingOrders.stream()
+                .filter(o -> excludePendingOrderId == null || !o.getId().equals(excludePendingOrderId))
+                .flatMap(order -> {
+                    try {
+                        List<String> seats = objectMapper.readValue(
+                                order.getSeatNumbers(),
+                                new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {
+                                });
+                        return seats.stream();
+                    } catch (Exception e) {
+                        log.error("解析座位号失败: {}", order.getSeatNumbers(), e);
+                        return Stream.empty();
+                    }
+                })
+                .collect(Collectors.toList());
+
+        // 检查目标座位是否在 booked 或 locked 中
+        for (String seat : seatNumbers) {
+            if (bookedSeats.contains(seat)) {
+                return false;
+            }
+            if (lockedSeats.contains(seat)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     // 更新场次座位信息
     @Override
     public void updateSessionSeats(Long sessionId, int seatCount, boolean isBooking) {
@@ -351,7 +383,7 @@ public class SessionServiceImpl implements SessionService {
             sessionRepository.save(session);
         }
     }
-    
+
     // 根据日期获取场次
     @Transactional(readOnly = true)
     @Override

@@ -103,7 +103,8 @@ export const sessionApi = {
 export const orderApi = {
   // 创建订单
   createOrder(data) {
-    return request.post('/api/orders', data)
+    // 创建订单时由组件负责展示错误提示，防止拦截器重复弹窗
+    return request.post('/api/orders', data, { showGlobalMessage: false })
   },
   //获取订单统计
   getOrderStats() {
@@ -116,12 +117,20 @@ export const orderApi = {
 
   // 支付订单
   payOrder(orderId) {
-    return request.post(`/api/orders/${orderId}/pay`)
+    // 这里传入第三个参数 config，用于控制请求拦截器是否显示全局错误信息
+    return request.post(`/api/orders/${orderId}/pay`, null, { showGlobalMessage: false })
   },
 
   // 取消订单
   cancelOrder(orderId) {
-    return request.post(`/api/orders/${orderId}/cancel`)
+    // 取消订单时由组件负责展示错误提示
+    return request.post(`/api/orders/${orderId}/cancel`, null, { showGlobalMessage: false })
+  },
+
+  // 申请退款（后台接口如存在）
+  refundOrder(orderId) {
+    // 如果后端没有此接口，可按需调整
+    return request.post(`/api/orders/${orderId}/refund`, null, { showGlobalMessage: false })
   },
 
   // 获取订单详情

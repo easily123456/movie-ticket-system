@@ -120,6 +120,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Order> getOrdersByUserAndStatus(Long userId, Order.OrderStatus status, Pageable pageable) {
+        User user = userService.getUserById(userId)
+                .orElseThrow(() -> new RuntimeException("用户不存在"));
+        return orderRepository.findByUserAndStatusOrderByCreateTimeDesc(user, status, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Order> getPendingOrdersByUser(Long userId) {
         User user = userService.getUserById(userId)
                 .orElseThrow(() -> new RuntimeException("用户不存在"));
@@ -179,7 +187,6 @@ public class OrderServiceImpl implements OrderService {
         return revenue != null ? revenue : BigDecimal.ZERO;
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public Page<Order> searchOrdersByOrderNo(String orderNo, Pageable pageable) {
@@ -191,21 +198,25 @@ public class OrderServiceImpl implements OrderService {
     public Page<Order> searchOrdersByUsername(String username, Pageable pageable) {
         return orderRepository.findByUserUsernameContainingIgnoreCase(username, pageable);
     }
+
     @Override
     @Transactional(readOnly = true)
     public Page<Order> searchOrdersByMovieTitle(String movieTitle, Pageable pageable) {
         return orderRepository.findBySessionMovieTitleContainingIgnoreCase(movieTitle, pageable);
     }
+
     @Override
     @Transactional(readOnly = true)
     public Page<Order> getOrdersByStatus(Order.OrderStatus status, Pageable pageable) {
         return orderRepository.findByStatus(status, pageable);
     }
+
     @Override
     @Transactional(readOnly = true)
     public Page<Order> getOrdersByDateRange(LocalDateTime start, LocalDateTime end, Pageable pageable) {
         return orderRepository.findByCreateTimeBetween(start, end, pageable);
     }
+
     @Override
     @Transactional(readOnly = true)
     public Order updateOrderStatus(Long orderId, Order.OrderStatus status) {
@@ -256,6 +267,7 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.deleteById(orderId);
     }
+
     @Override
     @Transactional(readOnly = true)
     public void batchDeleteOrders(List<Long> orderIds) {
@@ -304,11 +316,9 @@ public class OrderServiceImpl implements OrderService {
     public Double getMonthlyRevenue() {
         LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
         LocalDateTime endOfMonth = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
-        return orderRepository.sumTotalPriceByStatusAndCreateTimeBetween(Order.OrderStatus.PAID, startOfMonth, endOfMonth);
+        return orderRepository.sumTotalPriceByStatusAndCreateTimeBetween(Order.OrderStatus.PAID, startOfMonth,
+                endOfMonth);
     }
-
-
-
 
     // 创建订单（选座）
     @Override
@@ -383,17 +393,52 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // 检查座位是否仍然可用
+        List<String> seatNumbers = null;
         try {
-            List<String> seatNumbers = objectMapper.readValue(
+            // 尝试按 JSON 数组解析
+            seatNumbers = objectMapper.readValue(
                     order.getSeatNumbers(),
-                    new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {}
-            );
-
-            if (!sessionService.checkSeatAvailability(order.getSession().getId(), seatNumbers)) {
-                throw new RuntimeException("座位已被其他用户预订，请重新选择");
+                    new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {
+                    });
+        } catch (Exception ex) {
+            // 解析失败时尝试容错处理：去除首尾引号并按逗号分割
+            try {
+                String raw = order.getSeatNumbers();
+                if (raw != null) {
+                    raw = raw.trim();
+                    // 去掉首尾的双引号（如果存在）
+                    if (raw.startsWith("\"") && raw.endsWith("\"")) {
+                        raw = raw.substring(1, raw.length() - 1);
+                    }
+                    // 如果看起来是逗号分隔的字符串，则分割
+                    if (!raw.startsWith("[")) {
+                        String[] parts = raw.split(",");
+                        seatNumbers = java.util.Arrays.stream(parts)
+                                .map(String::trim)
+                                .filter(s -> !s.isEmpty())
+                                .map(s -> {
+                                    // 去掉可能的引号
+                                    if (s.startsWith("\"") && s.endsWith("\"")) {
+                                        return s.substring(1, s.length() - 1);
+                                    }
+                                    return s;
+                                })
+                                .collect(java.util.stream.Collectors.toList());
+                    }
+                }
+            } catch (Exception ex2) {
+                // 记录详细日志以便排查
+                throw new RuntimeException("订单数据异常: 无法解析座位信息");
             }
-        } catch (Exception e) {
-            throw new RuntimeException("订单数据异常");
+        }
+
+        if (seatNumbers == null) {
+            throw new RuntimeException("订单数据异常: 座位信息为空或格式不正确");
+        }
+
+        // 校验座位可用性：在支付时排除当前订单本身的锁定座位
+        if (!sessionService.checkSeatAvailability(order.getSession().getId(), seatNumbers, order.getId())) {
+            throw new RuntimeException("座位已被其他用户预订，请重新选择");
         }
 
         // 更新订单状态

@@ -121,6 +121,7 @@ const loadInitialData = async () => {
 
 const loadMovies = async () => {
   loading.value = true //表示开始加载电影数据
+  console.debug('[MovieList] loadMovies called', { page: pagination.value.page, size: pagination.value.size, filters: { ...filters } })
   try {
     const params = {
       page: pagination.value.page - 1,// 后端页面从0开始
@@ -142,15 +143,65 @@ const loadMovies = async () => {
       try {
         const limit = pagination.value.size || 12
         await movieStore.getNewMovies(limit)
-        movies.value = movieStore.newMovies || []
-        // 设置分页信息（newMovies 返回非分页列表）
-        pagination.value = {
-          page: 1,
-          size: limit,
-          total: movies.value.length,
-          pages: 1
+        // movieStore.newMovies 是非分页的“即将上映/最新”列表，我们在客户端根据用户当前的筛选继续过滤和排序，
+        // 这样点击类型按钮或切换排序时仍然生效。
+  let fullList = (movieStore.newMovies || []).slice()
+
+        // 客户端按类型过滤，movie 对象可能有不同的 genre 字段命名（genreId / genreIds / genres / genreName），
+        // 这里用宽松匹配来兼容后台返回格式。
+        if (filters.genreId) {
+          fullList = fullList.filter(m => {
+            // 直接的 genreId 字段
+            if (m.genreId !== undefined && m.genreId !== null) return m.genreId === filters.genreId
+            // genreIds 数组
+            if (Array.isArray(m.genreIds)) return m.genreIds.includes(filters.genreId)
+            // genres 数组，元素可能为对象或 id
+            if (Array.isArray(m.genres)) return m.genres.some(g => (g && g.id ? g.id === filters.genreId : g === filters.genreId))
+            // 退而求其次，通过 genreName 与 genres 列表匹配
+            if (m.genreName && Array.isArray(genres.value)) {
+              const target = genres.value.find(g => g.id === filters.genreId)
+              return target ? m.genreName === target.name : false
+            }
+            return false
+          })
         }
-        // 早退出，避免后面再次调用 fetch
+
+        // 客户端排序支持（目前主要处理 releaseDate 与 rating）
+        if (filters.sort) {
+          const [sortField, sortDir] = filters.sort.split(',')
+          if (sortField === 'releaseDate') {
+            fullList.sort((a, b) => {
+              const da = a.releaseDate ? new Date(a.releaseDate).getTime() : 0
+              const db = b.releaseDate ? new Date(b.releaseDate).getTime() : 0
+              return (sortDir === 'asc') ? da - db : db - da
+            })
+          } else if (sortField === 'rating') {
+            fullList.sort((a, b) => {
+              const ra = Number(a.rating) || 0
+              const rb = Number(b.rating) || 0
+              return (sortDir === 'asc') ? ra - rb : rb - ra
+            })
+          }
+        }
+
+        // 客户端分页：根据当前 pagination.value.page 与 size 做 slice
+        const total = fullList.length
+        const size = limit
+        const totalPages = Math.max(1, Math.ceil(total / size))
+        // 如果当前页超过总页数，重置到最后一页
+        let currentPage = pagination.value.page || 1
+        if (currentPage > totalPages) currentPage = totalPages
+        const pageIndex = Math.max(0, currentPage - 1)
+        const paged = fullList.slice(pageIndex * size, (pageIndex + 1) * size)
+
+        movies.value = paged
+        // 更新分页信息但保留当前页（由 handlePageChange 控制）
+        pagination.value = {
+          page: currentPage,
+          size: size,
+          total: total,
+          pages: totalPages
+        }
         loading.value = false
         return
       } catch (err) {
@@ -175,6 +226,14 @@ const loadMovies = async () => {
       pagination.value = { ...movieStore.pagination }
     } else {
       // 使用 fetchMovies 兼容旧调用，内部会调用 getMovies
+      // 将组件的分页状态同步到 store，确保 store.getMovies 使用正确的 page/size
+      try {
+        movieStore.pagination.page = pagination.value.page
+        movieStore.pagination.size = pagination.value.size
+      } catch (e) {
+        // 某些情况下 store 可能不暴露 pagination 可写属性，忽略同步错误
+        console.warn('[MovieList] failed to sync pagination to store', e)
+      }
       await movieStore.fetchMovies(params)
       // movieList 在 store 中已映射到 movies
       movies.value = movieStore.movieList
@@ -231,6 +290,7 @@ const handleFilterChange = () => {
 }
 
 const handlePageChange = ({ page, size }) => {
+  console.debug('[MovieList] handlePageChange event', { page, size })
   pagination.value.page = page
   pagination.value.size = size
   loadMovies()

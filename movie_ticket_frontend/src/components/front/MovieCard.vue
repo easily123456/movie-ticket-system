@@ -13,7 +13,7 @@
         </div>
         <div class="movie-tags">
           <span v-if="movie.isHot" class="tag hot">热门</span>
-          <span v-if="movie.isNew" class="tag new">新上映</span>
+          <span v-if="movie.isNew && !movie.isHot" class="tag new">新上映</span>
         </div>
       </div>
     </div>

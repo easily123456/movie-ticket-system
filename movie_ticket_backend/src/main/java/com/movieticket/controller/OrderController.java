@@ -11,7 +11,6 @@ import com.movieticket.service.OrderService;
 import com.movieticket.service.SessionService;
 import com.movieticket.service.UserService;
 import com.movieticket.util.JwtUtil;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -36,8 +33,6 @@ public class OrderController {
     private final SessionService sessionService;
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
-
-
 
     @PostMapping
     public ResponseEntity<ApiResponse<OrderResponse>> createOrder(
@@ -58,7 +53,8 @@ public class OrderController {
             }
 
             // 检查座位是否可用
-            boolean seatsAvailable = sessionService.checkSeatAvailability(request.getSessionId(), request.getSeatNumbers());
+            boolean seatsAvailable = sessionService.checkSeatAvailability(request.getSessionId(),
+                    request.getSeatNumbers());
             if (!seatsAvailable) {
                 return ResponseEntity.badRequest().body(ApiResponse.error("座位已被预订或不可用"));
             }
@@ -71,11 +67,12 @@ public class OrderController {
             order.setUser(user);
             order.setSession(session);
             order.setSeatNumbers(objectMapper.writeValueAsString(request.getSeatNumbers()));
-            //objectMapper.writeValueAsString(request.getSeatNumbers()) 的作用是 将 List<String> 类型的座位号列表转换为 JSON 格式的字符串
+            // objectMapper.writeValueAsString(request.getSeatNumbers()) 的作用是 将 List<String>
+            // 类型的座位号列表转换为 JSON 格式的字符串
             order.setSeatCount(request.getSeatNumbers().size());
             order.setTotalPrice(session.getPrice().multiply(new BigDecimal(request.getSeatNumbers().size())));
             // 计算总价，就是场次价格乘以座位数量
-            //request.getSeatNumbers().size()的返回值为int类型，为了同一类型，进行转换
+            // request.getSeatNumbers().size()的返回值为int类型，为了同一类型，进行转换
 
             Order createdOrder = orderService.createOrder(order);
             OrderResponse response = convertToOrderResponse(createdOrder);
@@ -103,17 +100,29 @@ public class OrderController {
             return ResponseEntity.badRequest().body(ApiResponse.error("获取订单统计失败"));
         }
     }
+
     @GetMapping("/user")
     public ResponseEntity<ApiResponse<Page<OrderResponse>>> getUserOrders(
             @RequestHeader("Authorization") String token,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String status) {
         try {
             String authToken = token.substring(7);
             Long userId = jwtUtil.getUserIdFromToken(authToken);
 
-            Pageable pageable = PageRequest.of(page, size);//PageRequest是Pageable的实现类
-            Page<Order> orders = orderService.getOrdersByUser(userId, pageable);
+            Pageable pageable = PageRequest.of(page, size);// PageRequest是Pageable的实现类
+            Page<Order> orders;
+            if (status != null && !status.isBlank()) {
+                try {
+                    Order.OrderStatus os = Order.OrderStatus.valueOf(status);
+                    orders = orderService.getOrdersByUserAndStatus(userId, os, pageable);
+                } catch (IllegalArgumentException ex) {
+                    return ResponseEntity.badRequest().body(ApiResponse.error("无效的订单状态"));
+                }
+            } else {
+                orders = orderService.getOrdersByUser(userId, pageable);
+            }
             Page<OrderResponse> response = orders.map(this::convertToOrderResponse);
 
             return ResponseEntity.ok(ApiResponse.success(response));
@@ -137,7 +146,7 @@ public class OrderController {
                 if (!order.getUser().getId().equals(userId)) {
                     return ResponseEntity.badRequest().body(ApiResponse.error("无权访问此订单"));
                 }
-                //验证token中的id与请求的id一致
+                // 验证token中的id与请求的id一致
 
                 OrderResponse response = convertToOrderResponse(order);
                 return ResponseEntity.ok(ApiResponse.success(response));
@@ -164,8 +173,6 @@ public class OrderController {
                 if (!order.getUser().getId().equals(userId)) {
                     return ResponseEntity.badRequest().body(ApiResponse.error("无权操作此订单"));
                 }
-                
-
 
                 orderService.payOrder(id);
                 return ResponseEntity.ok(ApiResponse.success("支付成功", null));
@@ -211,16 +218,6 @@ public class OrderController {
     }
 
     private OrderResponse convertToOrderResponse(Order order) {
-        try {
-            OrderResponse response = new OrderResponse(order);
-
-            List<String> seatNumbers = objectMapper.readValue(order.getSeatNumbers(), new TypeReference<List<String>>() {});
-            String seatNumbersString = String.join(",", seatNumbers);
-            response.setSeatNumbers(seatNumbersString);
-
-            return response;
-        } catch (Exception e) {
-            throw new RuntimeException("转换订单响应失败", e);
-        }
+        return new OrderResponse(order);
     }
 }

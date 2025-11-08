@@ -141,7 +141,7 @@ public class MovieServiceImpl implements MovieService {
     @Transactional(readOnly = true)
     @Override
     public List<MovieResponse> getNewMovies(int limit) { // 2022-07-01后的电影
-        LocalDate time = LocalDate.of(2022, 7, 1);
+        LocalDate time = LocalDate.of(2025, 11, 9);
         List<Movie> movies = movieRepository.findByReleaseDateAfterAndStatusAndIsHotOrderByReleaseDateDesc(time, true,
                 false,
                 PageRequest.of(0, limit));

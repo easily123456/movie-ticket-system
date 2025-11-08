@@ -140,7 +140,8 @@ export const useOrderStore = defineStore('order', () => {
   // 创建选座订单
   const createOrder = async (orderData) => {
     try {
-      const response = await orderApi.createSeatOrder(orderData)
+      // 后端订单创建接口为 POST /api/orders，使用 orderApi.createOrder
+      const response = await orderApi.createOrder(orderData)
       currentOrder.value = response.data
       return response.data
     } catch (error) {
@@ -240,6 +241,6 @@ export const useOrderStore = defineStore('order', () => {
     updatePagination,
     getOrderDetail,
     getUserOrders,
-    
+
   }
 })

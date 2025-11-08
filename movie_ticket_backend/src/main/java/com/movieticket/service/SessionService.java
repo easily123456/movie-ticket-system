@@ -56,6 +56,16 @@ public interface SessionService {
 
     boolean checkSeatAvailability(Long sessionId, List<String> seatNumbers);
 
+    /**
+     * 检查座位可用性，允许排除某个待支付订单的锁定座位（用于支付该订单时忽略自身的锁定）
+     * 
+     * @param sessionId             场次ID
+     * @param seatNumbers           需要检查的座位号列表
+     * @param excludePendingOrderId 要排除的 PENDING 订单 ID（可为 null）
+     * @return true 表示可用
+     */
+    boolean checkSeatAvailability(Long sessionId, List<String> seatNumbers, Long excludePendingOrderId);
+
     void updateSessionSeats(Long sessionId, int seatCount, boolean isBooking);
 
     // 添加根据日期获取场次的方法

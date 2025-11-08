@@ -28,9 +28,6 @@ import com.movieticket.dto.response.comment.CommentResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -44,19 +41,19 @@ public class UserController {
     private final OrderService orderService;
     private final FavoriteService favoriteService;
     private final CommentService commentService;
-    private final ObjectMapper objectMapper;
 
     @GetMapping("/profile")
-    public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(@RequestHeader("Authorization") String token) {//获取用户信息
-        //@RequestHeader("Authorization")从 HTTP 请求头中获取名为 Authorization 的值，并自动绑定到方法的参数 token 上
-        //token格式为：Bearer <TOKEN>，机制为JWT
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(@RequestHeader("Authorization") String token) {// 获取用户信息
+        // @RequestHeader("Authorization")从 HTTP 请求头中获取名为 Authorization 的值，并自动绑定到方法的参数
+        // token 上
+        // token格式为：Bearer <TOKEN>，机制为JWT
 
-        //Authorization: Bearer <TOKEN>
+        // Authorization: Bearer <TOKEN>
         try {
             String authToken = token.substring(7); // 去掉 "Bearer " 前缀
-            Long userId = jwtUtil.getUserIdFromToken(authToken);//获取用户ID
+            Long userId = jwtUtil.getUserIdFromToken(authToken);// 获取用户ID
 
-            Optional<User> userOpt = userService.getUserById(userId);//根据ID获取用户
+            Optional<User> userOpt = userService.getUserById(userId);// 根据ID获取用户
             if (userOpt.isPresent()) {
                 UserProfileResponse response = new UserProfileResponse(userOpt.get());
                 return ResponseEntity.ok(ApiResponse.success(response));
@@ -90,7 +87,7 @@ public class UserController {
             } else {
                 return ResponseEntity.badRequest().body(ApiResponse.error("用户不存在"));
             }
-        } catch (RuntimeException e) {//可能存在用户名称重复，因此先被具体的错误处理
+        } catch (RuntimeException e) {// 可能存在用户名称重复，因此先被具体的错误处理
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error("Token无效"));
@@ -114,7 +111,7 @@ public class UserController {
                 }
 
                 // 从请求体中获取新密码，并将其设置给用户对象
-//                user.setPassword(request.getNewPassword());
+                // user.setPassword(request.getNewPassword());
                 user.setPassword(passwordEncoder.encode(request.getNewPassword()));
                 userService.updateUser(user);
 
@@ -134,13 +131,24 @@ public class UserController {
     public ResponseEntity<ApiResponse<Page<OrderResponse>>> getOrders(
             @RequestHeader("Authorization") String token,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String status) {
         try {
             String authToken = token.substring(7);
             Long userId = jwtUtil.getUserIdFromToken(authToken);
 
             Pageable pageable = PageRequest.of(page, size);
-            Page<Order> orders = orderService.getOrdersByUser(userId, pageable);
+            Page<Order> orders;
+            if (status != null && !status.isBlank()) {
+                try {
+                    Order.OrderStatus os = Order.OrderStatus.valueOf(status);
+                    orders = orderService.getOrdersByUserAndStatus(userId, os, pageable);
+                } catch (IllegalArgumentException ex) {
+                    return ResponseEntity.badRequest().body(ApiResponse.error("无效的订单状态"));
+                }
+            } else {
+                orders = orderService.getOrdersByUser(userId, pageable);
+            }
             Page<OrderResponse> response = orders.map(this::convertToOrderResponse);
 
             return ResponseEntity.ok(ApiResponse.success(response));
@@ -197,17 +205,7 @@ public class UserController {
      * 转换订单实体为响应DTO
      */
     private OrderResponse convertToOrderResponse(Order order) {
-        try {
-            OrderResponse response = new OrderResponse(order);
-
-            List<String> seatNumbers = objectMapper.readValue(order.getSeatNumbers(), new TypeReference<List<String>>() {});
-            String seatNumbersString = String.join(",", seatNumbers);
-            response.setSeatNumbers(seatNumbersString);
-
-            return response;
-        } catch (Exception e) {
-            throw new RuntimeException("转换订单响应失败", e);
-        }
+        return new OrderResponse(order);
     }
 
     /**
