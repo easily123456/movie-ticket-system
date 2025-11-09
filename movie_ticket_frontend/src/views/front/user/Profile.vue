@@ -251,8 +251,9 @@ const handleChangePassword = async () => {
     if (!valid) return
     changing.value = true
     try {
+      // 后端期望的字段名为 oldPassword 和 newPassword（与 DTO PasswordChangeRequest 对应）
       await userApi.changePassword({
-        currentPassword: passwordForm.currentPassword,
+        oldPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword
       })
       ElMessage.success('密码修改成功')

@@ -255,6 +255,8 @@ export const parseSeatNumbers = (seatNumbersStr) => {
   }
 }
 
+import { colors } from './theme'
+
 // 电影评分颜色工具，根据评分值返回对应的颜色代码
 export const getRatingColor = (rating) => {
   if (rating >= 8) return colors.success // 优秀 - 绿色

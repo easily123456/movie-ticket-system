@@ -31,7 +31,7 @@
                 <p class="banner-desc">{{ item.description }}</p>
                 <el-button type="primary" size="large" @click="handleBannerClick(item)">
                   <!--handleBannerClick(item)为router.push(banner.link)-->
-                  立即购票
+                  查看详情
                 </el-button>
               </div>
             </div>
@@ -107,23 +107,23 @@ const banners = ref([ //ref创建响应式数据
   {
     id: 1, // 轮播图项的唯一标识符
     image: '/images/banner-1.jpg', // 轮播图图片的路径，即 public/images/banner-1.jpg
-    title: '年度科幻巨制', // 轮播图的标题
-    description: '震撼视效，颠覆想象', // 轮播图的描述信息
-    link: '/movie/1' // 点击轮播图后跳转的链接地址
+    title: '《流浪地球3》概念海报曝光，吴京刘德华再续前缘', // 轮播图的标题
+    description: '', // 轮播图的描述信息  震撼视效，颠覆想象
+    link: '/news/15?page=1' // 点击轮播图后跳转的链接地址
   },
   {
     id: 2,
     image: '/images/banner-2.jpg',
-    title: '浪漫爱情故事',
-    description: '温暖治愈，触动心弦',
-    link: '/movie/2'
+    title: 'IMAX中国与万达电影达成战略合作，未来将有更多IMAX影院落地',
+    description: '',
+    link: '/news/18?page=1'
   },
   {
     id: 3,
     image: '/images/banner-3.jpg',
-    title: '动作冒险大片',
-    description: '惊险刺激，全程高能',
-    link: '/movie/3'
+    title: '电影《满江红》延长上映至3月，票房有望再创新高',
+    description: '',
+    link: '/news/17?page=1'
   }
 ])
 

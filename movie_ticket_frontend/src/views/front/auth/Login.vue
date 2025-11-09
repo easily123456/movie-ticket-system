@@ -85,7 +85,7 @@
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { User, Lock, Loading } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
@@ -95,6 +95,7 @@ defineOptions({
 })
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 
 const loginFormRef = ref()
@@ -145,7 +146,13 @@ const handleLogin = async () => {
       localStorage.removeItem('rememberedUsername')
     }
 
-    // 根据用户角色跳转到不同页面
+    // 登录后优先处理回跳（redirect query），否则根据角色跳转
+    const redirect = route.query.redirect
+    if (redirect && typeof redirect === 'string' && redirect.startsWith('/')) {
+      router.push(redirect)
+      return
+    }
+
     if (authStore.isAdmin) {
       router.push('/admin/dashboard')
     } else {

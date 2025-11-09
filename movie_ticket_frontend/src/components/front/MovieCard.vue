@@ -57,6 +57,8 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   movie: {
@@ -67,6 +69,7 @@ const props = defineProps({
 
 const router = useRouter()
 const emits = defineEmits(['buy-ticket', 'favorite'])
+const authStore = useAuthStore()
 
 const handleImageError = (event) => {
   event.target.src = '/images/default-movie-poster.jpg'
@@ -84,7 +87,23 @@ const handleClick = () => {
 
 const handleBookClick = (event) => {
   event.stopPropagation()
+
+  // 确保从 localStorage 恢复认证状态（若尚未初始化）
+  authStore.initAuth()
+
+  // 未登录 -> 跳转登录页面，并携带重定向地址
+  if (!authStore.isAuthenticated) {
+    ElMessage.info('请先登录以继续购票')
+    router.push({
+      name: 'login',
+      query: { redirect: `/movie/${props.movie.id}/sessions` }
+    })
+    return
+  }
+
+  // 已登录 -> 先触发事件给父组件（如果需要父组件做额外处理），再跳转到场次页面
   emits('buy-ticket', props.movie)
+  router.push({ name: 'MovieSessions', params: { id: props.movie.id } })
 }
 
 const handleDetailClick = (event) => {
