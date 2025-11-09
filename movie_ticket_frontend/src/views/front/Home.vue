@@ -5,7 +5,7 @@
       <div class="container">
         <!--container 类通常由 CSS 框架（如 Bootstrap、Element UI 等）提供的一个类，用于创建响应式固定宽度容器，自动居中并带有左右内边距 -->
         <el-carousel
-          height="400px"
+          height="500px"
           indicator-position="outside"
           :interval="5000"
           arrow="always"
@@ -179,7 +179,7 @@ const handleBuyTicket = (movie) => {
 
 .banner-item {
   position: relative;
-  height: 400px;
+  height: 500px;
   border-radius: $border-radius-base;
   overflow: hidden;
 
@@ -398,7 +398,7 @@ const handleBuyTicket = (movie) => {
   }
 
   .banner-item {
-    height: 300px;
+    height: 360px;
 
     .banner-content {
       padding: $spacing-md;
