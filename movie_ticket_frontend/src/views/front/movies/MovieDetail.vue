@@ -13,7 +13,7 @@
         <img :src="movie.posterUrl || '/images/default-movie-poster.jpg'" :alt="movie.title" />
         <div class="movie-badges">
           <span v-if="movie.isHot" class="badge hot">热门</span>
-          <span v-if="movie.isNew" class="badge new">新上映</span>
+          <span v-if="movie.isNew && !movie.isHot" class="badge new">新上映</span>
         </div>
       </div>
 

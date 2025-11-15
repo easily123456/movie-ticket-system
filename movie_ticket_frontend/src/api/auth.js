@@ -45,6 +45,15 @@ export const authApi = {
     })
   },
 
+  // 重置密码（通过用户名和邮箱验证）
+  resetPassword(data) {
+    return request({
+      url: '/api/auth/reset-password',
+      method: 'post',
+      data
+    })
+  },
+
   // 登出
   logout() {
     return request({

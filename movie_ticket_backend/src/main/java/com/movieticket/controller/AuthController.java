@@ -3,6 +3,7 @@ package com.movieticket.controller;
 import com.movieticket.dto.ApiResponse;
 import com.movieticket.dto.request.auth.AuthRequest;
 import com.movieticket.dto.request.auth.RegisterRequest;
+import com.movieticket.dto.request.auth.ResetPasswordRequest;
 import com.movieticket.dto.response.auth.AuthResponse;
 import com.movieticket.entity.User;
 import com.movieticket.service.AuthService;
@@ -35,8 +36,7 @@ public class AuthController {
             String token = jwtUtil.generateToken(
                     registeredUser.getUsername(),
                     registeredUser.getId(),
-                    registeredUser.getRole().name()
-            );
+                    registeredUser.getRole().name());
 
             AuthResponse response = new AuthResponse(registeredUser, token);
             return ResponseEntity.ok(ApiResponse.success("注册成功", response));
@@ -53,8 +53,7 @@ public class AuthController {
             String token = jwtUtil.generateToken(
                     user.getUsername(),
                     user.getId(),
-                    user.getRole().name()
-            );
+                    user.getRole().name());
 
             AuthResponse response = new AuthResponse(user, token);
             return ResponseEntity.ok(ApiResponse.success("登录成功", response));
@@ -92,8 +91,8 @@ public class AuthController {
             String newToken = jwtUtil.generateToken(username, userId, role);
 
             // 获取用户信息
-            Optional<User> userOpt = authService.checkUsernameExists(username) ?
-                    Optional.of(new User()) : Optional.empty(); // 这里应该从数据库获取用户信息
+            Optional<User> userOpt = authService.checkUsernameExists(username) ? Optional.of(new User())
+                    : Optional.empty(); // 这里应该从数据库获取用户信息
 
             if (userOpt.isPresent()) {
                 User user = userOpt.get();
@@ -114,5 +113,14 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success("登出成功", null));
     }
 
-    
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<String>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        try {
+            authService.resetPassword(request.getUsername(), request.getEmail());
+            return ResponseEntity.ok(ApiResponse.success("密码已重置为123456，请使用该密码登录", null));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
 }

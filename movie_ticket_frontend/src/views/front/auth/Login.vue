@@ -7,7 +7,7 @@
 
     <div class="login-card">
       <div class="login-header">
-        <h1 class="login-title">电影票务系统</h1>
+        <h1 class="login-title">电影购票系统</h1>
         <p class="login-subtitle">欢迎回来，请登录您的账户</p>
       </div>
       <el-form
@@ -38,7 +38,7 @@
         <el-form-item>
           <div class="login-options">
             <el-checkbox v-model="rememberMe">记住我</el-checkbox>
-            <el-link type="primary" :underline="false">忘记密码？</el-link>
+            <el-link type="primary" :underline="false" @click="openForgotDialog">忘记密码？</el-link>
           </div>
         </el-form-item>
         <el-form-item>
@@ -52,11 +52,11 @@
             {{ loading ? '登录中...' : '登录' }}
           </el-button>
         </el-form-item>
-        <el-form-item>
+        <!-- <el-form-item>
           <div class="login-divider">
             <span class="divider-text">或者</span>
           </div>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <div class="register-link">
             还没有账户？
@@ -67,7 +67,7 @@
         </el-form-item>
       </el-form>
       <!-- 管理员登录提示 -->
-      <div class="admin-tip">
+      <!-- <div class="admin-tip">
         <el-alert
           title="管理员登录提示"
           description="管理员账号：admin / 密码：admin123"
@@ -75,12 +75,29 @@
           :closable="false"
           show-icon
         />
-      </div>
+      </div> -->
     </div>
     <!-- 加载遮罩 -->
     <div v-if="loading" class="loading-mask">
       <el-icon class="loading-icon"><Loading /></el-icon>
     </div>
+
+    <!-- 忘记密码对话框 -->
+    <el-dialog v-model="forgotDialog" title="忘记密码" width="420px">
+      <el-form ref="forgotFormRef" :model="forgotForm" :rules="forgotRules" label-width="80px">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="forgotForm.username" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="forgotForm.email" placeholder="请输入注册时使用的邮箱" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="forgotDialog = false">取消</el-button>
+        <el-button type="primary" :loading="forgotLoading" @click="handleForgotSubmit">重置密码</el-button>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 <script setup>
@@ -89,6 +106,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { User, Lock, Loading } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
+import { authApi } from '@/api/auth'
 
 defineOptions({
   name: 'LoginPage'
@@ -181,6 +199,53 @@ const goToRegister = () => {
 //   loginForm.password = password
 //   handleLogin()
 // }
+
+// 忘记密码相关
+const forgotDialog = ref(false)
+const forgotFormRef = ref()
+const forgotLoading = ref(false)
+const forgotForm = reactive({
+  username: '',
+  email: ''
+})
+
+const forgotRules = {
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  email: [
+    { required: true, message: '请输入邮箱', trigger: 'blur' },
+    { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+  ]
+}
+
+const openForgotDialog = () => {
+  forgotForm.username = ''
+  forgotForm.email = ''
+  forgotDialog.value = true
+}
+
+const handleForgotSubmit = async () => {
+  if (!forgotFormRef.value) return
+  const valid = await forgotFormRef.value.validate()
+  if (!valid) return
+
+  forgotLoading.value = true
+  try {
+    await authApi.resetPassword({ username: forgotForm.username, email: forgotForm.email })
+    ElMessage.success('密码已重置为 123456，已为您填写到登录框，请使用该密码登录')
+    forgotDialog.value = false
+    // 将重置后的信息填入登录框，便于直接登录
+    loginForm.username = forgotForm.username
+    loginForm.password = '123456'
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      ElMessage.error(error.response.data.message)
+    } else {
+      ElMessage.error('重置密码失败')
+    }
+  } finally {
+    forgotLoading.value = false
+  }
+}
 </script>
 <style scoped lang="scss">
 .login-container {

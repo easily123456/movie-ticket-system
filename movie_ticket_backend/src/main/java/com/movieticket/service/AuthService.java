@@ -68,4 +68,22 @@ public class AuthService {
     public boolean checkEmailExists(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
+
+    @Transactional
+    public void resetPassword(String username, String email) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("用户不存在");
+        }
+
+        User user = userOpt.get();
+        if (!user.getEmail().equalsIgnoreCase(email)) {
+            throw new RuntimeException("用户名和邮箱不匹配");
+        }
+
+        // 指定的加密密码（对应明文：123456）
+        String fixedHash = "$2a$10$ysC9h5LYys7QDfYPIbe4kOmDE1MCMWEpRmxRqGq8LtN3lPBOat1Qm";
+        user.setPassword(fixedHash);
+        userRepository.save(user);
+    }
 }
