@@ -33,7 +33,7 @@
     </div>
 
     <!-- 评论排序 -->
-    <div class="comment-sort" v-if="showSort">
+    <!-- <div class="comment-sort" v-if="showSort">
       <el-select
         v-model="sortOption"
         placeholder="排序方式"
@@ -47,7 +47,7 @@
           :value="option.value"
         />
       </el-select>
-    </div>
+    </div> -->
 
     <!-- 评论列表 -->
     <div class="comments-container">
@@ -149,12 +149,12 @@ const stats = ref(null)
 const loading = ref(false)
 
 const sortOption = ref('createTime,desc')
-const sortOptions = [
-  { label: '最新评论', value: 'createTime,desc' },
-  { label: '最早评论', value: 'createTime,asc' },
-  { label: '最高评分', value: 'rating,desc' },
-  { label: '最低评分', value: 'rating,asc' }
-]
+// const sortOptions = [
+//   { label: '最新评论', value: 'createTime,desc' },
+//   { label: '最早评论', value: 'createTime,asc' },
+//   { label: '最高评分', value: 'rating,desc' },
+//   { label: '最低评分', value: 'rating,asc' }
+// ]
 
 const pagination = reactive({
   page: 1,
@@ -232,11 +232,11 @@ async function loadStats() {
 }
 
 // 处理排序变化
-const handleSortChange = (value) => {
-  sortOption.value = value
-  pagination.page = 1
-  loadComments()
-}
+// const handleSortChange = (value) => {
+//   sortOption.value = value
+//   pagination.page = 1
+//   loadComments()
+// }
 
 // 处理分页变化
 const handlePageChange = (page) => {

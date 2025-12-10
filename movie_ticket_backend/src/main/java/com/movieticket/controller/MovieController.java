@@ -86,7 +86,7 @@ public class MovieController {
         }
     }
 
-    // 获取电影类型下的电影
+    // 获取指定类型下的电影
     @GetMapping("/by-genre/{genreId}")
     public ResponseEntity<ApiResponse<Page<MovieResponse>>> getMoviesByGenre(
             @PathVariable Long genreId,

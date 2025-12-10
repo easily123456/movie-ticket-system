@@ -47,7 +47,7 @@
           </div>
           <div class="info-item">
             <span class="label">影院信息</span>
-            <span class="value">XX影城（{{ order.hallName }}）</span>
+            <span class="value">星光影城（{{ order.hallName }}）</span>
           </div>
           <div class="info-item">
             <span class="label">观影时间</span>

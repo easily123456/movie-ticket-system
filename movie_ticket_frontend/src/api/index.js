@@ -62,9 +62,9 @@ export const movieApi = {
   },
 
   // 获取电影类型
-  getMovieGenres() {
-    return request.get('/api/movies/genres')
-  },
+  // getMovieGenres() {
+  //   return request.get('/api/movies/genres')
+  // },
 
   // 获取电影场次
   // getMovieSessions(movieId) {
@@ -127,12 +127,6 @@ export const orderApi = {
     return request.post(`/api/orders/${orderId}/cancel`, null, { showGlobalMessage: false })
   },
 
-  // 申请退款（后台接口如存在）
-  refundOrder(orderId) {
-    // 如果后端没有此接口，可按需调整
-    return request.post(`/api/orders/${orderId}/refund`, null, { showGlobalMessage: false })
-  },
-
   // 获取订单详情
   getOrderDetail(orderId) {
     return request.get(`/api/orders/${orderId}`)
@@ -154,10 +148,6 @@ export const commentApi = {
   getCommentDetail(id) {
     return request.get(`/api/comments/${id}`)
   },
-  // getComments(params) {
-  //   return request.get('/api/comments', { params })
-  // },
-
   // 创建评论
   createComment(data) {
     return request.post('/api/comments/create', data)

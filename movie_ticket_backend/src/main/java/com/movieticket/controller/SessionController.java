@@ -22,6 +22,7 @@ public class SessionController {
 
     private final SessionService sessionService;
 
+    // 获取电影下的场次
     @GetMapping("/movie/{movieId}")
     public ResponseEntity<ApiResponse<List<SessionResponse>>> getSessionsByMovie(@PathVariable Long movieId) {
         List<Session> sessions = sessionService.getSessionsByMovie(movieId);

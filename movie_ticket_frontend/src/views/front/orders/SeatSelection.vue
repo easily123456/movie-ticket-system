@@ -50,6 +50,7 @@
             :key="rowIndex"
             class="seat-row"
           >
+          <!-- 行标签和座位 -->
             <div class="row-label">{{ getRowLabel(rowIndex + 1) }}</div>
             <div class="seats-in-row">
               <div
@@ -64,6 +65,7 @@
                 >
                   {{ colIndex + 1 }}
                 </div>
+                <!-- 根据座位状态显示不同的样式 -->
               </div>
             </div>
             <div class="row-label">{{ getRowLabel(rowIndex + 1) }}</div>
@@ -190,14 +192,7 @@ const loadSessionDetail = async () => {
 }
 
 const loadSeatMap = async () => {
-  // 模拟座位数据，实际应该从后端获取
-  //const hallId = session.value.hallId
   try {
-    // 这里应该调用API获取座位图
-    // const seatMap = await sessionApi.getSeatMap(hallId)
-    // seats.value = seatMap
-
-    // 临时模拟座位数据
     const mockSeats = {}
     for (let row = 1; row <= seatLayout.rows; row++) {
       for (let col = 1; col <= seatLayout.cols; col++) {
@@ -221,7 +216,7 @@ const loadSeatMap = async () => {
 
 // 获取座位类名
 const getSeatClass = (row, col) => {
-  const seatId = `${row}-${col}`
+  const seatId = `${row}-${col}`// 座位ID，如1-1
   const status = seats.value[seatId]
 
   switch (status) {
