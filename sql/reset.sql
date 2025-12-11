@@ -240,12 +240,12 @@ INSERT INTO movies (title, original_title, genre_id, duration, director, actors,
 
 -- 插入放映厅数据
 INSERT INTO halls (name, capacity, seat_layout, status) VALUES
-('1号激光厅', 120, '{"rows":10,"cols":12,"disabledSeats":["A1","A12","J1","J12"],"vipSeats":["D5","D6","D7","D8","E5","E6","E7","E8"]}', 1),
-('2号IMAX厅', 200, '{"rows":10,"cols":20,"disabledSeats":["A1","A20","J1","J20"],"vipSeats":["E8","E9","E10","E11","E12","F8","F9","F10","F11","F12"]}', 1),
-('3号杜比厅', 80, '{"rows":8,"cols":10,"disabledSeats":["A1","A10","H1","H10"],"vipSeats":["D4","D5","D6","D7","E4","E5","E6","E7"]}', 1),
-('4号VIP厅', 40, '{"rows":5,"cols":8,"disabledSeats":[],"vipSeats":["A1","A2","A3","A4","A5","A6","A7","A8","B1","B2","B3","B4","B5","B6","B7","B8"]}', 1),
-('5号4DX厅', 60, '{"rows":6,"cols":10,"disabledSeats":["A1","A10","F1","F10"],"vipSeats":["C4","C5","C6","C7","D4","D5","D6","D7"]}', 1),
-('6号巨幕厅', 150, '{"rows":10,"cols":15,"disabledSeats":["A1","A15","J1","J15"],"vipSeats":["E6","E7","E8","E9","E10","F6","F7","F8","F9","F10"]}', 1);
+('1号激光厅', 120, '{"rows":10,"cols":12,"disabledSeats":["A1","A12","J1","J12"]}', 1),
+('2号IMAX厅', 200, '{"rows":10,"cols":20,"disabledSeats":["A1","A20","J1","J20"]}', 1),
+('3号杜比厅', 80, '{"rows":8,"cols":10,"disabledSeats":["A1","A10","H1","H10"]}', 1),
+('4号VIP厅', 40, '{"rows":5,"cols":8,"disabledSeats":[]}', 1),
+('5号4DX厅', 60, '{"rows":6,"cols":10,"disabledSeats":["A1","A10","F1","F10"]}', 1),
+('6号巨幕厅', 150, '{"rows":10,"cols":15,"disabledSeats":["A1","A15","J1","J15"]}', 1);
 
 
 -- 插入场次数据（扩展更多场次）

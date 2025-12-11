@@ -82,10 +82,7 @@
             <div class="legend-sample selected"></div>
             <span>已选座位</span>
           </div>
-          <div class="legend-item">
-            <div class="legend-sample occupied"></div>
-            <span>已售座位</span>
-          </div>
+          <!-- 已售座位图例已移除，保持界面简洁（座位仍按已售样式显示） -->
           <div class="legend-item">
             <div class="legend-sample unavailable"></div>
             <span>不可选座位</span>
@@ -175,6 +172,48 @@ onMounted(async () => {
   await loadSeatMap()
 })
 
+const loadSeatMap = async () => {
+  try {
+    // 优先使用后端返回的座位布局和已占用/锁定座位
+    const detail = session.value || {}
+    const layoutFromServer = detail.seatLayout || {}
+
+    const rows = layoutFromServer.rows || seatLayout.rows
+    const cols = layoutFromServer.cols || seatLayout.cols
+
+    // 可能后端会返回不可用座位列表，字段名可能为 disabledSeats/unavailableSeats
+    const disabledSeats = layoutFromServer.disabledSeats || layoutFromServer.unavailableSeats || []
+
+    const booked = detail.bookedSeatNumbers || []
+    const locked = detail.lockedSeatNumbers || []
+
+    const newSeats = {}
+    for (let row = 1; row <= rows; row++) {
+      for (let col = 1; col <= cols; col++) {
+        const seatKey = `${getRowLabel(row)}${col}` // e.g. A1
+
+        if (disabledSeats.includes(seatKey)) {
+          newSeats[seatKey] = 0 // 不可用
+        } else if (booked.includes(seatKey)) {
+          newSeats[seatKey] = 2 // 已售
+        } else if (locked.includes(seatKey)) {
+          // 锁定（待支付）视为暂时不可选
+          newSeats[seatKey] = 0 // 不可用
+        } else {
+          newSeats[seatKey] = 1 // 可选
+        }
+      }
+    }
+
+    seats.value = newSeats
+    // 如果后端提供了具体的行/列信息，更新本地布局（用于渲染）
+    seatLayout.rows = rows
+    seatLayout.cols = cols
+  } catch (error) {
+    console.error('加载座位图失败:', error)
+  }
+}
+
 const loadSessionDetail = async () => {
   const sessionId = route.params.sessionId
   try {
@@ -191,33 +230,12 @@ const loadSessionDetail = async () => {
   }
 }
 
-const loadSeatMap = async () => {
-  try {
-    const mockSeats = {}
-    for (let row = 1; row <= seatLayout.rows; row++) {
-      for (let col = 1; col <= seatLayout.cols; col++) {
-        const seatId = `${row}-${col}`
-        // 随机设置一些已售和不可用座位
-        const random = Math.random()
-        if (random < 0.1) {
-          mockSeats[seatId] = 0 // 不可用
-        } else if (random < 0.3) {
-          mockSeats[seatId] = 2 // 已售
-        } else {
-          mockSeats[seatId] = 1 // 可选
-        }
-      }
-    }
-    seats.value = mockSeats
-  } catch (error) {
-    console.error('加载座位图失败:', error)
-  }
-}
+
 
 // 获取座位类名
 const getSeatClass = (row, col) => {
-  const seatId = `${row}-${col}`// 座位ID，如1-1
-  const status = seats.value[seatId]
+  const seatKey = `${getRowLabel(row)}${col}` // e.g. A1
+  const status = seats.value[seatKey]
 
   switch (status) {
     case 0:
@@ -240,30 +258,31 @@ const getRowLabel = (rowIndex) => {
 
 // 座位点击处理
 const handleSeatClick = (row, col) => {
-  const seatId = `${row}-${col}`
-  const status = seats.value[seatId]
+  const seatKey = `${getRowLabel(row)}${col}`
+  const status = seats.value[seatKey]
 
   // 只能选择可选或已选的座位
   if (status !== 1 && status !== 3) return
 
   if (status === 1) {
     // 选择座位
-    seats.value[seatId] = 3
+    seats.value[seatKey] = 3
     selectedSeats.value.push({
-      id: seatId,
+      id: seatKey,
       row: getRowLabel(row),
       col: col
     })
   } else {
     // 取消选择
-    seats.value[seatId] = 1
-    selectedSeats.value = selectedSeats.value.filter(seat => seat.id !== seatId)
+    seats.value[seatKey] = 1
+    selectedSeats.value = selectedSeats.value.filter(seat => seat.id !== seatKey)
   }
 }
 
 // 移除座位
 const removeSeat = (seat) => {
   const seatId = seat.id
+  // 有可能 seatId 是 A1 形式
   seats.value[seatId] = 1
   selectedSeats.value = selectedSeats.value.filter(s => s.id !== seatId)
 }
